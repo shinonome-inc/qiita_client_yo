@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class TopPage extends StatefulWidget {
   const TopPage({Key? key}) : super(key: key);
@@ -9,13 +10,59 @@ class TopPage extends StatefulWidget {
 }
 
 class _TopPageState extends State<TopPage> {
+
+  // ModelSheetでログイン画面を表示
+  void _showModelSheet() {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
+        ),
+        builder: (BuildContext context) {
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.95,
+            color: Colors.transparent,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
+                    color: const Color(0xF7F7F7FF),
+                  ),
+                  height: 55.0,
+                  child: Center(
+                    child: const Text(
+                      'Qiita Auth',
+                      style: TextStyle(
+                        fontSize: 19.0,
+                        fontFamily: 'Pacifico',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    child: WebView(
+                      initialUrl: 'https://qiita.com/login',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/top_page_background.jpg'),
+            image: const AssetImage('assets/images/top_page_background.jpg'),
             fit: BoxFit.fill,
           ),
         ),
@@ -34,7 +81,7 @@ class _TopPageState extends State<TopPage> {
                       Container(
                         child: const Text(
                           'Qiita Feed App',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                             fontFamily: 'Pacifico',
                             fontSize: 36.0,
@@ -47,7 +94,7 @@ class _TopPageState extends State<TopPage> {
                       Container(
                         child: const Text(
                           '-PlayGround-',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
@@ -63,18 +110,15 @@ class _TopPageState extends State<TopPage> {
                       FlatButton(
                         height: 44.0,
                         color: const Color(0xFF468300),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: const BorderRadius.all(
                             Radius.circular(25.0),
                           ),
                         ),
-                        onPressed: () {
-                          // ・ログインボタンタップでQiita認証ページへ遷移する(Auth認証）
-                          // ・認証成功後02-Feed Page画面へ遷移する
-                        },
+                        onPressed: _showModelSheet,
                         child: const Text(
                           'ログイン',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                           ),
                         ),
@@ -89,7 +133,7 @@ class _TopPageState extends State<TopPage> {
                         },
                         child: const Text(
                           'ログインせずに利用する',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                           ),
                         ),

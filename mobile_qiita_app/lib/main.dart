@@ -7,5 +7,6 @@ void main() {
     routes: {
       '/': (context) => TopPage(),
     },
+    debugShowCheckedModeBanner: false,
   ));
 }
