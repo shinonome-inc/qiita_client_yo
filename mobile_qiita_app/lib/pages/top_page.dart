@@ -1,4 +1,4 @@
-import 'dart:ui';
+  import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -70,15 +70,6 @@ class _TopPageState extends State<TopPage> {
       _isLoading = false;
     });
   }
-
-  // 認証せずに利用するボタンタップで非ログイン状態でFeed画面へ 遷移する
-  Future<void> _transitionToFeedPage() async {
-    final seconds = 2;
-    await _showActivityIndicator(seconds);
-    Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavigation(),
-    ));
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +146,7 @@ class _TopPageState extends State<TopPage> {
                           FlatButton(
                             height: 44.0,
                             onPressed: () {
-                              _transitionToFeedPage();
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavigation()));
                             },
                             child: const Text(
                               'ログインせずに利用する',
