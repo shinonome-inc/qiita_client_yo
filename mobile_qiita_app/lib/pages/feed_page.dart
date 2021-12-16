@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/services/article.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -16,8 +17,7 @@ class _FeedPageState extends State<FeedPage> {
   Widget _articleWidget(Article article) {
     return GestureDetector(
       onTap: () {
-        print(article.title);
-        // ・記事項目タップで13-Qiita Article Pageへ遷移する
+        _showArticle(article);
       },
       child: ListTile(
         leading: CircleAvatar(
@@ -41,6 +41,53 @@ class _FeedPageState extends State<FeedPage> {
           child: Text(
             '`${article.user.id} 投稿日: ${article.created_at.substring(0, 10)} LGTM: ${article.likes_count}',
           ),
+        ),
+      ),
+    );
+  }
+
+  // ・記事項目タップで13-Qiita Article Pageへ遷移する
+  void _showArticle(Article article) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) => Container(
+        height: MediaQuery.of(context).size.height * 0.95,
+        color: Colors.transparent,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
+                color: const Color(0xF7F7F7FF),
+              ),
+              height: 66.0,
+              child: Center(
+                child: const Text(
+                  'Article',
+                  style: TextStyle(
+                    fontSize: 19.0,
+                    fontFamily: 'Pacifico',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                child: WebView(
+                  initialUrl: article.url,
+                  onWebResourceError: (error) {
+                    print('error');
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
