@@ -48,8 +48,9 @@ class _FeedPageState extends State<FeedPage> {
 
   // 再読み込みする
   void _reload() {
-    _futureArticles = Client.fetchArticle();
-    setState(() {});
+    setState(() {
+      _futureArticles = Client.fetchArticle();
+    });
   }
 
   @override
@@ -122,25 +123,35 @@ class _FeedPageState extends State<FeedPage> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           List<Widget> children = [];
           MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
-          if (snapshot.hasData) {
-            children = <Widget> [
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, index) {
-                    return _articleWidget(snapshot.data[index]);
-                  },
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              print('snapshot.hasData');
+              children = <Widget> [
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return _articleWidget(snapshot.data[index]);
+                    },
+                  ),
                 ),
-              ),
-            ];
-          }
-          else if (snapshot.hasError) {
-            children = <Widget> [
-              ErrorView.errorViewWidget(_reload),
-            ];
-          }
-          else {
+              ];
+            }
+            else if (snapshot.hasError) {
+              print('snapshot.hasError');
+              children = <Widget> [
+                // ErrorView.errorViewWidget(_reload),
+                Center(
+                  child: IconButton(
+                    onPressed: _reload,
+                    icon: Icon(Icons.refresh),
+                  ),
+                ),
+              ];
+            }
+          } else {
+            print('loading...');
             mainAxisAlignment = MainAxisAlignment.center;
             children = <Widget> [
               Center(
