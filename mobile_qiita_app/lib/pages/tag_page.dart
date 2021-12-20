@@ -13,55 +13,53 @@ class TagPage extends StatefulWidget {
 class _TagPageState extends State<TagPage> {
   late Future<List<Tag>> _futureTag;
 
-  //
+  // 取得したタグの内容を整理して表示
   Widget _tagWidget(Tag tag) {
-    return GestureDetector(
-      onTap: () {
-        print(tag.id);
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          border: Border.all(
-            color: const Color(0xFFE0E0E0),
-            width: 1.5,
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5.0),
+        border: Border.all(
+          color: const Color(0xFFE0E0E0),
+          width: 1.5,
         ),
-        child: ListTile(
-          title: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                height: 50.0,
-                width: 50.0,
-                child: tag.icon_url == '' ? Container(color: Colors.transparent) : Image.network(tag.icon_url),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Text(
-                  tag.id,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 17.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Text(
-                '記事件数: ${tag.items_count}',
+      ),
+      child: ListTile(
+        onTap: () {
+          print(tag.id);
+        },
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              height: 50.0,
+              width: 50.0,
+              child: tag.icon_url == '' ? Container(color: Colors.transparent) : Image.network(tag.icon_url),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Text(
+                tag.id,
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: const Color(0xFF828282),
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
-                'フォロワー数: ${tag.followers_count}',
-                style: TextStyle(
-                  color: const Color(0xFF828282),
-                ),
+            ),
+            Text(
+              '記事件数: ${tag.items_count}',
+              style: TextStyle(
+                color: const Color(0xFF828282),
               ),
-            ],
-          ),
+            ),
+            Text(
+              'フォロワー数: ${tag.followers_count}',
+              style: TextStyle(
+                color: const Color(0xFF828282),
+              ),
+            ),
+          ],
         ),
       ),
     );
