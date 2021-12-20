@@ -6,16 +6,13 @@ import 'package:mobile_qiita_app/views/error_views.dart';
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
 
-  static late Future<List<Article>> _futureArticles;
-  static set futureArticles(Future<List<Article>> fa) {
-    _futureArticles = fa;
-  }
-
   @override
   _FeedPageState createState() => _FeedPageState();
 }
 
 class _FeedPageState extends State<FeedPage> {
+
+  late Future<List<Article>> _futureArticles;
 
   // 取得した記事の内容を整理して表示
   Widget _articleWidget(Article article) {
@@ -49,10 +46,16 @@ class _FeedPageState extends State<FeedPage> {
     );
   }
 
+  // 再読み込みする
+  void _reload() {
+    _futureArticles = Client.fetchArticle();
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
-    FeedPage._futureArticles = Client.fetchArticle();
+    _futureArticles = Client.fetchArticle();
   }
 
   @override
@@ -115,7 +118,7 @@ class _FeedPageState extends State<FeedPage> {
         ),
       ),
       body: FutureBuilder(
-        future: FeedPage._futureArticles,
+        future: _futureArticles,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           List<Widget> children = [];
           MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
@@ -134,7 +137,7 @@ class _FeedPageState extends State<FeedPage> {
           }
           else if (snapshot.hasError) {
             children = <Widget> [
-              ErrorView(text: 'feed_page'),
+              ErrorView.errorViewWidget(_reload),
             ];
           }
           else {
