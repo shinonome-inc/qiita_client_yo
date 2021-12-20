@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -9,11 +8,28 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
+
+  int _selectIndex = 0;
+
+  final _widgetOptions = [
+    Center(child: const Text('フィード')),
+    Center(child: const Text('タグ')),
+    Center(child: const Text('マイページ')),
+    Center(child: const Text('設定')),
+  ];
+
+  // タップされたindexの値を_selectIndexに代入
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        activeColor: const Color(0xFF74C13A),
+    return Scaffold(
+      body: _widgetOptions.elementAt(_selectIndex),
+      bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.format_list_bulleted_outlined),
@@ -32,29 +48,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
             label: '設定',
           ),
         ],
+        currentIndex: _selectIndex,
+        selectedItemColor: const Color(0xFF74C13A),
+        unselectedItemColor: const Color(0xFF828282),
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
       ),
-      tabBuilder: (BuildContext context, int index) {
-        switch (index) {
-          case 0:
-            return CupertinoTabView(
-              builder: (context) => CupertinoPageScaffold(child: const Text('FeedPage')),
-          );
-          case 1:
-            return CupertinoTabView(
-              builder: (context) => CupertinoPageScaffold(child: const Text('TagPage')),
-          );
-          case 2:
-            return CupertinoTabView(
-              builder: (context) => CupertinoPageScaffold(child: const Text('MyPage')),
-          );
-          case 3:
-            return CupertinoTabView(
-              builder: (context) => CupertinoPageScaffold(child: const Text('SettingPage')),
-          );
-          default:
-            return Container();
-        }
-      },
     );
   }
 }
