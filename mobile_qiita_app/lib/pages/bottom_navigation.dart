@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/pages/feed_page.dart';
 
@@ -13,7 +14,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   int _selectIndex = 0;
 
   final _widgetOptions = [
-    FeedPage(),
+    Center(child: FeedPage()),
     Center(child: const Text('タグ')),
     Center(child: const Text('マイページ')),
     Center(child: const Text('設定')),
