@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/services/tag.dart';
+import 'package:mobile_qiita_app/views/error_views.dart';
 
 class TagPage extends StatefulWidget {
   const TagPage({Key? key}) : super(key: key);
@@ -65,6 +66,13 @@ class _TagPageState extends State<TagPage> {
     );
   }
 
+  // 再読み込みする
+  void _reload() {
+    setState(() {
+      _futureTag = Client.fetchTag();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -83,7 +91,7 @@ class _TagPageState extends State<TagPage> {
           style: TextStyle(
             color: Colors.black,
             fontFamily: 'Pacifico',
-            fontSize: 20.0,
+            fontSize: 22.0,
           ),
         ),
       ),
@@ -95,27 +103,28 @@ class _TagPageState extends State<TagPage> {
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               List<Widget> children = [];
               MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
-              if (snapshot.hasData) {
-                children = [
-                  Flexible(
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 15.0,
-                        crossAxisSpacing: 15.0,
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData) {
+                  children = [
+                    Flexible(
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 15.0,
+                          crossAxisSpacing: 15.0,
+                        ),
+                        itemCount: snapshot.data.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) => _tagWidget(snapshot.data[index]),
                       ),
-                      itemCount: snapshot.data.length,
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) => _tagWidget(snapshot.data[index]),
                     ),
-                  ),
-                ];
-              }
-              else if (snapshot.hasError) {
-                print(snapshot.error);
-                children = [
-                  Text(snapshot.error.toString()),
-                ];
+                  ];
+                }
+                else if (snapshot.hasError) {
+                  children = [
+                    ErrorView.errorViewWidget(_reload),
+                  ];
+                }
               }
               else {
                 mainAxisAlignment = MainAxisAlignment.center;
