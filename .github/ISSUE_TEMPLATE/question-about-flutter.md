@@ -1,6 +1,6 @@
 ---
-name: Flutter最終課題質問テンプレート
-about: "【質問】【Flutter最終課題】"
+name: Question About Flutter
+about: Flutter Question Template
 title: ''
 labels: ''
 assignees: KobayashiYoh
