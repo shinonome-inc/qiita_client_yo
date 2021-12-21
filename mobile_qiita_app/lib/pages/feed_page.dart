@@ -14,6 +14,7 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
 
   late Future<List<Article>> _futureArticles;
+  String _searchWord = '';
 
   // 取得した記事の内容を整理して表示
   Widget _articleWidget(Article article) {
@@ -78,14 +79,9 @@ class _FeedPageState extends State<FeedPage> {
                 ),
               ),
             ),
-            DraggableScrollableSheet(
-              builder: (context, scrollController) => Container(
-                child: WebView(
-                  initialUrl: article.url,
-                  onWebResourceError: (error) {
-                    print('error');
-                    },
-                ),
+            Expanded(
+              child: WebView(
+                initialUrl: article.url,
               ),
             ),
           ],
@@ -97,14 +93,22 @@ class _FeedPageState extends State<FeedPage> {
   // 再読み込みする
   void _reload() {
     setState(() {
-      _futureArticles = Client.fetchArticle();
+      _futureArticles = Client.fetchArticle(_searchWord);
+    });
+  }
+
+  // Search Barに任意のテキストを入力すると記事の検索ができる
+  void _searchArticles(String inputText) {
+    _searchWord = inputText;
+    setState(() {
+      _futureArticles = Client.fetchArticle(_searchWord);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _futureArticles = Client.fetchArticle();
+    _futureArticles = Client.fetchArticle(_searchWord);
   }
 
   @override
@@ -155,10 +159,7 @@ class _FeedPageState extends State<FeedPage> {
                         fontSize: 18.0,
                       ),
                     ),
-                    onChanged: (e) {
-                      print(e);
-                      // ・Search Barに任意のテキストを入力すると記事の検索ができる
-                    },
+                    onChanged: _searchArticles,
                   ),
                 ),
               ],

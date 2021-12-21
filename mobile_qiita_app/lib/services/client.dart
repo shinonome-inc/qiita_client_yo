@@ -4,8 +4,14 @@ import 'dart:convert';
 
 class Client {
   // QiitaAPIで記事を取得
-  static Future<List<Article>> fetchArticle() async {
-    var url = 'https://qiita.com/api/v2/items';
+  static Future<List<Article>> fetchArticle(String searchWord) async {
+    var url;
+    if (searchWord == '') {
+      url = 'https://qiita.com/api/v2/items';
+    }
+    else {
+      url = 'https://qiita.com/api/v2/items?query=${searchWord}';
+    }
     var response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = json.decode(response.body);
