@@ -27,7 +27,8 @@ class _FeedPageState extends State<FeedPage> {
       ),
       title: Text(
         article.title,
-        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
       ),
       subtitle: Container(
         padding: const EdgeInsets.only(bottom: 10),
@@ -40,7 +41,7 @@ class _FeedPageState extends State<FeedPage> {
           ),
         ),
         child: Text(
-          '`${article.user.id} 投稿日: ${article.created_at.substring(0, 10)} LGTM: ${article.likes_count}',
+          '${article.user.id} 投稿日: ${article.created_at.substring(0, 10)} LGTM: ${article.likes_count}',
         ),
       ),
     );
@@ -141,13 +142,7 @@ class _FeedPageState extends State<FeedPage> {
             else if (snapshot.hasError) {
               print('snapshot.hasError');
               children = <Widget> [
-                // ErrorView.errorViewWidget(_reload),
-                Center(
-                  child: IconButton(
-                    onPressed: _reload,
-                    icon: Icon(Icons.refresh),
-                  ),
-                ),
+                ErrorView.errorViewWidget(_reload),
               ];
             }
           } else {
