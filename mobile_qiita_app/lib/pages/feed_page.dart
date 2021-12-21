@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/services/article.dart';
+import 'package:mobile_qiita_app/views/error_views.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -25,7 +26,8 @@ class _FeedPageState extends State<FeedPage> {
       ),
       title: Text(
         article.title,
-        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
       ),
       subtitle: Container(
         padding: const EdgeInsets.only(bottom: 10),
@@ -38,10 +40,17 @@ class _FeedPageState extends State<FeedPage> {
           ),
         ),
         child: Text(
-          '`${article.user.id} 投稿日: ${article.created_at.substring(0, 10)} LGTM: ${article.likes_count}',
+          '${article.user.id} 投稿日: ${article.created_at.substring(0, 10)} LGTM: ${article.likes_count}',
         ),
       ),
     );
+  }
+
+  // 再読み込みする
+  void _reload() {
+    setState(() {
+      _futureArticles = Client.fetchArticle();
+    });
   }
 
   @override
@@ -114,32 +123,26 @@ class _FeedPageState extends State<FeedPage> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           List<Widget> children = [];
           MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
-          if (snapshot.hasData) {
-            children = <Widget> [
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, index) {
-                    return _articleWidget(snapshot.data[index]);
-                  },
-                ),
-              ),
-            ];
-          }
-          else if (snapshot.hasError) {
-            children = <Widget> [
-              Container(
-                child: Text(
-                  snapshot.error.toString(),
-                  style: TextStyle(
-                    color: Colors.red,
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              children = <Widget> [
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return _articleWidget(snapshot.data[index]);
+                    },
                   ),
                 ),
-              ),
-            ];
-          }
-          else {
+              ];
+            }
+            else if (snapshot.hasError) {
+              children = <Widget> [
+                ErrorView.errorViewWidget(_reload),
+              ];
+            }
+          } else {
             mainAxisAlignment = MainAxisAlignment.center;
             children = <Widget> [
               Center(
