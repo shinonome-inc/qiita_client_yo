@@ -105,6 +105,31 @@ class _FeedPageState extends State<FeedPage> {
     });
   }
 
+  // 検索結果が0件だった場合に表示
+  Widget _emptySearchResultView() {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              '検索にマッチする記事はありませんでした',
+              style: TextStyle(fontSize: 15.0),
+            ),
+            const SizedBox(height: 20.0),
+            const Text(
+              '検索条件を変えるなどして再度検索をしてください',
+              style: TextStyle(color: const Color(0xFF828282)),
+            ),
+            const SizedBox(height: 100.0),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -173,7 +198,7 @@ class _FeedPageState extends State<FeedPage> {
           List<Widget> children = [];
           MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
           if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasData) {
+            if (snapshot.hasData && snapshot.data.length != 0) {
               children = <Widget> [
                 Flexible(
                   child: ListView.builder(
@@ -184,6 +209,11 @@ class _FeedPageState extends State<FeedPage> {
                     },
                   ),
                 ),
+              ];
+            }
+            else if (snapshot.hasData) {
+              children = <Widget> [
+                _emptySearchResultView(),
               ];
             }
             else if (snapshot.hasError) {
