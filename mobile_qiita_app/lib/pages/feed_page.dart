@@ -14,6 +14,8 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
 
   late Future<List<Article>> _futureArticles;
+  late List<Article> _resultArticles;
+  int _pageNumber = 1;
   String _searchWord = '';
 
   // 取得した記事の内容を整理して表示
@@ -93,7 +95,15 @@ class _FeedPageState extends State<FeedPage> {
   // 再読み込みする
   void _reload() {
     setState(() {
-      _futureArticles = Client.fetchArticle(_searchWord);
+      _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
+    });
+  }
+
+  // 記事をさらに読み込む
+  void _moreLoad() {
+    _pageNumber++;
+    setState(() {
+      _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
     });
   }
 
@@ -101,7 +111,7 @@ class _FeedPageState extends State<FeedPage> {
   void _searchArticles(String inputText) {
     _searchWord = inputText;
     setState(() {
-      _futureArticles = Client.fetchArticle(_searchWord);
+      _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
     });
   }
 
@@ -133,7 +143,7 @@ class _FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
-    _futureArticles = Client.fetchArticle(_searchWord);
+    _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
   }
 
   @override
@@ -235,6 +245,10 @@ class _FeedPageState extends State<FeedPage> {
             children: children,
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _moreLoad,
+        child: const Text('more'),
       ),
     );
   }
