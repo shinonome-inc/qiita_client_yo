@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/services/article.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
+import 'package:mobile_qiita_app/pages/qiita_article_page.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -47,7 +47,7 @@ class _FeedPageState extends State<FeedPage> {
     );
   }
 
-  // ・記事項目タップで13-Qiita Article Pageへ遷移する
+  // 記事項目タップで13-Qiita Article Pageへ遷移する
   void _showArticle(Article article) {
     showModalBottomSheet(
       context: context,
@@ -55,41 +55,14 @@ class _FeedPageState extends State<FeedPage> {
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
       ),
-      builder: (BuildContext context) => Container(
-        height: MediaQuery.of(context).size.height * 0.95,
-        color: Colors.transparent,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
-                color: const Color(0xF7F7F7FF),
-              ),
-              height: 59.0,
-              child: Center(
-                child: const Text(
-                  'Article',
-                  style: TextStyle(
-                    fontSize: 19.0,
-                    fontFamily: 'Pacifico',
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            DraggableScrollableSheet(
-              builder: (context, scrollController) => Container(
-                child: WebView(
-                  initialUrl: article.url,
-                  onWebResourceError: (error) {
-                    print('error');
-                    },
-                ),
-              ),
-            ),
-          ],
-        ),
+      builder: (BuildContext context) => DraggableScrollableSheet(
+        expand: false,
+        maxChildSize: 0.95,
+        minChildSize: 0.5,
+        initialChildSize: 0.95,
+        builder: (context, scrollController) {
+          return QiitaArticlePage(article: article);
+        },
       ),
     );
   }
@@ -204,6 +177,10 @@ class _FeedPageState extends State<FeedPage> {
             children: children,
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _reload,
+        child: const Text('reload'),
       ),
     );
   }
