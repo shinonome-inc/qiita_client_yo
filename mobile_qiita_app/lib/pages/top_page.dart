@@ -1,7 +1,8 @@
-import 'dart:ui';
+  import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
 
 class TopPage extends StatefulWidget {
   const TopPage({Key? key}) : super(key: key);
@@ -57,6 +58,17 @@ class _TopPageState extends State<TopPage> {
         );
       },
     );
+  }
+
+  // 指定された秒数だけ読み込みのCupertinoActivityIndicatorを表示
+  Future<void> _showActivityIndicator(int seconds) async {
+    setState(() {
+      _isLoading = true;
+    });
+    await Future.delayed(Duration(seconds: seconds));
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -134,10 +146,7 @@ class _TopPageState extends State<TopPage> {
                           FlatButton(
                             height: 44.0,
                             onPressed: () {
-                              // ・認証せずに利用するボタンタップで非ログイン状態でFeed画面へ 遷移する
-                              setState(() {
-                                _isLoading = true;
-                              });
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavigation()));
                             },
                             child: const Text(
                               'ログインせずに利用する',
