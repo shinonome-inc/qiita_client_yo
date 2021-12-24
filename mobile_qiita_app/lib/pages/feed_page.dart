@@ -209,13 +209,28 @@ class _FeedPageState extends State<FeedPage> {
           MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData && snapshot.data.length != 0) {
+              if (_pageNumber == 1) {
+                _resultArticles = snapshot.data;
+              }
+              else {
+                _resultArticles.addAll(snapshot.data);
+              }
               children = <Widget> [
                 Flexible(
                   child: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: snapshot.data.length,
+                    itemCount: _resultArticles.length,
                     itemBuilder: (context, index) {
-                      return _articleWidget(snapshot.data[index]);
+                      print('index: ${index}');
+                      print('article.length: ${_resultArticles.length}');
+                      if (index + 5 >= _resultArticles.length) {
+                        _pageNumber++;
+                        _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
+                        setState(() {
+                          _resultArticles.addAll(snapshot.data);
+                        });
+                      }
+                      return _articleWidget(_resultArticles[index]);
                     },
                   ),
                 ),
