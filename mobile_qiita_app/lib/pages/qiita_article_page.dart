@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:mobile_qiita_app/services/article.dart';
@@ -23,6 +24,14 @@ class _QiitaArticlePageState extends State<QiitaArticlePage> {
     setState(() {
       _webViewHeight = newHeight;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (Platform.isAndroid) {
+      WebView.platform = SurfaceAndroidWebView();
+    }
   }
 
   @override
