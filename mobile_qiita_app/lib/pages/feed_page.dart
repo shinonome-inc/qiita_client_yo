@@ -100,11 +100,13 @@ class _FeedPageState extends State<FeedPage> {
   }
 
   // 記事をさらに読み込む
-  void _moreLoad() {
+  Future<void> _moreLoad() async {
     _pageNumber++;
-    setState(() {
-      _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
-    });
+    for (var i = 0; i < _pageNumber; i++) {
+      setState(() {
+        _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
+      });
+    }
   }
 
   // Search Barに任意のテキストを入力すると記事の検索ができる
@@ -217,21 +219,15 @@ class _FeedPageState extends State<FeedPage> {
               }
               children = <Widget> [
                 Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _resultArticles.length,
-                    itemBuilder: (context, index) {
-                      print('index: ${index}');
-                      print('article.length: ${_resultArticles.length}');
-                      if (index + 5 >= _resultArticles.length) {
-                        _pageNumber++;
-                        _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
-                        setState(() {
-                          _resultArticles.addAll(snapshot.data);
-                        });
-                      }
-                      return _articleWidget(_resultArticles[index]);
-                    },
+                  child: RefreshIndicator(
+                    onRefresh: _moreLoad,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _resultArticles.length,
+                      itemBuilder: (context, index) {
+                        return _articleWidget(_resultArticles[index]);
+                      },
+                    ),
                   ),
                 ),
               ];
@@ -260,10 +256,6 @@ class _FeedPageState extends State<FeedPage> {
             children: children,
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _moreLoad,
-        child: const Text('more'),
       ),
     );
   }
