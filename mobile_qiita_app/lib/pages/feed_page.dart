@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/services/article.dart';
@@ -19,7 +20,7 @@ class _FeedPageState extends State<FeedPage> {
     return ListTile(
       onTap: () {
         print(article.title);
-        // ・記事項目タップで13-Qiita Article Pageへ遷移する
+        // TODO: 記事項目タップで13-Qiita Article Pageへ遷移する
       },
       leading: CircleAvatar(
         radius: 25,
@@ -90,8 +91,8 @@ class _FeedPageState extends State<FeedPage> {
                   ),
                 ),
                 Container(
-                  width: 380.0,
                   height: 40.0,
+                  margin: const EdgeInsets.symmetric(horizontal: 20.0),
                   padding: const EdgeInsets.only(left: 10.0),
                   decoration: BoxDecoration(
                     color: const Color(0xEFEFF0FF),
@@ -102,7 +103,7 @@ class _FeedPageState extends State<FeedPage> {
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       icon: const Icon(Icons.search),
-                      hintText: 'search',
+                      hintText: 'Search',
                       hintStyle: TextStyle(
                         color: const Color(0xFF828282),
                         fontSize: 18.0,
@@ -110,7 +111,7 @@ class _FeedPageState extends State<FeedPage> {
                     ),
                     onChanged: (e) {
                       print(e);
-                      // ・Search Barに任意のテキストを入力すると記事の検索ができる
+                      // TODO: Search Barに任意のテキストを入力すると記事の検索ができる
                     },
                   ),
                 ),
