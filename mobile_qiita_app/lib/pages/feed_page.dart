@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/services/article.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -17,6 +18,11 @@ class _FeedPageState extends State<FeedPage> {
 
   // 取得した記事の内容を整理して表示
   Widget _articleWidget(Article article) {
+    String userIconUrl = article.user.iconUrl;
+    if (userIconUrl == '') {
+      userIconUrl = 'https://secure.gravatar.com/avatar/931b4bb04a18ab8874b2114493d0ea8e';
+    }
+
     return ListTile(
       onTap: () {
         print(article.title);
@@ -24,7 +30,7 @@ class _FeedPageState extends State<FeedPage> {
       },
       leading: CircleAvatar(
         radius: 25,
-        backgroundImage: NetworkImage(article.user.iconUrl),
+        backgroundImage: CachedNetworkImageProvider(article.user.iconUrl),
       ),
       title: Text(
         article.title,
