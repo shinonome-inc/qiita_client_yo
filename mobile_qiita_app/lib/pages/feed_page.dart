@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/services/article.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:intl/intl.dart';
+import 'package:mobile_qiita_app/pages/qiita_article_page.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -30,8 +31,7 @@ class _FeedPageState extends State<FeedPage> {
 
     return ListTile(
       onTap: () {
-        print(article.title);
-        // TODO: 記事項目タップで13-Qiita Article Pageへ遷移する
+        _showArticle(article);
       },
       leading: CircleAvatar(
         radius: 25,
@@ -55,6 +55,26 @@ class _FeedPageState extends State<FeedPage> {
         child: Text(
           '${article.user.id} 投稿日: $postedDate LGTM: ${article.likes_count}',
         ),
+      ),
+    );
+  }
+
+  // 記事項目タップで13-Qiita Article Pageへ遷移する
+  void _showArticle(Article article) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) => DraggableScrollableSheet(
+        expand: false,
+        maxChildSize: 0.95,
+        minChildSize: 0.5,
+        initialChildSize: 0.95,
+        builder: (context, scrollController) {
+          return QiitaArticlePage(article: article);
+        },
       ),
     );
   }
@@ -138,7 +158,6 @@ class _FeedPageState extends State<FeedPage> {
           MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
-              print('snapshot.hasData');
               children = <Widget> [
                 Flexible(
                   child: ListView.builder(
@@ -152,13 +171,12 @@ class _FeedPageState extends State<FeedPage> {
               ];
             }
             else if (snapshot.hasError) {
-              print('snapshot.hasError');
               children = <Widget> [
                 ErrorView.errorViewWidget(_reload),
               ];
             }
-          } else {
-            print('loading...');
+          }
+          else {
             mainAxisAlignment = MainAxisAlignment.center;
             children = <Widget> [
               Center(
