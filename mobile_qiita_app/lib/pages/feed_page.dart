@@ -15,6 +15,7 @@ class _FeedPageState extends State<FeedPage> {
 
   late Future<List<Article>> _futureArticles;
   late List<Article> _resultArticles;
+  final ScrollController _scrollController = ScrollController();
   int _pageNumber = 1;
   String _searchWord = '';
 
@@ -101,7 +102,11 @@ class _FeedPageState extends State<FeedPage> {
 
   // 記事をさらに読み込む
   Future<void> _moreLoad() async {
+    Future<List<Article>> _futureNextArticles;
+
     _pageNumber++;
+    _futureNextArticles = Client.fetchArticle(_pageNumber, _searchWord);
+
     for (var i = 0; i < _pageNumber; i++) {
       setState(() {
         _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
@@ -146,6 +151,18 @@ class _FeedPageState extends State<FeedPage> {
   void initState() {
     super.initState();
     _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent) {
+        print('下端');
+        _moreLoad();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -224,6 +241,7 @@ class _FeedPageState extends State<FeedPage> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: _resultArticles.length,
+                      controller: _scrollController,
                       itemBuilder: (context, index) {
                         return _articleWidget(_resultArticles[index]);
                       },
