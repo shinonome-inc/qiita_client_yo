@@ -13,10 +13,11 @@ class QiitaArticlePage extends StatefulWidget {
 }
 
 class _QiitaArticlePageState extends State<QiitaArticlePage> {
-  double _webViewHeight = 1;
+  double _webViewHeight = 0;
   late WebViewController _webViewController;
 
-  Future<void> _onPageFinished(BuildContext context, String url) async {
+  // WebViewの高さを求めて_webViewHeightに代入
+  Future<void> _calculateWebViewHeight() async {
     double newHeight = double.parse(
       await _webViewController
           .evaluateJavascript("document.documentElement.scrollHeight;"),
@@ -66,7 +67,7 @@ class _QiitaArticlePageState extends State<QiitaArticlePage> {
                 child: WebView(
                   initialUrl: widget.article.url,
                   javascriptMode: JavascriptMode.unrestricted,
-                  onPageFinished: (String url) => _onPageFinished(context, url),
+                  onPageFinished: (String url) => _calculateWebViewHeight(),
                   onWebViewCreated: (controller) async {
                     _webViewController = controller;
                   },
