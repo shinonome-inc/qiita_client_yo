@@ -18,6 +18,7 @@ class _FeedPageState extends State<FeedPage> {
   final ScrollController _scrollController = ScrollController();
   int _pageNumber = 1;
   String _searchWord = '';
+  bool _isLoadingNextArticles = false;
 
   // 取得した記事の内容を整理して表示
   Widget _articleWidget(Article article) {
@@ -46,6 +47,23 @@ class _FeedPageState extends State<FeedPage> {
         ),
         child: Text(
           '${article.user.id} 投稿日: ${article.created_at.substring(0, 10)} LGTM: ${article.likes_count}',
+        ),
+      ),
+    );
+  }
+
+  // 記事一覧をListで表示
+  Widget _articleListView() {
+    return Flexible(
+      child: RefreshIndicator(
+        onRefresh: _moreLoad,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: _resultArticles.length,
+          controller: _scrollController,
+          itemBuilder: (context, index) {
+            return _articleWidget(_resultArticles[index]);
+          },
         ),
       ),
     );
@@ -102,16 +120,10 @@ class _FeedPageState extends State<FeedPage> {
 
   // 記事をさらに読み込む
   Future<void> _moreLoad() async {
-    Future<List<Article>> _futureNextArticles;
-
     _pageNumber++;
-    _futureNextArticles = Client.fetchArticle(_pageNumber, _searchWord);
-
-    for (var i = 0; i < _pageNumber; i++) {
-      setState(() {
-        _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
-      });
-    }
+    setState(() {
+      _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
+    });
   }
 
   // Search Barに任意のテキストを入力すると記事の検索ができる
@@ -153,7 +165,6 @@ class _FeedPageState extends State<FeedPage> {
     _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent) {
-        print('下端');
         _moreLoad();
       }
     });
@@ -221,59 +232,64 @@ class _FeedPageState extends State<FeedPage> {
           ),
         ),
       ),
-      body: FutureBuilder(
-        future: _futureArticles,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          List<Widget> children = [];
-          MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasData && snapshot.data.length != 0) {
-              if (_pageNumber == 1) {
-                _resultArticles = snapshot.data;
+      body: Stack(
+        children: [
+          FutureBuilder(
+            future: _futureArticles,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              List<Widget> children = [];
+              MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
+
+              if (snapshot.hasError) {
+                children = [
+                  ErrorView.errorViewWidget(_reload),
+                ];
+              }
+              else if (_pageNumber != 1) {
+                children = [
+                  _articleListView(),
+                ];
+              }
+
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData && snapshot.data.length != 0) {
+                  if (_pageNumber == 1) {
+                    _resultArticles = snapshot.data;
+                    children = [
+                      _articleListView(),
+                    ];
+                  }
+                  else {
+                    _resultArticles.addAll(snapshot.data);
+                  }
+                }
+                else if (snapshot.hasData) {
+                  children = <Widget> [
+                    _emptySearchResultView(),
+                  ];
+                }
+                else if (snapshot.hasError) {
+                  children = <Widget> [
+                    ErrorView.errorViewWidget(_reload),
+                  ];
+                }
               }
               else {
-                _resultArticles.addAll(snapshot.data);
-              }
-              children = <Widget> [
-                Flexible(
-                  child: RefreshIndicator(
-                    onRefresh: _moreLoad,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _resultArticles.length,
-                      controller: _scrollController,
-                      itemBuilder: (context, index) {
-                        return _articleWidget(_resultArticles[index]);
-                      },
-                    ),
+                mainAxisAlignment = MainAxisAlignment.center;
+                children.add(
+                  Center(
+                    child: CircularProgressIndicator(),
                   ),
-                ),
-              ];
-            }
-            else if (snapshot.hasData) {
-              children = <Widget> [
-                _emptySearchResultView(),
-              ];
-            }
-            else if (snapshot.hasError) {
-              children = <Widget> [
-                ErrorView.errorViewWidget(_reload),
-              ];
-            }
-          }
-          else {
-            mainAxisAlignment = MainAxisAlignment.center;
-            children = <Widget> [
-              Center(
-                child: CircularProgressIndicator(),
-              ),
-            ];
-          }
-          return Column(
-            mainAxisAlignment: mainAxisAlignment,
-            children: children,
-          );
-        },
+                );
+              }
+
+              return Column(
+                mainAxisAlignment: mainAxisAlignment,
+                children: children,
+              );
+            },
+          ),
+        ],
       ),
     );
   }
