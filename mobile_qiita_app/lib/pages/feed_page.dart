@@ -15,7 +15,6 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
-
   late Future<List<Article>> _futureArticles;
   String _searchWord = '';
 
@@ -27,7 +26,8 @@ class _FeedPageState extends State<FeedPage> {
 
     String userIconUrl = article.user.iconUrl;
     if (userIconUrl == '') {
-      userIconUrl = 'https://secure.gravatar.com/avatar/931b4bb04a18ab8874b2114493d0ea8e';
+      userIconUrl =
+          'https://secure.gravatar.com/avatar/931b4bb04a18ab8874b2114493d0ea8e';
     }
 
     return ListTile(
@@ -184,10 +184,9 @@ class _FeedPageState extends State<FeedPage> {
         future: _futureArticles,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           List<Widget> children = [];
-          MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData && snapshot.data.length != 0) {
-              children = <Widget> [
+              children = <Widget>[
                 Flexible(
                   child: ListView.builder(
                     shrinkWrap: true,
@@ -198,29 +197,27 @@ class _FeedPageState extends State<FeedPage> {
                   ),
                 ),
               ];
-            }
-            else if (snapshot.hasData) {
+            } else if (snapshot.hasData) {
               print('snapshot.data.length = ${snapshot.data.length}');
-              children = <Widget> [
+              children = <Widget>[
                 _emptySearchResultView(),
               ];
-            }
-            else if (snapshot.hasError) {
-              children = <Widget> [
+            } else if (snapshot.hasError) {
+              children = <Widget>[
                 ErrorView.errorViewWidget(_reload),
               ];
             }
-          }
-          else {
-            mainAxisAlignment = MainAxisAlignment.center;
-            children = <Widget> [
+          } else {
+            children = <Widget>[
               Center(
                 child: CircularProgressIndicator(),
               ),
             ];
           }
           return Column(
-            mainAxisAlignment: mainAxisAlignment,
+            mainAxisAlignment: snapshot.connectionState == ConnectionState.done
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.center,
             children: children,
           );
         },
