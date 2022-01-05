@@ -1,3 +1,5 @@
+// TODO: 関数_articleWidgetの引数indexは削除
+
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/services/article.dart';
@@ -12,16 +14,14 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
-
   late Future<List<Article>> _futureArticles;
   late List<Article> _resultArticles;
   final ScrollController _scrollController = ScrollController();
   int _pageNumber = 1;
   String _searchWord = '';
-  bool _isLoadingNextArticles = false;
 
   // 取得した記事の内容を整理して表示
-  Widget _articleWidget(Article article) {
+  Widget _articleWidget(Article article, int index) {
     return ListTile(
       onTap: () {
         _showArticle(article);
@@ -31,7 +31,7 @@ class _FeedPageState extends State<FeedPage> {
         backgroundImage: NetworkImage(article.user.iconUrl),
       ),
       title: Text(
-        article.title,
+        '$index: ${article.title}',
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
       ),
@@ -62,7 +62,7 @@ class _FeedPageState extends State<FeedPage> {
           itemCount: _resultArticles.length,
           controller: _scrollController,
           itemBuilder: (context, index) {
-            return _articleWidget(_resultArticles[index]);
+            return _articleWidget(_resultArticles[index], index);
           },
         ),
       ),
@@ -85,7 +85,8 @@ class _FeedPageState extends State<FeedPage> {
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(25.0)),
                 color: const Color(0xF7F7F7FF),
               ),
               height: 59.0,
@@ -164,7 +165,8 @@ class _FeedPageState extends State<FeedPage> {
     super.initState();
     _futureArticles = Client.fetchArticle(_pageNumber, _searchWord);
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent) {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent) {
         _moreLoad();
       }
     });
@@ -224,7 +226,7 @@ class _FeedPageState extends State<FeedPage> {
                         fontSize: 18.0,
                       ),
                     ),
-                    onChanged: _searchArticles,
+                    onSubmitted: _searchArticles,
                   ),
                 ),
               ],
@@ -232,64 +234,67 @@ class _FeedPageState extends State<FeedPage> {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          FutureBuilder(
-            future: _futureArticles,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              List<Widget> children = [];
-              MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
+      body: FutureBuilder(
+        future: _futureArticles,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          bool _isNetworkError = false;
+          List<Widget> children = [];
+          MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
 
-              if (snapshot.hasError) {
-                children = [
-                  ErrorView.errorViewWidget(_reload),
+          if (snapshot.hasError) {
+            _isNetworkError = true;
+            children = [
+              ErrorView.errorViewWidget(_reload),
+            ];
+          } else if (_pageNumber != 1) {
+            children = [
+              _articleListView(),
+            ];
+          }
+
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              _isNetworkError = false;
+              if (snapshot.data.length == 0) {
+                children = <Widget>[
+                  _emptySearchResultView(),
                 ];
-              }
-              else if (_pageNumber != 1) {
+              } else if (_pageNumber == 1) {
+                _resultArticles = snapshot.data;
                 children = [
                   _articleListView(),
                 ];
+              } else {
+                _resultArticles.addAll(snapshot.data);
               }
-
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasData && snapshot.data.length != 0) {
-                  if (_pageNumber == 1) {
-                    _resultArticles = snapshot.data;
-                    children = [
-                      _articleListView(),
-                    ];
-                  }
-                  else {
-                    _resultArticles.addAll(snapshot.data);
-                  }
-                }
-                else if (snapshot.hasData) {
-                  children = <Widget> [
-                    _emptySearchResultView(),
-                  ];
-                }
-                else if (snapshot.hasError) {
-                  children = <Widget> [
-                    ErrorView.errorViewWidget(_reload),
-                  ];
-                }
-              }
-              else {
-                mainAxisAlignment = MainAxisAlignment.center;
-                children.add(
-                  Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-
-              return Column(
-                mainAxisAlignment: mainAxisAlignment,
-                children: children,
+            } else if (snapshot.hasError) {
+              _isNetworkError = true;
+              children = <Widget>[
+                ErrorView.errorViewWidget(_reload),
+              ];
+            }
+          } else {
+            mainAxisAlignment = MainAxisAlignment.center;
+            if (_isNetworkError) {
+              children = <Widget>[
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ];
+            } else {
+              children.add(
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
               );
-            },
-          ),
-        ],
+            }
+          }
+
+          return Column(
+            mainAxisAlignment: mainAxisAlignment,
+            children: children,
+          );
+        },
       ),
     );
   }
