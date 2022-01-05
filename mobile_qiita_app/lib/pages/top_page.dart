@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
+import 'package:mobile_qiita_app/constants.dart';
 
 class TopPage extends StatefulWidget {
   const TopPage({Key? key}) : super(key: key);
@@ -38,11 +39,7 @@ class _TopPageState extends State<TopPage> {
                 child: Center(
                   child: const Text(
                     'Qiita Auth',
-                    style: TextStyle(
-                      fontSize: 19.0,
-                      fontFamily: 'Pacifico',
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Constants.headerTextStyle,
                   ),
                 ),
               ),
@@ -100,7 +97,7 @@ class _TopPageState extends State<TopPage> {
                               'Qiita Feed App',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontFamily: 'Pacifico',
+                                fontFamily: Constants.pacifico,
                                 fontSize: 36.0,
                               ),
                             ),

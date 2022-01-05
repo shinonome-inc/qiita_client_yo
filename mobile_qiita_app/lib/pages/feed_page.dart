@@ -186,11 +186,7 @@ class _FeedPageState extends State<FeedPage> {
                   alignment: Alignment.center,
                   child: const Text(
                     'Feed',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: 'Pacifico',
-                      fontSize: 22.0,
-                    ),
+                    style: Constants.headerTextStyle,
                   ),
                 ),
                 Container(
