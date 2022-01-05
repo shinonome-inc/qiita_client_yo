@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:intl/intl.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/services/article.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/pages/qiita_article_page.dart';
+import 'package:mobile_qiita_app/constants.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -15,18 +15,17 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
-
   late Future<List<Article>> _futureArticles;
+  String _searchWord = '';
 
   // 取得した記事の内容を整理して表示
   Widget _articleWidget(Article article) {
-    final postedDateFormat = DateFormat('yyyy-MM-dd');
     DateTime postedTime = DateTime.parse(article.created_at);
-    String postedDate = postedDateFormat.format(postedTime);
+    String postedDate = Constants.postedDateFormat.format(postedTime);
 
     String userIconUrl = article.user.iconUrl;
     if (userIconUrl == '') {
-      userIconUrl = 'https://secure.gravatar.com/avatar/931b4bb04a18ab8874b2114493d0ea8e';
+      userIconUrl = Constants.defaultUserIconUrl;
     }
 
     return ListTile(
@@ -79,17 +78,48 @@ class _FeedPageState extends State<FeedPage> {
     );
   }
 
+  // 検索結果が0件のとき表示
+  Widget _emptySearchResultView() {
+    return Expanded(
+      child: Container(
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              '検索にマッチする記事はありませんでした',
+              style: TextStyle(fontSize: 15.0),
+            ),
+            const SizedBox(height: 20.0),
+            const Text(
+              '検索条件を変えるなどして再度検索をしてください',
+              style: TextStyle(color: const Color(0xFF828282)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Search Barに任意のテキストを入力すると記事の検索ができる
+  void _searchArticles(String inputText) {
+    _searchWord = inputText;
+    setState(() {
+      _futureArticles = Client.fetchArticle(_searchWord);
+    });
+  }
+
   // 再読み込みする
   void _reload() {
     setState(() {
-      _futureArticles = Client.fetchArticle();
+      _futureArticles = Client.fetchArticle(_searchWord);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _futureArticles = Client.fetchArticle();
+    _futureArticles = Client.fetchArticle(_searchWord);
   }
 
   @override
@@ -140,10 +170,7 @@ class _FeedPageState extends State<FeedPage> {
                         fontSize: 18.0,
                       ),
                     ),
-                    onChanged: (e) {
-                      print(e);
-                      // TODO: Search Barに任意のテキストを入力すると記事の検索ができる
-                    },
+                    onSubmitted: _searchArticles,
                   ),
                 ),
               ],
@@ -155,10 +182,9 @@ class _FeedPageState extends State<FeedPage> {
         future: _futureArticles,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           List<Widget> children = [];
-          MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
           if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasData) {
-              children = <Widget> [
+            if (snapshot.hasData && snapshot.data.length != 0) {
+              children = <Widget>[
                 Flexible(
                   child: ListView.builder(
                     shrinkWrap: true,
@@ -169,23 +195,27 @@ class _FeedPageState extends State<FeedPage> {
                   ),
                 ),
               ];
-            }
-            else if (snapshot.hasError) {
-              children = <Widget> [
+            } else if (snapshot.hasData) {
+              print('snapshot.data.length = ${snapshot.data.length}');
+              children = <Widget>[
+                _emptySearchResultView(),
+              ];
+            } else if (snapshot.hasError) {
+              children = <Widget>[
                 ErrorView.errorViewWidget(_reload),
               ];
             }
-          }
-          else {
-            mainAxisAlignment = MainAxisAlignment.center;
-            children = <Widget> [
+          } else {
+            children = <Widget>[
               Center(
                 child: CircularProgressIndicator(),
               ),
             ];
           }
           return Column(
-            mainAxisAlignment: mainAxisAlignment,
+            mainAxisAlignment: snapshot.connectionState == ConnectionState.done
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.center,
             children: children,
           );
         },
