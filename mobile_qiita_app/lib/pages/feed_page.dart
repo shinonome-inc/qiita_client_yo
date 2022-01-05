@@ -1,3 +1,5 @@
+// TODO: 関数_articleWidgetの引数indexは後で削除
+// FIXME: 1回目だけ無限スクロールが上手く動作しないので修正が必要
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -15,11 +17,14 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
+  final ScrollController _scrollController = ScrollController();
   late Future<List<Article>> _futureArticles;
+  late List<Article> _resultArticles;
+  int _currentPageNumber = 1;
   String _searchWord = '';
 
   // 取得した記事の内容を整理して表示
-  Widget _articleWidget(Article article) {
+  Widget _articleWidget(Article article, int index) {
     DateTime postedTime = DateTime.parse(article.created_at);
     String postedDate = Constants.postedDateFormat.format(postedTime);
 
@@ -37,7 +42,7 @@ class _FeedPageState extends State<FeedPage> {
         backgroundImage: CachedNetworkImageProvider(article.user.iconUrl),
       ),
       title: Text(
-        article.title,
+        '$index: ${article.title}',
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
       ),
@@ -53,6 +58,23 @@ class _FeedPageState extends State<FeedPage> {
         ),
         child: Text(
           '${article.user.id} 投稿日: $postedDate LGTM: ${article.likes_count}',
+        ),
+      ),
+    );
+  }
+
+  // 記事一覧をListで表示
+  Widget _articleListView() {
+    return Flexible(
+      child: RefreshIndicator(
+        onRefresh: _reload,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: _resultArticles.length,
+          controller: _scrollController,
+          itemBuilder: (context, index) {
+            return _articleWidget(_resultArticles[index], index);
+          },
         ),
       ),
     );
@@ -78,7 +100,7 @@ class _FeedPageState extends State<FeedPage> {
     );
   }
 
-  // 検索結果が0件のとき表示
+  // 検索結果が0件だった場合に表示
   Widget _emptySearchResultView() {
     return Expanded(
       child: Container(
@@ -105,21 +127,41 @@ class _FeedPageState extends State<FeedPage> {
   void _searchArticles(String inputText) {
     _searchWord = inputText;
     setState(() {
-      _futureArticles = Client.fetchArticle(_searchWord);
+      _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
     });
   }
 
   // 再読み込みする
-  void _reload() {
+  Future<void> _reload() async {
     setState(() {
-      _futureArticles = Client.fetchArticle(_searchWord);
+      _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+    });
+  }
+
+  // 記事を更に読み込む
+  Future<void> _moreLoad() async {
+    _currentPageNumber++;
+    setState(() {
+      _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _futureArticles = Client.fetchArticle(_searchWord);
+    _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent) {
+        _moreLoad();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -181,37 +223,57 @@ class _FeedPageState extends State<FeedPage> {
       body: FutureBuilder(
         future: _futureArticles,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+          bool _isNetworkError = false;
           List<Widget> children = [];
+
+          if (snapshot.hasError) {
+            _isNetworkError = true;
+            children = [
+              ErrorView.errorViewWidget(_reload),
+            ];
+          } else if (_currentPageNumber != 1) {
+            children = [
+              _articleListView(),
+            ];
+          }
+
           if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasData && snapshot.data.length != 0) {
-              children = <Widget>[
-                Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return _articleWidget(snapshot.data[index]);
-                    },
-                  ),
-                ),
-              ];
-            } else if (snapshot.hasData) {
-              print('snapshot.data.length = ${snapshot.data.length}');
-              children = <Widget>[
-                _emptySearchResultView(),
-              ];
+            if (snapshot.hasData) {
+              _isNetworkError = false;
+              if (snapshot.data.length == 0) {
+                children = <Widget>[
+                  _emptySearchResultView(),
+                ];
+              } else if (_currentPageNumber == 1) {
+                _resultArticles = snapshot.data;
+                children = [
+                  _articleListView(),
+                ];
+              } else {
+                _resultArticles.addAll(snapshot.data);
+              }
             } else if (snapshot.hasError) {
+              _isNetworkError = true;
               children = <Widget>[
                 ErrorView.errorViewWidget(_reload),
               ];
             }
           } else {
-            children = <Widget>[
-              Center(
-                child: CircularProgressIndicator(),
-              ),
-            ];
+            if (_isNetworkError) {
+              children = <Widget>[
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ];
+            } else {
+              children.add(
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
           }
+
           return Column(
             mainAxisAlignment: snapshot.connectionState == ConnectionState.done
                 ? MainAxisAlignment.start
