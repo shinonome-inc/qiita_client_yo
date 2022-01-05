@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:intl/intl.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/services/article.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/pages/qiita_article_page.dart';
+import 'package:mobile_qiita_app/constants.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -20,14 +20,12 @@ class _FeedPageState extends State<FeedPage> {
 
   // 取得した記事の内容を整理して表示
   Widget _articleWidget(Article article) {
-    final postedDateFormat = DateFormat('yyyy-MM-dd');
     DateTime postedTime = DateTime.parse(article.created_at);
-    String postedDate = postedDateFormat.format(postedTime);
+    String postedDate = Constants.postedDateFormat.format(postedTime);
 
     String userIconUrl = article.user.iconUrl;
     if (userIconUrl == '') {
-      userIconUrl =
-          'https://secure.gravatar.com/avatar/931b4bb04a18ab8874b2114493d0ea8e';
+      userIconUrl = Constants.defaultUserIconUrl;
     }
 
     return ListTile(
