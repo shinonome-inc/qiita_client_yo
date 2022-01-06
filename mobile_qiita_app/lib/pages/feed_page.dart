@@ -22,14 +22,16 @@ class _FeedPageState extends State<FeedPage> {
   late List<Article> _resultArticles;
   int _currentPageNumber = 1;
   String _searchWord = '';
+  bool _isNetworkError = false;
 
   // 取得した記事の内容を整理して表示
   Widget _articleWidget(Article article, int index) {
     DateTime postedTime = DateTime.parse(article.created_at);
     String postedDate = Constants.postedDateFormat.format(postedTime);
 
+
     String userIconUrl = article.user.iconUrl;
-    if (userIconUrl == '') {
+    if (userIconUrl.isEmpty) {
       userIconUrl = Constants.defaultUserIconUrl;
     }
 
@@ -39,7 +41,7 @@ class _FeedPageState extends State<FeedPage> {
       },
       leading: CircleAvatar(
         radius: 25,
-        backgroundImage: CachedNetworkImageProvider(article.user.iconUrl),
+        backgroundImage: CachedNetworkImageProvider(userIconUrl),
       ),
       title: Text(
         '$index: ${article.title}',
@@ -65,17 +67,15 @@ class _FeedPageState extends State<FeedPage> {
 
   // 記事一覧をListで表示
   Widget _articleListView() {
-    return Flexible(
-      child: RefreshIndicator(
-        onRefresh: _reload,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: _resultArticles.length,
-          controller: _scrollController,
-          itemBuilder: (context, index) {
-            return _articleWidget(_resultArticles[index], index);
-          },
-        ),
+    return RefreshIndicator(
+      onRefresh: _reload,
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: _resultArticles.length,
+        controller: _scrollController,
+        itemBuilder: (context, index) {
+          return _articleWidget(_resultArticles[index], index);
+        },
       ),
     );
   }
@@ -219,62 +219,40 @@ class _FeedPageState extends State<FeedPage> {
       body: FutureBuilder(
         future: _futureArticles,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          bool _isNetworkError = false;
-          List<Widget> children = [];
+          Widget child = Container();
 
           if (snapshot.hasError) {
             _isNetworkError = true;
-            children = [
-              ErrorView.errorViewWidget(_reload),
-            ];
+            child = ErrorView.errorViewWidget(_reload);
           } else if (_currentPageNumber != 1) {
-            children = [
-              _articleListView(),
-            ];
+            child = _articleListView();
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
               _isNetworkError = false;
               if (snapshot.data.length == 0) {
-                children = <Widget>[
-                  _emptySearchResultView(),
-                ];
+                child = _emptySearchResultView();
               } else if (_currentPageNumber == 1) {
                 _resultArticles = snapshot.data;
-                children = [
-                  _articleListView(),
-                ];
+                child = _articleListView();
               } else {
                 _resultArticles.addAll(snapshot.data);
               }
             } else if (snapshot.hasError) {
               _isNetworkError = true;
-              children = <Widget>[
-                ErrorView.errorViewWidget(_reload),
-              ];
+              child = ErrorView.errorViewWidget(_reload);
             }
           } else {
-            if (_isNetworkError) {
-              children = <Widget>[
-                Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ];
-            } else {
-              children.add(
-                Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
+            if (_isNetworkError || _currentPageNumber == 1) {
+              child = CircularProgressIndicator();
             }
           }
 
-          return Column(
-            mainAxisAlignment: snapshot.connectionState == ConnectionState.done
-                ? MainAxisAlignment.start
-                : MainAxisAlignment.center,
-            children: children,
+          return Container(
+            child: Center(
+              child: child,
+            ),
           );
         },
       ),
