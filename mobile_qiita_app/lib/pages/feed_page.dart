@@ -140,7 +140,9 @@ class _FeedPageState extends State<FeedPage> {
 
   // 記事を更に読み込む
   Future<void> _moreLoad() async {
+    print('_moreLoad()');
     _currentPageNumber++;
+    print('_currentPageNumber++\n_currentPageNumber: $_currentPageNumber');
     setState(() {
       _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
     });
@@ -149,10 +151,11 @@ class _FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
+    print('initState()');
     _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent) {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent) {
+        print('bottom edge');
         _moreLoad();
       }
     });
