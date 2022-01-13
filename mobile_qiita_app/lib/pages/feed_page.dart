@@ -1,5 +1,3 @@
-// TODO: 関数_articleWidgetの引数indexは後で削除
-// FIXME: 1回目だけ無限スクロールが上手く動作しないので修正が必要
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -26,7 +24,7 @@ class _FeedPageState extends State<FeedPage> {
   bool _isLoading = false;
 
   // 取得した記事の内容を整理して表示
-  Widget _articleWidget(Article article, int index) {
+  Widget _articleWidget(Article article) {
     DateTime postedTime = DateTime.parse(article.created_at);
     String postedDate = Constants.postedDateFormat.format(postedTime);
 
@@ -45,7 +43,7 @@ class _FeedPageState extends State<FeedPage> {
         backgroundImage: CachedNetworkImageProvider(userIconUrl),
       ),
       title: Text(
-        '$index: ${article.title}',
+        article.title,
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
       ),
@@ -73,7 +71,7 @@ class _FeedPageState extends State<FeedPage> {
       itemCount: _resultArticles.length,
       controller: _scrollController,
       itemBuilder: (context, index) {
-        return _articleWidget(_resultArticles[index], index);
+        return _articleWidget(_resultArticles[index]);
       },
     );
   }
