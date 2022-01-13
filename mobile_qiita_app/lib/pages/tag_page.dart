@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/services/tag.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
+import 'package:mobile_qiita_app/constants.dart';
 
 class TagPage extends StatefulWidget {
   const TagPage({Key? key}) : super(key: key);
@@ -12,10 +14,15 @@ class TagPage extends StatefulWidget {
 }
 
 class _TagPageState extends State<TagPage> {
-  late Future<List<Tag>> _futureTag;
+  late Future<List<Tag>> _futureTags;
 
   // 取得したタグの内容を整理して表示
   Widget _tagWidget(Tag tag) {
+    String tagIconUrl = tag.icon_url;
+    if (tagIconUrl.isEmpty) {
+      tagIconUrl = Constants.defaultUserIconUrl;
+    }
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5.0),
@@ -26,7 +33,7 @@ class _TagPageState extends State<TagPage> {
       ),
       child: ListTile(
         onTap: () {
-          print(tag.id);
+          // TODO: タグをタップして遷移
         },
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -35,7 +42,7 @@ class _TagPageState extends State<TagPage> {
             Container(
               height: 50.0,
               width: 50.0,
-              child: tag.icon_url == '' ? Container(color: Colors.transparent) : Image.network(tag.icon_url),
+              child: CachedNetworkImage(imageUrl: tagIconUrl),
             ),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -52,12 +59,14 @@ class _TagPageState extends State<TagPage> {
               '記事件数: ${tag.items_count}',
               style: TextStyle(
                 color: const Color(0xFF828282),
+                fontSize: 13.5,
               ),
             ),
             Text(
               'フォロワー数: ${tag.followers_count}',
               style: TextStyle(
                 color: const Color(0xFF828282),
+                fontSize: 13.5,
               ),
             ),
           ],
@@ -69,14 +78,14 @@ class _TagPageState extends State<TagPage> {
   // 再読み込みする
   void _reload() {
     setState(() {
-      _futureTag = Client.fetchTag();
+      _futureTags = Client.fetchTag();
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _futureTag = Client.fetchTag();
+    _futureTags = Client.fetchTag();
   }
 
   @override
@@ -88,21 +97,16 @@ class _TagPageState extends State<TagPage> {
         automaticallyImplyLeading: false,
         title: const Text(
           'Tag',
-          style: TextStyle(
-            color: Colors.black,
-            fontFamily: 'Pacifico',
-            fontSize: 22.0,
-          ),
+          style: Constants.headerTextStyle,
         ),
       ),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.only(left: 15.0, top: 15.0, right: 15.0),
           child: FutureBuilder(
-            future: _futureTag,
+            future: _futureTags,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               List<Widget> children = [];
-              MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasData) {
                   children = [
@@ -127,7 +131,6 @@ class _TagPageState extends State<TagPage> {
                 }
               }
               else {
-                mainAxisAlignment = MainAxisAlignment.center;
                 children = [
                   Center(
                     child: CircularProgressIndicator(),
@@ -135,7 +138,9 @@ class _TagPageState extends State<TagPage> {
                 ];
               }
               return Column(
-                mainAxisAlignment: mainAxisAlignment,
+                mainAxisAlignment: snapshot.connectionState == ConnectionState.done
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.center,
                 children: children,
               );
             },

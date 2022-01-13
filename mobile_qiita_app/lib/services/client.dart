@@ -21,7 +21,7 @@ class Client {
 
   // QiitaAPIでタグを取得
   static Future<List<Tag>> fetchTag() async {
-    var url = 'https://qiita.com/api/v2/tags';
+    var url = 'https://qiita.com/api/v2/tags?sort=count';
     var response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = json.decode(response.body);
