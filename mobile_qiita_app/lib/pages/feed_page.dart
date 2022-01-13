@@ -68,16 +68,13 @@ class _FeedPageState extends State<FeedPage> {
 
   // 記事一覧をListで表示
   Widget _articleListView() {
-    return RefreshIndicator(
-      onRefresh: _reload,
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: _resultArticles.length,
-        controller: _scrollController,
-        itemBuilder: (context, index) {
-          return _articleWidget(_resultArticles[index], index);
-        },
-      ),
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: _resultArticles.length,
+      controller: _scrollController,
+      itemBuilder: (context, index) {
+        return _articleWidget(_resultArticles[index], index);
+      },
     );
   }
 
@@ -127,12 +124,16 @@ class _FeedPageState extends State<FeedPage> {
   // Search Barに任意のテキストを入力すると記事の検索ができる
   void _searchArticles(String inputText) {
     _searchWord = inputText;
-    _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+    setState(() {
+      _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+    });
   }
 
   // 再読み込みする
   Future<void> _reload() async {
-    _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+    setState(() {
+      _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+    });
   }
 
   // 記事を更に読み込む
@@ -140,7 +141,9 @@ class _FeedPageState extends State<FeedPage> {
     if (!_isLoading) {
       _isLoading = true;
       _currentPageNumber++;
-      _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+      setState(() {
+        _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+      });
     }
   }
 
