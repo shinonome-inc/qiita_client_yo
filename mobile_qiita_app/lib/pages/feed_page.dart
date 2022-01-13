@@ -230,6 +230,7 @@ class _FeedPageState extends State<FeedPage> {
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
+            _isLoading = false;
             if (snapshot.hasData) {
               _isNetworkError = false;
               if (snapshot.data.length == 0) {
