@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:mobile_qiita_app/services/article.dart';
+import 'package:mobile_qiita_app/constants.dart';
 
 class QiitaArticlePage extends StatefulWidget {
   const QiitaArticlePage({ required this.article, Key? key}) : super(key: key);
@@ -52,11 +53,7 @@ class _QiitaArticlePageState extends State<QiitaArticlePage> {
             child: Center(
               child: const Text(
                 'Article',
-                style: TextStyle(
-                  fontSize: 19.0,
-                  fontFamily: 'Pacifico',
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Constants.headerTextStyle,
               ),
             ),
           ),

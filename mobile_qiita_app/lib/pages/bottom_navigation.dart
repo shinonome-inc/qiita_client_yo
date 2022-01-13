@@ -10,8 +10,9 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
 
-  int _selectIndex = 0;
+  int _selectedIndex = 0;
 
+  // TODO: 各ページを作成するごとに更新
   final _widgetOptions = [
     FeedPage(),
     Center(child: const Text('タグ')),
@@ -19,17 +20,17 @@ class _BottomNavigationState extends State<BottomNavigation> {
     Center(child: const Text('設定')),
   ];
 
-  // タップされたindexの値を_selectIndexに代入
+  // タップされたindexの値を_selectedIndexに代入
   void _onItemTapped(int index) {
     setState(() {
-      _selectIndex = index;
+      _selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _widgetOptions.elementAt(_selectIndex),
+      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -49,7 +50,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             label: '設定',
           ),
         ],
-        currentIndex: _selectIndex,
+        currentIndex: _selectedIndex,
         selectedItemColor: const Color(0xFF74C13A),
         unselectedItemColor: const Color(0xFF828282),
         onTap: _onItemTapped,

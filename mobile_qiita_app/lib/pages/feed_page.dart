@@ -15,16 +15,22 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
+  final ScrollController _scrollController = ScrollController();
   late Future<List<Article>> _futureArticles;
+  late List<Article> _resultArticles;
+  int _currentPageNumber = 1;
   String _searchWord = '';
+  bool _isNetworkError = false;
+  bool _isLoading = false;
 
   // 取得した記事の内容を整理して表示
   Widget _articleWidget(Article article) {
     DateTime postedTime = DateTime.parse(article.created_at);
     String postedDate = Constants.postedDateFormat.format(postedTime);
 
+
     String userIconUrl = article.user.iconUrl;
-    if (userIconUrl == '') {
+    if (userIconUrl.isEmpty) {
       userIconUrl = Constants.defaultUserIconUrl;
     }
 
@@ -34,7 +40,7 @@ class _FeedPageState extends State<FeedPage> {
       },
       leading: CircleAvatar(
         radius: 25,
-        backgroundImage: CachedNetworkImageProvider(article.user.iconUrl),
+        backgroundImage: CachedNetworkImageProvider(userIconUrl),
       ),
       title: Text(
         article.title,
@@ -58,6 +64,18 @@ class _FeedPageState extends State<FeedPage> {
     );
   }
 
+  // 記事一覧をListで表示
+  Widget _articleListView() {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: _resultArticles.length,
+      controller: _scrollController,
+      itemBuilder: (context, index) {
+        return _articleWidget(_resultArticles[index]);
+      },
+    );
+  }
+
   // 記事項目タップで13-Qiita Article Pageへ遷移する
   void _showArticle(Article article) {
     showModalBottomSheet(
@@ -78,7 +96,7 @@ class _FeedPageState extends State<FeedPage> {
     );
   }
 
-  // 検索結果が0件のとき表示
+  // 検索結果が0件だった場合に表示
   Widget _emptySearchResultView() {
     return Expanded(
       child: Container(
@@ -105,21 +123,43 @@ class _FeedPageState extends State<FeedPage> {
   void _searchArticles(String inputText) {
     _searchWord = inputText;
     setState(() {
-      _futureArticles = Client.fetchArticle(_searchWord);
+      _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
     });
   }
 
   // 再読み込みする
-  void _reload() {
+  Future<void> _reload() async {
     setState(() {
-      _futureArticles = Client.fetchArticle(_searchWord);
+      _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
     });
+  }
+
+  // 記事を更に読み込む
+  Future<void> _moreLoad() async {
+    if (!_isLoading) {
+      _isLoading = true;
+      _currentPageNumber++;
+      setState(() {
+        _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    _futureArticles = Client.fetchArticle(_searchWord);
+    _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent) {
+        _moreLoad();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -144,11 +184,7 @@ class _FeedPageState extends State<FeedPage> {
                   alignment: Alignment.center,
                   child: const Text(
                     'Feed',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: 'Pacifico',
-                      fontSize: 22.0,
-                    ),
+                    style: Constants.headerTextStyle,
                   ),
                 ),
                 Container(
@@ -181,42 +217,41 @@ class _FeedPageState extends State<FeedPage> {
       body: FutureBuilder(
         future: _futureArticles,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          List<Widget> children = [];
+          Widget child = Container();
+
+          if (snapshot.hasError) {
+            _isNetworkError = true;
+            child = ErrorView.errorViewWidget(_reload);
+          } else if (_currentPageNumber != 1) {
+            child = _articleListView();
+          }
+
           if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasData && snapshot.data.length != 0) {
-              children = <Widget>[
-                Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return _articleWidget(snapshot.data[index]);
-                    },
-                  ),
-                ),
-              ];
-            } else if (snapshot.hasData) {
-              print('snapshot.data.length = ${snapshot.data.length}');
-              children = <Widget>[
-                _emptySearchResultView(),
-              ];
+            _isLoading = false;
+            if (snapshot.hasData) {
+              _isNetworkError = false;
+              if (snapshot.data.length == 0) {
+                child = _emptySearchResultView();
+              } else if (_currentPageNumber == 1) {
+                _resultArticles = snapshot.data;
+                child = _articleListView();
+              } else {
+                _resultArticles.addAll(snapshot.data);
+              }
             } else if (snapshot.hasError) {
-              children = <Widget>[
-                ErrorView.errorViewWidget(_reload),
-              ];
+              _isNetworkError = true;
+              child = ErrorView.errorViewWidget(_reload);
             }
           } else {
-            children = <Widget>[
-              Center(
-                child: CircularProgressIndicator(),
-              ),
-            ];
+            if (_isNetworkError || _currentPageNumber == 1) {
+              child = CircularProgressIndicator();
+            }
           }
-          return Column(
-            mainAxisAlignment: snapshot.connectionState == ConnectionState.done
-                ? MainAxisAlignment.start
-                : MainAxisAlignment.center,
-            children: children,
+
+          return Container(
+            child: Center(
+              child: child,
+            ),
           );
         },
       ),
