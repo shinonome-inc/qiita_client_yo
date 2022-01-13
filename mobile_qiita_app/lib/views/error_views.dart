@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ErrorView {
-  static Widget errorViewWidget(Function function) {
+  static Widget errorViewWidget(Function onTapReload) {
     return Expanded(
       child: SafeArea(
         child: Container(
@@ -42,7 +42,7 @@ class ErrorView {
               ),
               FlatButton(
                 onPressed: () {
-                  function();
+                  onTapReload();
                 },
                 height: 45.0,
                 shape: RoundedRectangleBorder(

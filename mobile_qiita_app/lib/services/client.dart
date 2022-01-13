@@ -5,14 +5,16 @@ import 'dart:convert';
 
 class Client {
   // QiitaAPIで記事を取得
-  static Future<List<Article>> fetchArticle() async {
-    var url = 'https://qiita.com/api/v2/items';
+  static Future<List<Article>> fetchArticle(int currentPageNumber, String searchWord) async {
+    var url = searchWord.isEmpty
+        ? 'https://qiita.com/api/v2/items?page=$currentPageNumber'
+        : 'https://qiita.com/api/v2/items??page=$currentPageNumber&query=$searchWord';
+
     var response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = json.decode(response.body);
       return jsonResponse.map((json) => Article.fromJson(json)).toList();
-    }
-    else {
+    } else {
       throw Exception('Request failed with status: ${response.statusCode}');
     }
   }
