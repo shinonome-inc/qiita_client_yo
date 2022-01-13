@@ -220,7 +220,6 @@ class _FeedPageState extends State<FeedPage> {
         future: _futureArticles,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           Widget child = Container();
-          _isLoading = false;
 
           if (snapshot.hasError) {
             _isNetworkError = true;
