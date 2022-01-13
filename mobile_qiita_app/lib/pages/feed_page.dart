@@ -23,6 +23,7 @@ class _FeedPageState extends State<FeedPage> {
   int _currentPageNumber = 1;
   String _searchWord = '';
   bool _isNetworkError = false;
+  bool _isLoading = false;
 
   // 取得した記事の内容を整理して表示
   Widget _articleWidget(Article article, int index) {
@@ -126,36 +127,29 @@ class _FeedPageState extends State<FeedPage> {
   // Search Barに任意のテキストを入力すると記事の検索ができる
   void _searchArticles(String inputText) {
     _searchWord = inputText;
-    setState(() {
-      _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
-    });
+    _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
   }
 
   // 再読み込みする
   Future<void> _reload() async {
-    setState(() {
-      _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
-    });
+    _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
   }
 
   // 記事を更に読み込む
   Future<void> _moreLoad() async {
-    print('_moreLoad()');
-    _currentPageNumber++;
-    print('_currentPageNumber++\n_currentPageNumber: $_currentPageNumber');
-    setState(() {
+    if (!_isLoading) {
+      _isLoading = true;
+      _currentPageNumber++;
       _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
-    });
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    print('initState()');
     _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent) {
-        print('bottom edge');
         _moreLoad();
       }
     });
@@ -223,6 +217,7 @@ class _FeedPageState extends State<FeedPage> {
         future: _futureArticles,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           Widget child = Container();
+          _isLoading = false;
 
           if (snapshot.hasError) {
             _isNetworkError = true;

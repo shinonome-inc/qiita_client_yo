@@ -5,7 +5,6 @@ import 'dart:convert';
 class Client {
   // QiitaAPIで記事を取得
   static Future<List<Article>> fetchArticle(int currentPageNumber, String searchWord) async {
-    print('fetchArticle($currentPageNumber, $searchWord)');
     var url = searchWord.isEmpty
         ? 'https://qiita.com/api/v2/items?page=$currentPageNumber'
         : 'https://qiita.com/api/v2/items??page=$currentPageNumber&query=$searchWord';
