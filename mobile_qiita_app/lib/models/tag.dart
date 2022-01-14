@@ -1,22 +1,22 @@
 class Tag {
-  final int followers_count;
-  final String icon_url;
+  final int followersCount;
+  final String iconUrl;
   final String id;
-  final int items_count;
+  final int itemsCount;
 
   Tag({
-    required this.followers_count,
-    required this.icon_url,
+    required this.followersCount,
+    required this.iconUrl,
     required this.id,
-    required this.items_count,
+    required this.itemsCount,
   });
 
   factory Tag.fromJson(Map<String, dynamic> json) {
     return Tag(
-      followers_count: json['followers_count'],
-      icon_url: (json['icon_url'] != null) ? json['icon_url'] : '',
+      followersCount: json['followers_count'],
+      iconUrl: (json['icon_url'] != null) ? json['icon_url'] : '',
       id: json['id'],
-      items_count: json['items_count'],
+      itemsCount: json['items_count'],
     );
   }
 }

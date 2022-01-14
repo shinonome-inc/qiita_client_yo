@@ -19,9 +19,9 @@ class _TagPageState extends State<TagPage> {
 
   // 取得したタグの内容を整理して表示
   Widget _tagWidget(Tag tag) {
-    String tagIconUrl = tag.icon_url;
+    String tagIconUrl = tag.iconUrl;
     if (tagIconUrl.isEmpty) {
-      tagIconUrl = Constants.defaultUserIconUrl;
+      tagIconUrl = Constants.defaultTagIconUrl;
     }
 
     return Container(
@@ -59,7 +59,7 @@ class _TagPageState extends State<TagPage> {
               ),
             ),
             Text(
-              '記事件数: ${tag.items_count}',
+              '記事件数: ${tag.itemsCount}',
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               style: TextStyle(
@@ -68,7 +68,7 @@ class _TagPageState extends State<TagPage> {
               ),
             ),
             Text(
-              'フォロワー数: ${tag.followers_count}',
+              'フォロワー数: ${tag.followersCount}',
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               style: TextStyle(
