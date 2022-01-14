@@ -15,6 +15,7 @@ class TagPage extends StatefulWidget {
 
 class _TagPageState extends State<TagPage> {
   late Future<List<Tag>> _futureTags;
+  late int _tagContainerLength;
 
   // 取得したタグの内容を整理して表示
   Widget _tagWidget(Tag tag) {
@@ -49,6 +50,8 @@ class _TagPageState extends State<TagPage> {
               child: Text(
                 tag.id,
                 textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
                 style: TextStyle(
                   fontSize: 17.0,
                   fontWeight: FontWeight.bold,
@@ -57,16 +60,20 @@ class _TagPageState extends State<TagPage> {
             ),
             Text(
               '記事件数: ${tag.items_count}',
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
               style: TextStyle(
                 color: const Color(0xFF828282),
-                fontSize: 13.5,
+                fontSize: 14.5,
               ),
             ),
             Text(
               'フォロワー数: ${tag.followers_count}',
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
               style: TextStyle(
                 color: const Color(0xFF828282),
-                fontSize: 13.5,
+                fontSize: 14.5,
               ),
             ),
           ],
@@ -90,6 +97,8 @@ class _TagPageState extends State<TagPage> {
 
   @override
   Widget build(BuildContext context) {
+    _tagContainerLength = (MediaQuery.of(context).size.width ~/ 190).toInt();
+    print('_tagContainerLength: $_tagContainerLength');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -102,7 +111,7 @@ class _TagPageState extends State<TagPage> {
       ),
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.only(left: 15.0, top: 15.0, right: 15.0),
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
           child: FutureBuilder(
             future: _futureTags,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -113,7 +122,7 @@ class _TagPageState extends State<TagPage> {
                     Flexible(
                       child: GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
+                          crossAxisCount: _tagContainerLength,
                           mainAxisSpacing: 15.0,
                           crossAxisSpacing: 15.0,
                         ),
@@ -137,11 +146,14 @@ class _TagPageState extends State<TagPage> {
                   ),
                 ];
               }
-              return Column(
-                mainAxisAlignment: snapshot.connectionState == ConnectionState.done
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.center,
-                children: children,
+              return Container(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: Column(
+                  mainAxisAlignment: snapshot.connectionState == ConnectionState.done
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
+                  children: children,
+                ),
               );
             },
           ),
