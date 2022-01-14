@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mobile_qiita_app/services/client.dart';
-import 'package:mobile_qiita_app/services/article.dart';
+import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/pages/qiita_article_page.dart';
 import 'package:mobile_qiita_app/constants.dart';
@@ -25,7 +25,7 @@ class _FeedPageState extends State<FeedPage> {
 
   // 取得した記事の内容を整理して表示
   Widget _articleWidget(Article article) {
-    DateTime postedTime = DateTime.parse(article.created_at);
+    DateTime postedTime = DateTime.parse(article.createdAt);
     String postedDate = Constants.postedDateFormat.format(postedTime);
 
 
@@ -58,7 +58,7 @@ class _FeedPageState extends State<FeedPage> {
           ),
         ),
         child: Text(
-          '${article.user.id} 投稿日: $postedDate LGTM: ${article.likes_count}',
+          '${article.user.id} 投稿日: $postedDate LGTM: ${article.likesCount}',
         ),
       ),
     );

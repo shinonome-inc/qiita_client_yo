@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/pages/feed_page.dart';
+import 'package:mobile_qiita_app/pages/tag_page.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   // TODO: 各ページを作成するごとに更新
   final _widgetOptions = [
     FeedPage(),
-    Center(child: const Text('タグ')),
+    TagPage(),
     Center(child: const Text('マイページ')),
     Center(child: const Text('設定')),
   ];
