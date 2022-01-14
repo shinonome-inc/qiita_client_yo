@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/services/client.dart';
-import 'package:mobile_qiita_app/services/tag.dart';
+import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/constants.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:mobile_qiita_app/services/article.dart';
+import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/constants.dart';
 
 class QiitaArticlePage extends StatefulWidget {

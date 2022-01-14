@@ -1,5 +1,5 @@
-import 'package:mobile_qiita_app/services/article.dart';
-import 'package:mobile_qiita_app/services/tag.dart';
+import 'package:mobile_qiita_app/models/article.dart';
+import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

@@ -1,4 +1,4 @@
-import 'package:mobile_qiita_app/services/user.dart';
+import 'package:mobile_qiita_app/models/user.dart';
 
 class Article {
   final String title;
