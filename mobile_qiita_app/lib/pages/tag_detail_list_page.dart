@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/constants.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
-import 'package:mobile_qiita_app/pages/qiita_article_page.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 
@@ -19,7 +18,6 @@ class TagDetailListPage extends StatefulWidget {
 class _TagDetailListPageState extends State<TagDetailListPage> {
   late Future<List<Article>> _futureArticles;
   String _tagId = '';
-  bool _isNetWorkError = false;
 
   // 取得した記事の内容を整理して表示
   Widget _articleWidget(Article article) {
@@ -49,7 +47,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: const Color(0xEFEFF0FF),
+              color: const Color(0xE2E2E2FF),
               width: 1.0,
             ),
           ),
@@ -64,18 +62,21 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   // 記事一覧をListで表示
   Widget _articleListView(List<Article> articles) {
     return Flexible(
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: articles.length,
-        itemBuilder: (context, index) {
-          return _articleWidget(articles[index]);
-        },
+      child: RefreshIndicator(
+        onRefresh: _reload,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: articles.length,
+          itemBuilder: (context, index) {
+            return _articleWidget(articles[index]);
+          },
+        ),
       ),
     );
   }
 
   // 再読み込みする
-  void _reload() {
+  Future<void> _reload() async {
     setState(() {
       _futureArticles = Client.fetchTagDetail(_tagId);
     });
@@ -97,7 +98,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
           automaticallyImplyLeading: false,
           leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop;
+              Navigator.pop(context);
             },
             icon: Icon(
               Icons.arrow_back_ios,
@@ -106,7 +107,11 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
           ),
           title: Text(
             _tagId,
-            style: Constants.headerTextStyle,
+            style: TextStyle(
+              color: Color(0xFF000000),
+              fontSize: 19.0,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         body: FutureBuilder(
@@ -141,8 +146,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
             return Column(
               mainAxisAlignment: snapshot.connectionState == ConnectionState.done
                   ? MainAxisAlignment.start
-                  : MainAxisAlignment.center
-              ,
+                  : MainAxisAlignment.center,
               children: children,
             );
           },
