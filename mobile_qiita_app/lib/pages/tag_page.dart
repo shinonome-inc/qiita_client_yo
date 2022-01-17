@@ -1,8 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
+import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
+import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/constants.dart';
 
@@ -34,7 +35,7 @@ class _TagPageState extends State<TagPage> {
       ),
       child: ListTile(
         onTap: () {
-          // TODO: タグをタップして遷移
+          _showTagDetail(tag);
         },
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -78,6 +79,16 @@ class _TagPageState extends State<TagPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // タグ項目タップでTagDetailListPageへ遷移
+  void _showTagDetail(Tag tag) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TagDetailListPage(tag: tag),
       ),
     );
   }
