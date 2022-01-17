@@ -107,11 +107,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
           ),
           title: Text(
             _tagId,
-            style: TextStyle(
-              color: Color(0xFF000000),
-              fontSize: 19.0,
-              fontWeight: FontWeight.bold,
-            ),
+            style: Constants.headerTextStyle,
           ),
         ),
         body: FutureBuilder(
