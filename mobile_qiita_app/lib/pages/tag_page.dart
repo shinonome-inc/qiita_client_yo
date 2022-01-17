@@ -14,8 +14,13 @@ class TagPage extends StatefulWidget {
 }
 
 class _TagPageState extends State<TagPage> {
+  final ScrollController _scrollController = ScrollController();
   late Future<List<Tag>> _futureTags;
+  List<Tag> _allTags = [];
   late int _tagContainerLength;
+  int _currentPageNumber = 1;
+  bool _isNetworkError = false;
+  bool _isLoading = false;
 
   // 取得したタグの内容を整理して表示
   Widget _tagWidget(Tag tag) {
@@ -82,23 +87,59 @@ class _TagPageState extends State<TagPage> {
     );
   }
 
-  // 再読み込みする
-  void _reload() {
+  // タグ一覧をGridViewで表示
+  Widget _tagGridView() {
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: _tagContainerLength,
+        mainAxisSpacing: 15.0,
+        crossAxisSpacing: 15.0,
+      ),
+      controller: _scrollController,
+      itemCount: _allTags.length,
+      shrinkWrap: true,
+      itemBuilder: (context, index) => _tagWidget(_allTags[index]),
+    );
+  }
+
+  // 再読み込み
+  Future<void> _reload() async {
     setState(() {
-      _futureTags = Client.fetchTag();
+      _futureTags = Client.fetchTag(_currentPageNumber);
     });
+  }
+
+  // 記事を追加読み込み
+  Future<void> _moreLoad() async {
+    if (!_isLoading) {
+      _isLoading = true;
+      _currentPageNumber++;
+      setState(() {
+        _futureTags = Client.fetchTag(_currentPageNumber);
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    _futureTags = Client.fetchTag();
+    _futureTags = Client.fetchTag(_currentPageNumber);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent) {
+        _moreLoad();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     _tagContainerLength = (MediaQuery.of(context).size.width ~/ 190).toInt();
-    print('_tagContainerLength: $_tagContainerLength');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -115,44 +156,39 @@ class _TagPageState extends State<TagPage> {
           child: FutureBuilder(
             future: _futureTags,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              List<Widget> children = [];
+              Widget child = Container();
+
+              if (snapshot.hasError) {
+                _isNetworkError = true;
+                child = ErrorView.errorViewWidget(_reload);
+              } else if (_currentPageNumber != 1) {
+                child = _tagGridView();
+              }
+
               if (snapshot.connectionState == ConnectionState.done) {
+                _isLoading = false;
                 if (snapshot.hasData) {
-                  children = [
-                    Flexible(
-                      child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: _tagContainerLength,
-                          mainAxisSpacing: 15.0,
-                          crossAxisSpacing: 15.0,
-                        ),
-                        itemCount: snapshot.data.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) => _tagWidget(snapshot.data[index]),
-                      ),
-                    ),
-                  ];
+                  _isNetworkError = false;
+                  if (_currentPageNumber == 1) {
+                    _allTags = snapshot.data;
+                    child = _tagGridView();
+                  } else {
+                    _allTags.addAll(snapshot.data);
+                  }
                 }
                 else if (snapshot.hasError) {
-                  children = [
-                    ErrorView.errorViewWidget(_reload),
-                  ];
+                  child = ErrorView.errorViewWidget(_reload);
                 }
               }
               else {
-                children = [
-                  Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ];
+                if (_isNetworkError || _currentPageNumber == 1) {
+                  child = CircularProgressIndicator();
+                }
               }
+
               return Container(
-                padding: const EdgeInsets.only(top: 15.0),
-                child: Column(
-                  mainAxisAlignment: snapshot.connectionState == ConnectionState.done
-                      ? MainAxisAlignment.start
-                      : MainAxisAlignment.center,
-                  children: children,
+                child: Center(
+                  child: child,
                 ),
               );
             },
