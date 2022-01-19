@@ -6,7 +6,7 @@ import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/pages/qiita_article_page.dart';
 import 'package:mobile_qiita_app/constants.dart';
-import 'package:mobile_qiita_app/pagination_scroll.dart';
+import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);

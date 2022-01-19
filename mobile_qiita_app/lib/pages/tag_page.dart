@@ -6,7 +6,7 @@ import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/constants.dart';
-import 'package:mobile_qiita_app/pagination_scroll.dart';
+import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 
 class TagPage extends StatefulWidget {
   const TagPage({Key? key}) : super(key: key);
