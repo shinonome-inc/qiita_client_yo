@@ -6,6 +6,7 @@ import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/constants.dart';
+import 'package:mobile_qiita_app/pagination_scroll.dart';
 
 class TagPage extends StatefulWidget {
   const TagPage({Key? key}) : super(key: key);
@@ -136,7 +137,7 @@ class _TagPageState extends State<TagPage> {
     super.initState();
     _futureTags = Client.fetchTag(_currentPageNumber);
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent) {
+      if (_scrollController.isBottom) {
         _moreLoad();
       }
     });

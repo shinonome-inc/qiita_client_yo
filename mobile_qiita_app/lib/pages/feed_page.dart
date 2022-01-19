@@ -6,6 +6,7 @@ import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/pages/qiita_article_page.dart';
 import 'package:mobile_qiita_app/constants.dart';
+import 'package:mobile_qiita_app/pagination_scroll.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -27,7 +28,6 @@ class _FeedPageState extends State<FeedPage> {
   Widget _articleWidget(Article article) {
     DateTime postedTime = DateTime.parse(article.createdAt);
     String postedDate = Constants.postedDateFormat.format(postedTime);
-
 
     String userIconUrl = article.user.iconUrl;
     if (userIconUrl.isEmpty) {
@@ -150,7 +150,7 @@ class _FeedPageState extends State<FeedPage> {
     super.initState();
     _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent) {
+      if (_scrollController.isBottom) {
         _moreLoad();
       }
     });
