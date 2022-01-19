@@ -163,7 +163,7 @@ class _TagPageState extends State<TagPage> {
       ),
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          padding: const EdgeInsets.all(15.0),
           child: FutureBuilder(
             future: _futureTags,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
