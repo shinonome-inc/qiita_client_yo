@@ -138,7 +138,7 @@ class _TopPageState extends State<TopPage> {
                             ),
                           ),
                           const SizedBox(
-                            height: 15.0,
+                            height: 16.0,
                           ),
                           FlatButton(
                             height: 44.0,

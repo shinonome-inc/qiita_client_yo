@@ -106,7 +106,7 @@ class _FeedPageState extends State<FeedPage> {
           children: <Widget>[
             const Text(
               '検索にマッチする記事はありませんでした',
-              style: TextStyle(fontSize: 15.0),
+              style: TextStyle(fontSize: 16.0),
             ),
             const SizedBox(height: 20.0),
             const Text(

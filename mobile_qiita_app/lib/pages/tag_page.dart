@@ -94,8 +94,8 @@ class _TagPageState extends State<TagPage> {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: _tagContainerLength,
-        mainAxisSpacing: 15.0,
-        crossAxisSpacing: 15.0,
+        mainAxisSpacing: 16.0,
+        crossAxisSpacing: 16.0,
       ),
       controller: _scrollController,
       itemCount: _allTags.length,
@@ -164,7 +164,7 @@ class _TagPageState extends State<TagPage> {
       ),
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(16.0),
           child: FutureBuilder(
             future: _futureTags,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
