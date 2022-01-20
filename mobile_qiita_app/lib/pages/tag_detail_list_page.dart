@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/constants.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
+import 'package:mobile_qiita_app/pages/qiita_article_page.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 
@@ -31,7 +32,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
 
     return ListTile(
       onTap: () {
-        // TODO: 記事をタップして記事ページを表示
+        _showArticle(article);
       },
       leading: CircleAvatar(
         radius: 25,
@@ -71,6 +72,26 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
             return _articleWidget(articles[index]);
           },
         ),
+      ),
+    );
+  }
+
+  // 記事項目タップで13-Qiita Article Pageへ遷移する
+  void _showArticle(Article article) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) => DraggableScrollableSheet(
+        expand: false,
+        maxChildSize: 0.95,
+        minChildSize: 0.5,
+        initialChildSize: 0.95,
+        builder: (context, scrollController) {
+          return QiitaArticlePage(article: article);
+        },
       ),
     );
   }
