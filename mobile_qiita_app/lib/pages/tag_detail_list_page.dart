@@ -68,7 +68,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
 
   // 記事一覧をListで表示
   Widget _articleListView() {
-    return ListView(
+    return Column(
       children: <Widget>[
         Container(
           color: const Color(0xFFF2F2F2),
