@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/constants.dart';
+import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/pages/qiita_article_page.dart';
@@ -8,7 +9,7 @@ import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 
 class TagDetailListPage extends StatefulWidget {
-  const TagDetailListPage({ required this.tag, Key? key}) : super(key: key);
+  const TagDetailListPage({required this.tag, Key? key}) : super(key: key);
 
   final Tag tag;
 
@@ -17,8 +18,13 @@ class TagDetailListPage extends StatefulWidget {
 }
 
 class _TagDetailListPageState extends State<TagDetailListPage> {
+  final ScrollController _scrollController = ScrollController();
   late Future<List<Article>> _futureArticles;
+  List<Article> _fetchedArticles = [];
+  int _currentPageNumber = 1;
   String _tagId = '';
+  bool _isNetworkError = false;
+  bool _isLoading = false;
 
   // 取得した記事の内容を整理して表示
   Widget _articleWidget(Article article) {
@@ -61,18 +67,28 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   }
 
   // 記事一覧をListで表示
-  Widget _articleListView(List<Article> articles) {
-    return Flexible(
-      child: RefreshIndicator(
-        onRefresh: _reload,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: articles.length,
-          itemBuilder: (context, index) {
-            return _articleWidget(articles[index]);
-          },
+  Widget _articleListView() {
+    return ListView(
+      children: <Widget>[
+        Container(
+          color: const Color(0xFFF2F2F2),
+          alignment: Alignment.centerLeft,
+          child: const Text('投稿記事'),
         ),
-      ),
+        Flexible(
+          child: RefreshIndicator(
+            onRefresh: _reload,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: _fetchedArticles.length,
+              controller: _scrollController,
+              itemBuilder: (context, index) {
+                return _articleWidget(_fetchedArticles[index]);
+              },
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -96,18 +112,40 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
     );
   }
 
-  // 再読み込みする
+  // 記事を再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureArticles = Client.fetchTagDetail(_tagId);
+      _futureArticles = Client.fetchTagDetail(_currentPageNumber, _tagId);
     });
+  }
+
+  // 記事を追加読み込み
+  Future<void> _moreLoad() async {
+    if (!_isLoading) {
+      _isLoading = true;
+      _currentPageNumber++;
+      setState(() {
+        _futureArticles = Client.fetchArticle(_currentPageNumber, _tagId);
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
     _tagId = widget.tag.id;
-    _futureArticles = Client.fetchTagDetail(_tagId);
+    _futureArticles = Client.fetchTagDetail(_currentPageNumber, _tagId);
+    _scrollController.addListener(() {
+      if (_scrollController.isBottom) {
+        _moreLoad();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -134,40 +172,40 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
         body: FutureBuilder(
           future: _futureArticles,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            List<Widget> children = [];
+            Widget child = Container();
+
+            if (snapshot.hasError) {
+              _isNetworkError = true;
+              child = ErrorView.errorViewWidget(_reload);
+            } else if (_currentPageNumber != 1) {
+              child = _articleListView();
+            }
 
             if (snapshot.connectionState == ConnectionState.done) {
+              _isLoading = false;
               if (snapshot.hasData) {
-                children = <Widget> [
-                  Container(
-                    color: const Color(0xFFF2F2F2),
-                    alignment: Alignment.centerLeft,
-                    child: const Text('投稿記事'),
-                  ),
-                  _articleListView(snapshot.data),
-                ];
+                _isNetworkError = false;
+                if (_currentPageNumber == 1) {
+                  _fetchedArticles = snapshot.data;
+                  child = _articleListView();
+                } else {
+                  _fetchedArticles.addAll(snapshot.data);
+                }
+              } else if (snapshot.hasError) {
+                _isNetworkError = true;
+                child = ErrorView.errorViewWidget(_reload);
               }
-              else if (snapshot.hasError) {
-                children = <Widget> [
-                  ErrorView.errorViewWidget(_reload),
-                ];
+            } else {
+              if (_isNetworkError || _currentPageNumber == 1) {
+                child = CircularProgressIndicator();
               }
             }
-            else {
-              children = <Widget> [
-                Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ];
-            }
-            return Column(
-              mainAxisAlignment: snapshot.connectionState == ConnectionState.done
-                  ? MainAxisAlignment.start
-                  : MainAxisAlignment.center,
-              children: children,
+            return Container(
+              child: Center(
+                child: child,
+              ),
             );
           },
-        )
-    );
+        ));
   }
 }
