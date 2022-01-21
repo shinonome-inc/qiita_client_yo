@@ -151,61 +151,62 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: const Color(0xFF468300),
-            ),
-          ),
-          title: Text(
-            _tagId,
-            style: Constants.headerTextStyle,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: const Color(0xFF468300),
           ),
         ),
-        body: FutureBuilder(
-          future: _futureArticles,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            Widget child = Container();
+        title: Text(
+          _tagId,
+          style: Constants.headerTextStyle,
+        ),
+      ),
+      body: FutureBuilder(
+        future: _futureArticles,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          Widget child = Container();
 
-            if (snapshot.hasError) {
+          if (snapshot.hasError) {
+            _isNetworkError = true;
+            child = ErrorView.errorViewWidget(_reload);
+          } else if (_currentPageNumber != 1) {
+            child = _articleListView();
+          }
+
+          if (snapshot.connectionState == ConnectionState.done) {
+            _isLoading = false;
+            if (snapshot.hasData) {
+              _isNetworkError = false;
+              if (_currentPageNumber == 1) {
+                _fetchedArticles = snapshot.data;
+                child = _articleListView();
+              } else {
+                _fetchedArticles.addAll(snapshot.data);
+              }
+            } else if (snapshot.hasError) {
               _isNetworkError = true;
               child = ErrorView.errorViewWidget(_reload);
-            } else if (_currentPageNumber != 1) {
-              child = _articleListView();
             }
-
-            if (snapshot.connectionState == ConnectionState.done) {
-              _isLoading = false;
-              if (snapshot.hasData) {
-                _isNetworkError = false;
-                if (_currentPageNumber == 1) {
-                  _fetchedArticles = snapshot.data;
-                  child = _articleListView();
-                } else {
-                  _fetchedArticles.addAll(snapshot.data);
-                }
-              } else if (snapshot.hasError) {
-                _isNetworkError = true;
-                child = ErrorView.errorViewWidget(_reload);
-              }
-            } else {
-              if (_isNetworkError || _currentPageNumber == 1) {
-                child = CircularProgressIndicator();
-              }
+          } else {
+            if (_isNetworkError || _currentPageNumber == 1) {
+              child = CircularProgressIndicator();
             }
-            return Container(
-              child: Center(
-                child: child,
-              ),
-            );
-          },
-        ));
+          }
+          return Container(
+            child: Center(
+              child: child,
+            ),
+          );
+        },
+      ),
+    );
   }
 }
