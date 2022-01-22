@@ -12,7 +12,7 @@ class Article {
     required this.url,
     required this.createdAt,
     required this.likesCount,
-    required this.user
+    required this.user,
   });
 
   factory Article.fromJson(Map<String, dynamic> json) {
