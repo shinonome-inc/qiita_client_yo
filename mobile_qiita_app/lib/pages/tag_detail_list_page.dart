@@ -71,9 +71,15 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
     return Column(
       children: <Widget>[
         Container(
+          padding: const EdgeInsets.all(8.0),
           color: const Color(0xFFF2F2F2),
           alignment: Alignment.centerLeft,
-          child: const Text('投稿記事'),
+          child: const Text(
+            '投稿記事',
+            style: TextStyle(
+              color: const Color(0xFF828282),
+            ),
+          ),
         ),
         Flexible(
           child: RefreshIndicator(
@@ -155,6 +161,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
         backgroundColor: Colors.white,
         centerTitle: true,
         automaticallyImplyLeading: false,
+        elevation: 1.6,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);

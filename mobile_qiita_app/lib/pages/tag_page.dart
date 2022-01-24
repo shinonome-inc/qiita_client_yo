@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/constants.dart';
+import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/constants.dart';
-import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 
 class TagPage extends StatefulWidget {
   const TagPage({Key? key}) : super(key: key);
@@ -157,6 +157,7 @@ class _TagPageState extends State<TagPage> {
         backgroundColor: Colors.white,
         centerTitle: true,
         automaticallyImplyLeading: false,
+        elevation: 1.6,
         title: const Text(
           'Tag',
           style: Constants.headerTextStyle,
@@ -187,12 +188,10 @@ class _TagPageState extends State<TagPage> {
                   } else {
                     _allTags.addAll(snapshot.data);
                   }
-                }
-                else if (snapshot.hasError) {
+                } else if (snapshot.hasError) {
                   child = ErrorView.errorViewWidget(_reload);
                 }
-              }
-              else {
+              } else {
                 if (_isNetworkError || _currentPageNumber == 1) {
                   child = CircularProgressIndicator();
                 }
