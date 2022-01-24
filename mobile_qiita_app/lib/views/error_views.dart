@@ -47,9 +47,8 @@ class ErrorView {
                 height: 45.0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
-                      Radius.circular(20.0),
-                    )
-                ),
+                  Radius.circular(20.0),
+                )),
                 child: const Text(
                   '再読み込みする',
                   style: TextStyle(
@@ -65,4 +64,3 @@ class ErrorView {
     );
   }
 }
-

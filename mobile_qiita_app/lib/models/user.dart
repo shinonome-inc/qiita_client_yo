@@ -2,7 +2,10 @@ class User {
   final String id;
   final String iconUrl;
 
-  User({ required this.id, required this.iconUrl});
+  User({
+    required this.id,
+    required this.iconUrl,
+  });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
