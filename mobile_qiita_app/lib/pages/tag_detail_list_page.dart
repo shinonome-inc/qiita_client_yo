@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/constants.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
@@ -6,7 +5,7 @@ import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/views/scrollable_modal_bottom_sheet.dart';
+import 'package:mobile_qiita_app/widgets/article_widget.dart';
 
 class TagDetailListPage extends StatefulWidget {
   const TagDetailListPage({required this.tag, Key? key}) : super(key: key);
@@ -25,46 +24,6 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   String _tagId = '';
   bool _isNetworkError = false;
   bool _isLoading = false;
-
-  // 取得した記事の内容を整理して表示
-  Widget _articleWidget(Article article) {
-    DateTime postedTime = DateTime.parse(article.createdAt);
-    String postedDate = Constants.postedDateFormat.format(postedTime);
-
-    String userIconUrl = article.user.iconUrl;
-    if (userIconUrl.isEmpty) {
-      userIconUrl = Constants.defaultUserIconUrl;
-    }
-
-    return ListTile(
-      onTap: () {
-        ScrollableModalBottomSheet.showWebContent(context, _tagId, article.url);
-      },
-      leading: CircleAvatar(
-        radius: 25,
-        backgroundImage: CachedNetworkImageProvider(userIconUrl),
-      ),
-      title: Text(
-        article.title,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 2,
-      ),
-      subtitle: Container(
-        padding: const EdgeInsets.only(bottom: 10),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: const Color(0xE2E2E2FF),
-              width: 1.0,
-            ),
-          ),
-        ),
-        child: Text(
-          '${article.user.id} 投稿日: $postedDate LGTM: ${article.likesCount}',
-        ),
-      ),
-    );
-  }
 
   // 記事一覧をListで表示
   Widget _articleListView() {
@@ -89,7 +48,8 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
               itemCount: _fetchedArticles.length,
               controller: _scrollController,
               itemBuilder: (context, index) {
-                return _articleWidget(_fetchedArticles[index]);
+                return ArticleWidget.articleWidget(
+                    context, _fetchedArticles[index]);
               },
             ),
           ),
