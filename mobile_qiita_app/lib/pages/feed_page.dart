@@ -1,12 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:mobile_qiita_app/services/client.dart';
-import 'package:mobile_qiita_app/models/article.dart';
-import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/pages/qiita_article_page.dart';
 import 'package:mobile_qiita_app/constants.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
+import 'package:mobile_qiita_app/models/article.dart';
+import 'package:mobile_qiita_app/services/client.dart';
+import 'package:mobile_qiita_app/views/error_views.dart';
+import 'package:mobile_qiita_app/views/scrollable_modal_bottom_sheet.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -36,7 +36,8 @@ class _FeedPageState extends State<FeedPage> {
 
     return ListTile(
       onTap: () {
-        _showArticle(article);
+        ScrollableModalBottomSheet.showWebContent(
+            context, 'Article', article.url);
       },
       leading: CircleAvatar(
         radius: 25,
@@ -73,26 +74,6 @@ class _FeedPageState extends State<FeedPage> {
       itemBuilder: (context, index) {
         return _articleWidget(_resultArticles[index]);
       },
-    );
-  }
-
-  // 記事項目タップで13-Qiita Article Pageへ遷移する
-  void _showArticle(Article article) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
-      ),
-      builder: (BuildContext context) => DraggableScrollableSheet(
-        expand: false,
-        maxChildSize: 0.95,
-        minChildSize: 0.5,
-        initialChildSize: 0.95,
-        builder: (context, scrollController) {
-          return QiitaArticlePage(article: article);
-        },
-      ),
     );
   }
 
