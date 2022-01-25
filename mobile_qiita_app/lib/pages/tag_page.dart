@@ -1,12 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/constants.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
-import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
+import 'package:mobile_qiita_app/widgets/tag_widget.dart';
 
 class TagPage extends StatefulWidget {
   const TagPage({Key? key}) : super(key: key);
@@ -24,71 +23,6 @@ class _TagPageState extends State<TagPage> {
   bool _isNetworkError = false;
   bool _isLoading = false;
 
-  // 取得したタグの内容を整理して表示
-  Widget _tagWidget(Tag tag) {
-    String tagIconUrl = tag.iconUrl;
-    if (tagIconUrl.isEmpty) {
-      tagIconUrl = Constants.defaultTagIconUrl;
-    }
-
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5.0),
-        border: Border.all(
-          color: const Color(0xFFE0E0E0),
-          width: 1.5,
-        ),
-      ),
-      child: ListTile(
-        onTap: () {
-          _showTagDetail(tag);
-        },
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              height: 50.0,
-              width: 50.0,
-              child: CachedNetworkImage(imageUrl: tagIconUrl),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Text(
-                tag.id,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: TextStyle(
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Text(
-              '記事件数: ${tag.itemsCount}',
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: TextStyle(
-                color: const Color(0xFF828282),
-                fontSize: 14.5,
-              ),
-            ),
-            Text(
-              'フォロワー数: ${tag.followersCount}',
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: TextStyle(
-                color: const Color(0xFF828282),
-                fontSize: 14.5,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   // タグ一覧をGridViewで表示
   Widget _tagGridView() {
     return RefreshIndicator(
@@ -101,19 +35,10 @@ class _TagPageState extends State<TagPage> {
         controller: _scrollController,
         itemCount: _allTags.length,
         shrinkWrap: true,
-        itemBuilder: (context, index) => _tagWidget(_allTags[index]),
+        itemBuilder: (context, index) =>
+            TagWidget.tagWidget(context, _allTags[index]),
       ),
       onRefresh: _reload,
-    );
-  }
-
-  // タグ項目タップでTagDetailListPageへ遷移
-  void _showTagDetail(Tag tag) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TagDetailListPage(tag: tag),
-      ),
     );
   }
 

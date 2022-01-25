@@ -16,7 +16,7 @@ class TagWidget {
   }
 
   // 取得したタグを基にアイコン、タグ名、記事件数、フォロワー数を表示
-  static Widget tagWidget(Tag tag, BuildContext context) {
+  static Widget tagWidget(BuildContext context, Tag tag) {
     String tagIconUrl =
         tag.iconUrl.isEmpty ? Constants.defaultTagIconUrl : tag.iconUrl;
     return Container(

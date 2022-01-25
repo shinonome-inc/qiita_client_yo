@@ -16,17 +16,6 @@ class TopPage extends StatefulWidget {
 class _TopPageState extends State<TopPage> {
   bool _isLoading = false;
 
-  // 指定された秒数だけ読み込みのCupertinoActivityIndicatorを表示
-  Future<void> _showActivityIndicator(int seconds) async {
-    setState(() {
-      _isLoading = true;
-    });
-    await Future.delayed(Duration(seconds: seconds));
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,13 +128,6 @@ class _TopPageState extends State<TopPage> {
                   ),
                   child: Container(
                     color: Color(0).withOpacity(0),
-                  ),
-                )
-              : Container(),
-          _isLoading
-              ? Center(
-                  child: CupertinoActivityIndicator(
-                    radius: 20.0,
                   ),
                 )
               : Container(),

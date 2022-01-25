@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/pages/feed_page.dart';
 import 'package:mobile_qiita_app/pages/tag_page.dart';
 
@@ -11,24 +11,6 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-
-  int _selectedIndex = 0;
-
-  // TODO: 各ページを作成するごとに更新
-  final _widgetOptions = [
-    FeedPage(),
-    TagPage(),
-    Center(child: const Text('マイページ')),
-    Center(child: const Text('設定')),
-  ];
-
-  // タップされたindexの値を_selectedIndexに代入
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
@@ -65,11 +47,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
             );
           case 2:
             return CupertinoTabView(
-              builder: (context) => CupertinoPageScaffold(child: const Text('MyPage')),
+              builder: (context) =>
+                  CupertinoPageScaffold(child: const Text('MyPage')),
             );
           case 3:
             return CupertinoTabView(
-              builder: (context) => CupertinoPageScaffold(child: const Text('SettingPage')),
+              builder: (context) =>
+                  CupertinoPageScaffold(child: const Text('SettingPage')),
             );
           default:
             return Container();
