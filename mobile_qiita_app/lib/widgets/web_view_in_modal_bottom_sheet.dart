@@ -45,18 +45,19 @@ class _WebViewInModalBottomSheetState extends State<WebViewInModalBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.95,
+      height: MediaQuery.of(context).size.height * 0.96,
       color: Colors.transparent,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(25.0)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24.0),
+              ),
               color: const Color(0xF7F7F7FF),
             ),
-            height: 59.0,
+            height: 56.0,
             child: Center(
               child: Text(
                 widget.headerTitle,

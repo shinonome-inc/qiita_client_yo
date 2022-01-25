@@ -21,10 +21,10 @@ class TagWidget {
         tag.iconUrl.isEmpty ? Constants.defaultTagIconUrl : tag.iconUrl;
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5.0),
+        borderRadius: BorderRadius.circular(8.0),
         border: Border.all(
           color: const Color(0xFFE0E0E0),
-          width: 1.5,
+          width: 1.6,
         ),
       ),
       child: ListTile(
@@ -36,12 +36,12 @@ class TagWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              height: 50.0,
-              width: 50.0,
+              height: 48.0,
+              width: 48.0,
               child: CachedNetworkImage(imageUrl: tagIconUrl),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
                 tag.id,
                 textAlign: TextAlign.center,

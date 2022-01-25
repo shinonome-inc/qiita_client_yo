@@ -79,7 +79,7 @@ class _TagPageState extends State<TagPage> {
 
   @override
   Widget build(BuildContext context) {
-    _tagContainerLength = (MediaQuery.of(context).size.width ~/ 190).toInt();
+    _tagContainerLength = (MediaQuery.of(context).size.width ~/ 192).toInt();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

@@ -31,7 +31,7 @@ class _TopPageState extends State<TopPage> {
             ),
             child: SafeArea(
               child: Container(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -39,7 +39,7 @@ class _TopPageState extends State<TopPage> {
                       child: Column(
                         children: <Widget>[
                           const SizedBox(
-                            height: 130.0,
+                            height: 144.0,
                           ),
                           Container(
                             child: const Text(
@@ -52,7 +52,7 @@ class _TopPageState extends State<TopPage> {
                             ),
                           ),
                           const SizedBox(
-                            height: 10.0,
+                            height: 8.0,
                           ),
                           Container(
                             child: const Text(
@@ -71,11 +71,11 @@ class _TopPageState extends State<TopPage> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           FlatButton(
-                            height: 44.0,
+                            height: 48.0,
                             color: const Color(0xFF468300),
                             shape: RoundedRectangleBorder(
                               borderRadius: const BorderRadius.all(
-                                Radius.circular(25.0),
+                                Radius.circular(24.0),
                               ),
                             ),
                             onPressed: () {
@@ -93,7 +93,7 @@ class _TopPageState extends State<TopPage> {
                             height: 16.0,
                           ),
                           FlatButton(
-                            height: 44.0,
+                            height: 48.0,
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -110,7 +110,7 @@ class _TopPageState extends State<TopPage> {
                             ),
                           ),
                           const SizedBox(
-                            height: 30.0,
+                            height: 32.0,
                           ),
                         ],
                       ),

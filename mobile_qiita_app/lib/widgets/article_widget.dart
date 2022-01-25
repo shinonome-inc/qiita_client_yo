@@ -19,7 +19,7 @@ class ArticleWidget {
             context, 'Article', article.url);
       },
       leading: CircleAvatar(
-        radius: 25,
+        radius: 24,
         backgroundImage: CachedNetworkImageProvider(userIconUrl),
       ),
       title: Text(
@@ -28,7 +28,7 @@ class ArticleWidget {
         maxLines: 2,
       ),
       subtitle: Container(
-        padding: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(

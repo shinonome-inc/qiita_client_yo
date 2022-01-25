@@ -85,13 +85,13 @@ class _FeedPageState extends State<FeedPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(128.0),
+        preferredSize: const Size.fromHeight(120.0),
         child: Container(
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
                 color: const Color(0xEFEFF0FF),
-                width: 1.5,
+                width: 1.6,
               ),
             ),
           ),
@@ -99,7 +99,7 @@ class _FeedPageState extends State<FeedPage> {
             child: Column(
               children: <Widget>[
                 Container(
-                  height: 70.0,
+                  height: 64.0,
                   alignment: Alignment.center,
                   child: const Text(
                     'Feed',
@@ -108,11 +108,11 @@ class _FeedPageState extends State<FeedPage> {
                 ),
                 Container(
                   height: 40.0,
-                  margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                  padding: const EdgeInsets.only(left: 10.0),
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.only(left: 8.0),
                   decoration: BoxDecoration(
                     color: const Color(0xEFEFF0FF),
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: TextField(
                     enabled: true,
