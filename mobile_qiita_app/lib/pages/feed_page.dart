@@ -38,29 +38,6 @@ class _FeedPageState extends State<FeedPage> {
     );
   }
 
-  // 検索結果が0件だった場合に表示
-  Widget _emptySearchResultView() {
-    return Expanded(
-      child: Container(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              '検索にマッチする記事はありませんでした',
-              style: TextStyle(fontSize: 16.0),
-            ),
-            const SizedBox(height: 20.0),
-            const Text(
-              '検索条件を変えるなどして再度検索をしてください',
-              style: TextStyle(color: const Color(0xFF828282)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   // Search Barに任意のテキストを入力すると記事の検索ができる
   void _searchArticles(String inputText) {
     _searchWord = inputText;
@@ -173,7 +150,7 @@ class _FeedPageState extends State<FeedPage> {
             if (snapshot.hasData) {
               _isNetworkError = false;
               if (snapshot.data.length == 0) {
-                child = _emptySearchResultView();
+                child = ErrorView.emptySearchResultView();
               } else if (_currentPageNumber == 1) {
                 _resultArticles = snapshot.data;
                 child = _articleListView();

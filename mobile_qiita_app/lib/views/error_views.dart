@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ErrorView {
+  // ネットワークエラーが生じた場合に表示
   static Widget errorViewWidget(Function onTapReload) {
     return Expanded(
       child: SafeArea(
@@ -59,6 +60,29 @@ class ErrorView {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  // 検索結果が0件だった場合に表示
+  static Widget emptySearchResultView() {
+    return Expanded(
+      child: Container(
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              '検索にマッチする記事はありませんでした',
+              style: TextStyle(fontSize: 16.0),
+            ),
+            const SizedBox(height: 20.0),
+            const Text(
+              '検索条件を変えるなどして再度検索をしてください',
+              style: TextStyle(color: const Color(0xFF828282)),
+            ),
+          ],
         ),
       ),
     );
