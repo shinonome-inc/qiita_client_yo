@@ -67,13 +67,16 @@ class _FeedPageState extends State<FeedPage> {
 
   // 記事一覧をListで表示
   Widget _articleListView() {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: _resultArticles.length,
-      controller: _scrollController,
-      itemBuilder: (context, index) {
-        return _articleWidget(_resultArticles[index]);
-      },
+    return RefreshIndicator(
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: _resultArticles.length,
+        controller: _scrollController,
+        itemBuilder: (context, index) {
+          return _articleWidget(_resultArticles[index]);
+        },
+      ),
+      onRefresh: _reload,
     );
   }
 

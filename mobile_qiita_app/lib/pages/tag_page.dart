@@ -91,16 +91,19 @@ class _TagPageState extends State<TagPage> {
 
   // タグ一覧をGridViewで表示
   Widget _tagGridView() {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: _tagContainerLength,
-        mainAxisSpacing: 16.0,
-        crossAxisSpacing: 16.0,
+    return RefreshIndicator(
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: _tagContainerLength,
+          mainAxisSpacing: 16.0,
+          crossAxisSpacing: 16.0,
+        ),
+        controller: _scrollController,
+        itemCount: _allTags.length,
+        shrinkWrap: true,
+        itemBuilder: (context, index) => _tagWidget(_allTags[index]),
       ),
-      controller: _scrollController,
-      itemCount: _allTags.length,
-      shrinkWrap: true,
-      itemBuilder: (context, index) => _tagWidget(_allTags[index]),
+      onRefresh: _reload,
     );
   }
 
