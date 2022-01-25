@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ErrorView {
   // ネットワークエラーが生じた場合に表示
-  static Widget errorViewWidget(Function onTapReload) {
+  static Widget networkErrorView(Function onTapReload) {
     return Expanded(
       child: SafeArea(
         child: Container(

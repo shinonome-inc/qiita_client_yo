@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/views/web_view_in_modal_bottom_sheet.dart';
+import 'package:mobile_qiita_app/widgets/web_view_in_modal_bottom_sheet.dart';
 
 class ScrollableModalBottomSheet {
   static void showWebContent(

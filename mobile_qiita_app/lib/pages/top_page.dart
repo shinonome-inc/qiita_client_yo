@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/constants.dart';
 import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
-import 'package:mobile_qiita_app/views/scrollable_modal_bottom_sheet.dart';
+import 'package:mobile_qiita_app/widgets/scrollable_modal_bottom_sheet.dart';
 
 class TopPage extends StatefulWidget {
   const TopPage({Key? key}) : super(key: key);

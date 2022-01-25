@@ -17,13 +17,13 @@ class TagPage extends StatefulWidget {
 class _TagPageState extends State<TagPage> {
   final ScrollController _scrollController = ScrollController();
   late Future<List<Tag>> _futureTags;
-  List<Tag> _allTags = [];
+  List<Tag> _fetchedTags = [];
   late int _tagContainerLength;
   int _currentPageNumber = 1;
   bool _isNetworkError = false;
   bool _isLoading = false;
 
-  // タグ一覧をGridViewで表示
+  // 取得したタグ一覧をGridViewで表示
   Widget _tagGridView() {
     return RefreshIndicator(
       child: GridView.builder(
@@ -33,10 +33,10 @@ class _TagPageState extends State<TagPage> {
           crossAxisSpacing: 16.0,
         ),
         controller: _scrollController,
-        itemCount: _allTags.length,
+        itemCount: _fetchedTags.length,
         shrinkWrap: true,
         itemBuilder: (context, index) =>
-            TagWidget.tagWidget(context, _allTags[index]),
+            TagWidget.tagWidget(context, _fetchedTags[index]),
       ),
       onRefresh: _reload,
     );
@@ -49,7 +49,7 @@ class _TagPageState extends State<TagPage> {
     });
   }
 
-  // 記事を追加読み込み
+  // タグを追加読み込み
   Future<void> _moreLoad() async {
     if (!_isLoading) {
       _isLoading = true;
@@ -101,7 +101,7 @@ class _TagPageState extends State<TagPage> {
 
               if (snapshot.hasError) {
                 _isNetworkError = true;
-                child = ErrorView.errorViewWidget(_reload);
+                child = ErrorView.networkErrorView(_reload);
               } else if (_currentPageNumber != 1) {
                 child = _tagGridView();
               }
@@ -111,13 +111,13 @@ class _TagPageState extends State<TagPage> {
                 if (snapshot.hasData) {
                   _isNetworkError = false;
                   if (_currentPageNumber == 1) {
-                    _allTags = snapshot.data;
+                    _fetchedTags = snapshot.data;
                     child = _tagGridView();
                   } else {
-                    _allTags.addAll(snapshot.data);
+                    _fetchedTags.addAll(snapshot.data);
                   }
                 } else if (snapshot.hasError) {
-                  child = ErrorView.errorViewWidget(_reload);
+                  child = ErrorView.networkErrorView(_reload);
                 }
               } else {
                 if (_isNetworkError || _currentPageNumber == 1) {

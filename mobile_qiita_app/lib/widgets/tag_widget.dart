@@ -6,7 +6,7 @@ import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
 
 class TagWidget {
   // タグ項目タップでTagDetailListPageへ遷移
-  static void showTagDetail(BuildContext context, Tag tag) {
+  static void transitionToTagDetailListPage(BuildContext context, Tag tag) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -29,7 +29,7 @@ class TagWidget {
       ),
       child: ListTile(
         onTap: () {
-          showTagDetail(context, tag);
+          transitionToTagDetailListPage(context, tag);
         },
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,

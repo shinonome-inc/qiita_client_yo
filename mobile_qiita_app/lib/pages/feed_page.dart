@@ -17,28 +17,28 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
   final ScrollController _scrollController = ScrollController();
   late Future<List<Article>> _futureArticles;
-  late List<Article> _resultArticles;
+  List<Article> _fetchedArticles = [];
   int _currentPageNumber = 1;
   String _searchWord = '';
   bool _isNetworkError = false;
   bool _isLoading = false;
 
-  // 記事一覧をListで表示
+  // 取得した記事一覧をListViewで表示
   Widget _articleListView() {
     return RefreshIndicator(
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount: _resultArticles.length,
+        itemCount: _fetchedArticles.length,
         controller: _scrollController,
         itemBuilder: (context, index) {
-          return ArticleWidget.articleWidget(context, _resultArticles[index]);
+          return ArticleWidget.articleWidget(context, _fetchedArticles[index]);
         },
       ),
       onRefresh: _reload,
     );
   }
 
-  // Search Barに任意のテキストを入力すると記事の検索ができる
+  // Search Barに任意のテキストを入力して記事を検索
   void _searchArticles(String inputText) {
     _searchWord = inputText;
     setState(() {
@@ -46,14 +46,14 @@ class _FeedPageState extends State<FeedPage> {
     });
   }
 
-  // 再読み込みする
+  // 再読み込み
   Future<void> _reload() async {
     setState(() {
       _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
     });
   }
 
-  // 記事を更に読み込む
+  // 記事を追加読み込み
   Future<void> _moreLoad() async {
     if (!_isLoading) {
       _isLoading = true;
@@ -140,7 +140,7 @@ class _FeedPageState extends State<FeedPage> {
 
           if (snapshot.hasError) {
             _isNetworkError = true;
-            child = ErrorView.errorViewWidget(_reload);
+            child = ErrorView.networkErrorView(_reload);
           } else if (_currentPageNumber != 1) {
             child = _articleListView();
           }
@@ -152,14 +152,14 @@ class _FeedPageState extends State<FeedPage> {
               if (snapshot.data.length == 0) {
                 child = ErrorView.emptySearchResultView();
               } else if (_currentPageNumber == 1) {
-                _resultArticles = snapshot.data;
+                _fetchedArticles = snapshot.data;
                 child = _articleListView();
               } else {
-                _resultArticles.addAll(snapshot.data);
+                _fetchedArticles.addAll(snapshot.data);
               }
             } else if (snapshot.hasError) {
               _isNetworkError = true;
-              child = ErrorView.errorViewWidget(_reload);
+              child = ErrorView.networkErrorView(_reload);
             }
           } else {
             if (_isNetworkError || _currentPageNumber == 1) {

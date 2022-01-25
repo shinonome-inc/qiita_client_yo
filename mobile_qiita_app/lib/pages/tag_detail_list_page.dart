@@ -25,7 +25,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   bool _isNetworkError = false;
   bool _isLoading = false;
 
-  // 記事一覧をListで表示
+  // 取得した記事一覧をListViewで表示
   Widget _articleListView() {
     return Column(
       children: <Widget>[
@@ -58,7 +58,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
     );
   }
 
-  // 記事を再読み込み
+  // 再読み込み
   Future<void> _reload() async {
     setState(() {
       _futureArticles = Client.fetchTagDetail(_currentPageNumber, _tagId);
@@ -123,7 +123,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
 
           if (snapshot.hasError) {
             _isNetworkError = true;
-            child = ErrorView.errorViewWidget(_reload);
+            child = ErrorView.networkErrorView(_reload);
           } else if (_currentPageNumber != 1) {
             child = _articleListView();
           }
@@ -140,7 +140,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
               }
             } else if (snapshot.hasError) {
               _isNetworkError = true;
-              child = ErrorView.errorViewWidget(_reload);
+              child = ErrorView.networkErrorView(_reload);
             }
           } else {
             if (_isNetworkError || _currentPageNumber == 1) {

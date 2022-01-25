@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/constants.dart';
 import 'package:mobile_qiita_app/models/article.dart';
-import 'package:mobile_qiita_app/views/scrollable_modal_bottom_sheet.dart';
+import 'package:mobile_qiita_app/widgets/scrollable_modal_bottom_sheet.dart';
 
 class ArticleWidget {
   // 取得した記事を基にユーザーアイコン、記事タイトル、ユーザー名、投稿日、LGTM数を表示
