@@ -1,19 +1,25 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/constants.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
-class QiitaArticlePage extends StatefulWidget {
-  const QiitaArticlePage({ required this.article, Key? key}) : super(key: key);
+class WebViewInModalBottomSheet extends StatefulWidget {
+  const WebViewInModalBottomSheet({
+    required this.headerTitle,
+    required this.webViewUrl,
+    Key? key,
+  }) : super(key: key);
 
-  final Article article;
+  final String headerTitle;
+  final String webViewUrl;
 
   @override
-  _QiitaArticlePageState createState() => _QiitaArticlePageState();
+  _WebViewInModalBottomSheetState createState() =>
+      _WebViewInModalBottomSheetState();
 }
 
-class _QiitaArticlePageState extends State<QiitaArticlePage> {
+class _WebViewInModalBottomSheetState extends State<WebViewInModalBottomSheet> {
   double _webViewHeight = 0;
   late WebViewController _webViewController;
 
@@ -39,20 +45,22 @@ class _QiitaArticlePageState extends State<QiitaArticlePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.95,
+      height: MediaQuery.of(context).size.height * 0.96,
       color: Colors.transparent,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24.0),
+              ),
               color: const Color(0xF7F7F7FF),
             ),
-            height: 59.0,
+            height: 56.0,
             child: Center(
-              child: const Text(
-                'Article',
+              child: Text(
+                widget.headerTitle,
                 style: Constants.headerTextStyle,
               ),
             ),
@@ -62,7 +70,7 @@ class _QiitaArticlePageState extends State<QiitaArticlePage> {
               child: Container(
                 height: _webViewHeight,
                 child: WebView(
-                  initialUrl: widget.article.url,
+                  initialUrl: widget.webViewUrl,
                   javascriptMode: JavascriptMode.unrestricted,
                   onPageFinished: (String url) => _calculateWebViewHeight(),
                   onWebViewCreated: (controller) async {

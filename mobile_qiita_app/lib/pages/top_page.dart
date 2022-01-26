@@ -1,9 +1,10 @@
 import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
 import 'package:mobile_qiita_app/constants.dart';
+import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
+import 'package:mobile_qiita_app/widgets/scrollable_modal_bottom_sheet.dart';
 
 class TopPage extends StatefulWidget {
   const TopPage({Key? key}) : super(key: key);
@@ -15,59 +16,6 @@ class TopPage extends StatefulWidget {
 class _TopPageState extends State<TopPage> {
   bool _isLoading = false;
 
-  // ModelSheetでログイン画面を表示
-  void _showModelSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
-      ),
-      builder: (BuildContext context) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.95,
-          color: Colors.transparent,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
-                  color: const Color(0xF7F7F7FF),
-                ),
-                height: 55.0,
-                child: Center(
-                  child: const Text(
-                    'Qiita Auth',
-                    style: Constants.headerTextStyle,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  child: WebView(
-                    initialUrl: 'https://qiita.com/login',
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  // 指定された秒数だけ読み込みのCupertinoActivityIndicatorを表示
-  Future<void> _showActivityIndicator(int seconds) async {
-    setState(() {
-      _isLoading = true;
-    });
-    await Future.delayed(Duration(seconds: seconds));
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,13 +24,14 @@ class _TopPageState extends State<TopPage> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: const AssetImage('assets/images/top_page_background.jpg'),
+                image:
+                    const AssetImage('assets/images/top_page_background.jpg'),
                 fit: BoxFit.fill,
               ),
             ),
             child: SafeArea(
               child: Container(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -90,7 +39,7 @@ class _TopPageState extends State<TopPage> {
                       child: Column(
                         children: <Widget>[
                           const SizedBox(
-                            height: 130.0,
+                            height: 144.0,
                           ),
                           Container(
                             child: const Text(
@@ -103,7 +52,7 @@ class _TopPageState extends State<TopPage> {
                             ),
                           ),
                           const SizedBox(
-                            height: 10.0,
+                            height: 8.0,
                           ),
                           Container(
                             child: const Text(
@@ -122,14 +71,17 @@ class _TopPageState extends State<TopPage> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           FlatButton(
-                            height: 44.0,
+                            height: 48.0,
                             color: const Color(0xFF468300),
                             shape: RoundedRectangleBorder(
                               borderRadius: const BorderRadius.all(
-                                Radius.circular(25.0),
+                                Radius.circular(24.0),
                               ),
                             ),
-                            onPressed: _showModelSheet,
+                            onPressed: () {
+                              ScrollableModalBottomSheet.showWebContent(context,
+                                  'Qiita Auth', 'https://qiita.com/login');
+                            },
                             child: const Text(
                               'ログイン',
                               style: TextStyle(
@@ -141,9 +93,14 @@ class _TopPageState extends State<TopPage> {
                             height: 16.0,
                           ),
                           FlatButton(
-                            height: 44.0,
+                            height: 48.0,
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavigation()));
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BottomNavigation(),
+                                ),
+                              );
                             },
                             child: const Text(
                               'ログインせずに利用する',
@@ -153,7 +110,7 @@ class _TopPageState extends State<TopPage> {
                             ),
                           ),
                           const SizedBox(
-                            height: 30.0,
+                            height: 32.0,
                           ),
                         ],
                       ),
@@ -163,20 +120,17 @@ class _TopPageState extends State<TopPage> {
               ),
             ),
           ),
-          _isLoading ? BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: _isLoading ? 3 : 0,
-              sigmaY: _isLoading ? 3 : 0,
-            ),
-            child: Container(
-              color: Color(0).withOpacity(0),
-            ),
-          ) : Container(),
-          _isLoading ? Center(
-            child: CupertinoActivityIndicator(
-              radius: 20.0,
-            ),
-          ) : Container(),
+          _isLoading
+              ? BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: _isLoading ? 3 : 0,
+                    sigmaY: _isLoading ? 3 : 0,
+                  ),
+                  child: Container(
+                    color: Color(0).withOpacity(0),
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
