@@ -34,6 +34,15 @@ class _WebViewInModalBottomSheetState extends State<WebViewInModalBottomSheet> {
     });
   }
 
+  // アクセス許可後に表示されるリダイレクト先のURLからアクセストークンを取得
+  void _clipAccessToken(String redirectUrl) {
+    String accessToken = '';
+    int firstIndex = Constants.accessTokenEndPoint.length + 1;
+    int lastIndex = redirectUrl.length;
+    accessToken = redirectUrl.substring(firstIndex, lastIndex);
+    print('redirect URL: $redirectUrl\naccess token: $accessToken');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -72,7 +81,12 @@ class _WebViewInModalBottomSheetState extends State<WebViewInModalBottomSheet> {
                 child: WebView(
                   initialUrl: widget.webViewUrl,
                   javascriptMode: JavascriptMode.unrestricted,
-                  onPageFinished: (String url) => _calculateWebViewHeight(),
+                  onPageFinished: (String url) {
+                    _calculateWebViewHeight();
+                    if (url.contains(Constants.accessTokenEndPoint)) {
+                      _clipAccessToken(url);
+                    }
+                  },
                   onWebViewCreated: (controller) async {
                     _webViewController = controller;
                   },

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/constants.dart';
 import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
+import 'package:mobile_qiita_app/qiita_auth_key.dart';
 import 'package:mobile_qiita_app/widgets/scrollable_modal_bottom_sheet.dart';
 
 class TopPage extends StatefulWidget {
@@ -15,6 +16,8 @@ class TopPage extends StatefulWidget {
 
 class _TopPageState extends State<TopPage> {
   bool _isLoading = false;
+  late String loginUrl =
+      'https://qiita.com/api/v2/oauth/authorize?client_id=${QiitaAuthKey.clientId}&scope=${Constants.scopeOfQiitaAuthorization}';
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +82,11 @@ class _TopPageState extends State<TopPage> {
                               ),
                             ),
                             onPressed: () {
-                              ScrollableModalBottomSheet.showWebContent(context,
-                                  'Qiita Auth', 'https://qiita.com/login');
+                              ScrollableModalBottomSheet.showWebContent(
+                                context,
+                                'Qiita Auth',
+                                loginUrl,
+                              );
                             },
                             child: const Text(
                               'ログイン',
