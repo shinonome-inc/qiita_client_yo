@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/models/article.dart';
-import 'package:mobile_qiita_app/widgets/scrollable_modal_bottom_sheet.dart';
 
 class ArticleWidget {
   // 取得した記事を基にユーザーアイコン、記事タイトル、ユーザー名、投稿日、LGTM数を表示
@@ -15,8 +15,7 @@ class ArticleWidget {
 
     return ListTile(
       onTap: () {
-        ScrollableModalBottomSheet.showWebContent(
-            context, 'Article', article.url);
+        Methods.showWebContent(context, 'article', article.url);
       },
       leading: CircleAvatar(
         radius: 24,

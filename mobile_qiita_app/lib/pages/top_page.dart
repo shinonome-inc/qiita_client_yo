@@ -4,8 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
+import 'package:mobile_qiita_app/common/variables.dart';
+import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
 import 'package:mobile_qiita_app/qiita_auth_key.dart';
-import 'package:mobile_qiita_app/widgets/scrollable_modal_bottom_sheet.dart';
 
 class TopPage extends StatefulWidget {
   const TopPage({Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class _TopPageState extends State<TopPage> {
 
   // ログイン画面へ遷移
   void _transitionToLoginScreen() {
-    ScrollableModalBottomSheet.showWebContent(
+    Methods.showWebContent(
       context,
       'Qiita Auth',
       loginUrl,
@@ -30,6 +31,10 @@ class _TopPageState extends State<TopPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (Variables.accessToken.isNotEmpty) {
+      // Methods.transitionToTheSpecifiedPage(context, BottomNavigation());
+    }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -104,7 +109,8 @@ class _TopPageState extends State<TopPage> {
                           FlatButton(
                             height: 48.0,
                             onPressed: () {
-                              Methods().transitionToFeedPage(context);
+                              Methods.transitionToTheSpecifiedPage(
+                                  context, BottomNavigation());
                             },
                             child: const Text(
                               'ログインせずに利用する',
