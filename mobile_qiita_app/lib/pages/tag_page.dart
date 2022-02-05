@@ -26,17 +26,20 @@ class _TagPageState extends State<TagPage> {
   // 取得したタグ一覧をGridViewで表示
   Widget _tagGridView() {
     return RefreshIndicator(
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: _tagContainerLength,
-          mainAxisSpacing: 16.0,
-          crossAxisSpacing: 16.0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: _tagContainerLength,
+            mainAxisSpacing: 16.0,
+            crossAxisSpacing: 16.0,
+          ),
+          controller: _scrollController,
+          itemCount: _fetchedTags.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) =>
+              TagWidget.tagWidget(context, _fetchedTags[index]),
         ),
-        controller: _scrollController,
-        itemCount: _fetchedTags.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index) =>
-            TagWidget.tagWidget(context, _fetchedTags[index]),
       ),
       onRefresh: _reload,
     );
@@ -93,7 +96,7 @@ class _TagPageState extends State<TagPage> {
       ),
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(top: 16.0),
           child: FutureBuilder(
             future: _futureTags,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
