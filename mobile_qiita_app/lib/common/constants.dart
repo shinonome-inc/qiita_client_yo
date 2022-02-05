@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
+// 各クラス共通で利用する定数を格納するためのクラス
 class Constants {
   static const String pacifico = 'Pacifico';
   static const headerTextStyle = TextStyle(

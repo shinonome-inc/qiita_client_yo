@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/constants.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';

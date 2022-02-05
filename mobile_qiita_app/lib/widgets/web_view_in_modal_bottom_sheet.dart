@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/constants.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/common/methods.dart';
+import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewInModalBottomSheet extends StatefulWidget {
@@ -36,11 +38,9 @@ class _WebViewInModalBottomSheetState extends State<WebViewInModalBottomSheet> {
 
   // アクセス許可後に表示されるリダイレクト先のURLからアクセストークンを取得
   void _clipAccessToken(String redirectUrl) {
-    String accessToken = '';
     int firstIndex = Constants.accessTokenEndPoint.length + 1;
     int lastIndex = redirectUrl.length;
-    accessToken = redirectUrl.substring(firstIndex, lastIndex);
-    print('redirect URL: $redirectUrl\naccess token: $accessToken');
+    Variables.accessToken = redirectUrl.substring(firstIndex, lastIndex);
   }
 
   @override
@@ -53,6 +53,10 @@ class _WebViewInModalBottomSheetState extends State<WebViewInModalBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    if (Variables.accessToken.isNotEmpty) {
+      Methods().transitionToFeedPage(context);
+    }
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.96,
       color: Colors.transparent,

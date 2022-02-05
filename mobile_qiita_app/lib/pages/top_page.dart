@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/constants.dart';
-import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/qiita_auth_key.dart';
 import 'package:mobile_qiita_app/widgets/scrollable_modal_bottom_sheet.dart';
 
@@ -18,6 +18,15 @@ class _TopPageState extends State<TopPage> {
   bool _isLoading = false;
   late String loginUrl =
       'https://qiita.com/api/v2/oauth/authorize?client_id=${QiitaAuthKey.clientId}&scope=${Constants.scopeOfQiitaAuthorization}';
+
+  // ログイン画面へ遷移
+  void _transitionToLoginScreen() {
+    ScrollableModalBottomSheet.showWebContent(
+      context,
+      'Qiita Auth',
+      loginUrl,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,13 +90,7 @@ class _TopPageState extends State<TopPage> {
                                 Radius.circular(24.0),
                               ),
                             ),
-                            onPressed: () {
-                              ScrollableModalBottomSheet.showWebContent(
-                                context,
-                                'Qiita Auth',
-                                loginUrl,
-                              );
-                            },
+                            onPressed: _transitionToLoginScreen,
                             child: const Text(
                               'ログイン',
                               style: TextStyle(
@@ -101,12 +104,7 @@ class _TopPageState extends State<TopPage> {
                           FlatButton(
                             height: 48.0,
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BottomNavigation(),
-                                ),
-                              );
+                              Methods().transitionToFeedPage(context);
                             },
                             child: const Text(
                               'ログインせずに利用する',
