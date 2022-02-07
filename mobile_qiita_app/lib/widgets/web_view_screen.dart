@@ -42,6 +42,7 @@ class _WebViewContentState extends State<WebViewContent> {
     int firstIndex = Constants.accessTokenEndPoint.length + 1;
     int lastIndex = redirectUrl.length;
     Variables.accessToken = redirectUrl.substring(firstIndex, lastIndex);
+    print(Variables.accessToken);
   }
 
   @override
