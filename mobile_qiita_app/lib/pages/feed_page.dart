@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
-import 'package:mobile_qiita_app/services/client.dart';
+import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/widgets/article_widget.dart';
 
@@ -42,14 +42,16 @@ class _FeedPageState extends State<FeedPage> {
   void _searchArticles(String inputText) {
     _searchWord = inputText;
     setState(() {
-      _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+      _futureArticles =
+          QiitaClient.fetchArticle(_currentPageNumber, _searchWord, '');
     });
   }
 
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+      _futureArticles =
+          QiitaClient.fetchArticle(_currentPageNumber, _searchWord, '');
     });
   }
 
@@ -59,7 +61,8 @@ class _FeedPageState extends State<FeedPage> {
       _isLoading = true;
       _currentPageNumber++;
       setState(() {
-        _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+        _futureArticles =
+            QiitaClient.fetchArticle(_currentPageNumber, _searchWord, '');
       });
     }
   }
@@ -67,7 +70,8 @@ class _FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
-    _futureArticles = Client.fetchArticle(_currentPageNumber, _searchWord);
+    _futureArticles =
+        QiitaClient.fetchArticle(_currentPageNumber, _searchWord, '');
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
         _moreLoad();

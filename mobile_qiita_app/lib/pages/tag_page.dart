@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
-import 'package:mobile_qiita_app/services/client.dart';
+import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/widgets/tag_widget.dart';
 
@@ -48,7 +48,7 @@ class _TagPageState extends State<TagPage> {
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureTags = Client.fetchTag(_currentPageNumber);
+      _futureTags = QiitaClient.fetchTag(_currentPageNumber);
     });
   }
 
@@ -58,7 +58,7 @@ class _TagPageState extends State<TagPage> {
       _isLoading = true;
       _currentPageNumber++;
       setState(() {
-        _futureTags = Client.fetchTag(_currentPageNumber);
+        _futureTags = QiitaClient.fetchTag(_currentPageNumber);
       });
     }
   }
@@ -66,7 +66,7 @@ class _TagPageState extends State<TagPage> {
   @override
   void initState() {
     super.initState();
-    _futureTags = Client.fetchTag(_currentPageNumber);
+    _futureTags = QiitaClient.fetchTag(_currentPageNumber);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
         _moreLoad();

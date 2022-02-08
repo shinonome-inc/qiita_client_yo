@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
-import 'package:mobile_qiita_app/services/client.dart';
+import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // showModalBottomSheet内で表示するWebViewのコンテンツ
@@ -39,7 +39,7 @@ class _WebViewContentState extends State<WebViewContent> {
 
   // oAuth認証
   Future<void> oAuth(String redirectUrl) async {
-    await Client.fetchAccessToken(redirectUrl);
+    await QiitaClient.fetchAccessToken(redirectUrl);
     if (Variables.accessToken.isNotEmpty) {
       Navigator.push(
         context,
