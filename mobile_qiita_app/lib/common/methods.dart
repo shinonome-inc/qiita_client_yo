@@ -14,23 +14,12 @@ class Methods {
           top: Radius.circular(24.0),
         ),
       ),
-      builder: (BuildContext context) {
+      builder: (context) {
         return WebViewContent(
           headerTitle: headerTitle,
           webViewUrl: webViewUrl,
         );
       },
-    );
-  }
-
-  // 指定したページへ遷移
-  static void transitionToTheSpecifiedPage(
-      BuildContext context, var specifiedPage) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => specifiedPage,
-      ),
     );
   }
 }

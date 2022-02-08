@@ -32,7 +32,12 @@ class _TopPageState extends State<TopPage> {
   @override
   Widget build(BuildContext context) {
     if (Variables.accessToken.isNotEmpty) {
-      Methods.transitionToTheSpecifiedPage(context, BottomNavigation());
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BottomNavigation(),
+        ),
+      );
     }
 
     return Scaffold(
@@ -109,8 +114,12 @@ class _TopPageState extends State<TopPage> {
                           FlatButton(
                             height: 48.0,
                             onPressed: () {
-                              Methods.transitionToTheSpecifiedPage(
-                                  context, BottomNavigation());
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BottomNavigation(),
+                                ),
+                              );
                             },
                             child: const Text(
                               'ログインせずに利用する',

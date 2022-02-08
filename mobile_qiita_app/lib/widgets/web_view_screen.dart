@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
-import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
 import 'package:mobile_qiita_app/services/client.dart';
@@ -49,7 +48,12 @@ class _WebViewContentState extends State<WebViewContent> {
   @override
   Widget build(BuildContext context) {
     if (Variables.accessToken.isNotEmpty) {
-      Methods.transitionToTheSpecifiedPage(context, BottomNavigation());
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BottomNavigation(),
+        ),
+      );
     }
 
     return DraggableScrollableSheet(
