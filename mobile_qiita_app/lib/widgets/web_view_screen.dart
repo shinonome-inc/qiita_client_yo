@@ -37,8 +37,8 @@ class _WebViewContentState extends State<WebViewContent> {
     });
   }
 
-  // oAuth認証
-  Future<void> oAuth(String redirectUrl) async {
+  // Qiitaにログイン（oAuth認証）
+  Future<void> loginToQiita(String redirectUrl) async {
     await QiitaClient.fetchAccessToken(redirectUrl);
     if (Variables.accessToken.isNotEmpty) {
       Navigator.push(
@@ -94,10 +94,10 @@ class _WebViewContentState extends State<WebViewContent> {
                     child: WebView(
                       initialUrl: widget.webViewUrl,
                       javascriptMode: JavascriptMode.unrestricted,
-                      onPageFinished: (String url) {
+                      onPageFinished: (String url) async {
                         _calculateWebViewHeight();
                         if (url.contains(Constants.accessTokenEndPoint)) {
-                          oAuth(url);
+                          await loginToQiita(url);
                         }
                       },
                       onWebViewCreated: (controller) async {
