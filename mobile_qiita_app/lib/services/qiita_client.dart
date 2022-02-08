@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/models/access_token.dart';
 import 'package:mobile_qiita_app/models/article.dart';
@@ -15,11 +14,10 @@ class QiitaClient {
 
   // アクセストークン発行
   static Future<void> fetchAccessToken(String redirectUrl) async {
-    String redirectUrlCode = '';
-    int firstIndex = Constants.accessTokenEndPoint.length + 1;
-    int lastIndex = redirectUrl.length;
-    redirectUrlCode = redirectUrl.substring(firstIndex, lastIndex);
     const String url = 'https://qiita.com/api/v2/access_tokens';
+    final redirectUri = Uri.parse(redirectUrl);
+    final queryParameters = redirectUri.queryParameters;
+    final redirectUrlCode = queryParameters['code'];
 
     var response = await http.post(
       Uri.parse(url),

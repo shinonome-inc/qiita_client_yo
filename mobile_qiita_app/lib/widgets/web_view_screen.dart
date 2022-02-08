@@ -96,7 +96,9 @@ class _WebViewContentState extends State<WebViewContent> {
                       javascriptMode: JavascriptMode.unrestricted,
                       onPageFinished: (String url) async {
                         _calculateWebViewHeight();
-                        if (url.contains(Constants.accessTokenEndPoint)) {
+                        bool _isLogin =
+                            url.contains(Constants.accessTokenEndPoint);
+                        if (_isLogin) {
                           await loginToQiita(url);
                         }
                       },
