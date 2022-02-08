@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
+import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
 import 'package:mobile_qiita_app/services/client.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -36,17 +38,6 @@ class _WebViewContentState extends State<WebViewContent> {
     });
   }
 
-  // アクセス許可後に表示されるリダイレクト先のURLからcodeを取得
-  Future<void> _clipAccessToken(String redirectUrl) async {
-    int firstIndex = Constants.accessTokenEndPoint.length + 1;
-    int lastIndex = redirectUrl.length;
-    Variables.redirectUrlCode = redirectUrl.substring(firstIndex, lastIndex);
-
-    if (Variables.redirectUrlCode.isNotEmpty) {
-      await Client.fetchAccessToken();
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -57,9 +48,10 @@ class _WebViewContentState extends State<WebViewContent> {
 
   @override
   Widget build(BuildContext context) {
-    // if (Variables.redirectUrlCode.isNotEmpty) {
-    //   Methods.transitionToTheSpecifiedPage(context, BottomNavigation());
-    // }
+    if (Variables.accessToken.isNotEmpty) {
+      Methods.transitionToTheSpecifiedPage(context, BottomNavigation());
+    }
+
     return DraggableScrollableSheet(
       expand: false,
       maxChildSize: 0.96,
@@ -97,7 +89,7 @@ class _WebViewContentState extends State<WebViewContent> {
                       onPageFinished: (String url) async {
                         _calculateWebViewHeight();
                         if (url.contains(Constants.accessTokenEndPoint)) {
-                          await _clipAccessToken(url);
+                          Client.fetchAccessToken(url);
                         }
                       },
                       onWebViewCreated: (controller) async {

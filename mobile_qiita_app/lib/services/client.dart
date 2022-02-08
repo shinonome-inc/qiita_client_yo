@@ -1,31 +1,39 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
+import 'package:mobile_qiita_app/models/access_token.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/qiita_auth_key.dart';
 
 class Client {
-  // static Map<String, String>? _authorizationRequestHeader = {
-  //   'Authorization': 'Bearer ${Variables.accessToken}',
-  // };
-
   // アクセストークン発行
-  static Future<void> fetchAccessToken() async {
-    var url = 'https://qiita.com/api/v2/access_tokens';
-    print(Variables.redirectUrlCode);
+  static Future<void> fetchAccessToken(String redirectUrl) async {
+    String accessTokenCode = '';
+    int firstIndex = Constants.accessTokenEndPoint.length + 1;
+    int lastIndex = redirectUrl.length;
+    accessTokenCode = redirectUrl.substring(firstIndex, lastIndex);
+
+    const String url = 'https://qiita.com/api/v2/access_tokens';
     var response = await http.post(
       Uri.parse(url),
       headers: {'content-type': 'application/json'},
-      body: {
+      body: json.encode({
         'client_id': QiitaAuthKey.clientId,
         'client_secret': QiitaAuthKey.clientSecret,
-        'code': Variables.redirectUrlCode,
-      },
+        'code': accessTokenCode,
+      }),
     );
-    print(response.statusCode);
-    print(response.body);
+
+    if (response.statusCode == 201) {
+      final dynamic jsonResponse = json.decode(response.body);
+      final AccessToken accessToken = AccessToken.fromJson(jsonResponse);
+      Variables.accessToken = accessToken.token;
+    } else {
+      throw Exception('Request failed with status: ${response.statusCode}');
+    }
   }
 
   // QiitaAPIで記事を取得
@@ -35,7 +43,7 @@ class Client {
         ? 'https://qiita.com/api/v2/items?page=$currentPageNumber'
         : 'https://qiita.com/api/v2/items?page=$currentPageNumber&query=$searchWord';
 
-    var response = Variables.redirectUrlCode.isNotEmpty
+    var response = Variables.accessToken.isNotEmpty
         ? await http.get(
             Uri.parse(url),
             headers: {
