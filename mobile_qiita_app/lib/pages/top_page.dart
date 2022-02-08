@@ -31,7 +31,7 @@ class _TopPageState extends State<TopPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (Variables.accessToken.isNotEmpty) {
+    if (Variables.redirectUrlCode.isNotEmpty) {
       // Methods.transitionToTheSpecifiedPage(context, BottomNavigation());
     }
 

@@ -4,11 +4,29 @@ import 'package:http/http.dart' as http;
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
+import 'package:mobile_qiita_app/qiita_auth_key.dart';
 
 class Client {
   // static Map<String, String>? _authorizationRequestHeader = {
   //   'Authorization': 'Bearer ${Variables.accessToken}',
   // };
+
+  // アクセストークン発行
+  static Future<void> fetchAccessToken() async {
+    var url = 'https://qiita.com/api/v2/access_tokens';
+    print(Variables.redirectUrlCode);
+    var response = await http.post(
+      Uri.parse(url),
+      headers: {'content-type': 'application/json'},
+      body: {
+        'client_id': QiitaAuthKey.clientId,
+        'client_secret': QiitaAuthKey.clientSecret,
+        'code': Variables.redirectUrlCode,
+      },
+    );
+    print(response.statusCode);
+    print(response.body);
+  }
 
   // QiitaAPIで記事を取得
   static Future<List<Article>> fetchArticle(
@@ -17,8 +35,7 @@ class Client {
         ? 'https://qiita.com/api/v2/items?page=$currentPageNumber'
         : 'https://qiita.com/api/v2/items?page=$currentPageNumber&query=$searchWord';
 
-    print('\n\n\n${Variables.accessToken}\n\n\n');
-    var response = Variables.accessToken.isNotEmpty
+    var response = Variables.redirectUrlCode.isNotEmpty
         ? await http.get(
             Uri.parse(url),
             headers: {
