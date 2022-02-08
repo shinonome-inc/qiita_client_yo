@@ -37,6 +37,19 @@ class _WebViewContentState extends State<WebViewContent> {
     });
   }
 
+  // oAuth認証
+  Future<void> oAuth(String redirectUrl) async {
+    await Client.fetchAccessToken(redirectUrl);
+    if (Variables.accessToken.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BottomNavigation(),
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -47,15 +60,6 @@ class _WebViewContentState extends State<WebViewContent> {
 
   @override
   Widget build(BuildContext context) {
-    if (Variables.accessToken.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BottomNavigation(),
-        ),
-      );
-    }
-
     return DraggableScrollableSheet(
       expand: false,
       maxChildSize: 0.96,
@@ -90,10 +94,10 @@ class _WebViewContentState extends State<WebViewContent> {
                     child: WebView(
                       initialUrl: widget.webViewUrl,
                       javascriptMode: JavascriptMode.unrestricted,
-                      onPageFinished: (String url) async {
+                      onPageFinished: (String url) {
                         _calculateWebViewHeight();
                         if (url.contains(Constants.accessTokenEndPoint)) {
-                          Client.fetchAccessToken(url);
+                          oAuth(url);
                         }
                       },
                       onWebViewCreated: (controller) async {

@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
-import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
 import 'package:mobile_qiita_app/qiita_auth_key.dart';
 
@@ -31,15 +30,6 @@ class _TopPageState extends State<TopPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (Variables.accessToken.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BottomNavigation(),
-        ),
-      );
-    }
-
     return Scaffold(
       body: Stack(
         children: [
