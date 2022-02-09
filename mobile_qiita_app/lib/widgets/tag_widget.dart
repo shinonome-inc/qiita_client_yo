@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/constants.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
 

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/constants.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
-import 'package:mobile_qiita_app/services/client.dart';
+import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/widgets/tag_widget.dart';
 
@@ -26,17 +26,20 @@ class _TagPageState extends State<TagPage> {
   // 取得したタグ一覧をGridViewで表示
   Widget _tagGridView() {
     return RefreshIndicator(
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: _tagContainerLength,
-          mainAxisSpacing: 16.0,
-          crossAxisSpacing: 16.0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: _tagContainerLength,
+            mainAxisSpacing: 16.0,
+            crossAxisSpacing: 16.0,
+          ),
+          controller: _scrollController,
+          itemCount: _fetchedTags.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) =>
+              TagWidget.tagWidget(context, _fetchedTags[index]),
         ),
-        controller: _scrollController,
-        itemCount: _fetchedTags.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index) =>
-            TagWidget.tagWidget(context, _fetchedTags[index]),
       ),
       onRefresh: _reload,
     );
@@ -45,7 +48,7 @@ class _TagPageState extends State<TagPage> {
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureTags = Client.fetchTag(_currentPageNumber);
+      _futureTags = QiitaClient.fetchTag(_currentPageNumber);
     });
   }
 
@@ -55,7 +58,7 @@ class _TagPageState extends State<TagPage> {
       _isLoading = true;
       _currentPageNumber++;
       setState(() {
-        _futureTags = Client.fetchTag(_currentPageNumber);
+        _futureTags = QiitaClient.fetchTag(_currentPageNumber);
       });
     }
   }
@@ -63,7 +66,7 @@ class _TagPageState extends State<TagPage> {
   @override
   void initState() {
     super.initState();
-    _futureTags = Client.fetchTag(_currentPageNumber);
+    _futureTags = QiitaClient.fetchTag(_currentPageNumber);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
         _moreLoad();
@@ -93,7 +96,7 @@ class _TagPageState extends State<TagPage> {
       ),
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(top: 16.0),
           child: FutureBuilder(
             future: _futureTags,
             builder: (BuildContext context, AsyncSnapshot snapshot) {

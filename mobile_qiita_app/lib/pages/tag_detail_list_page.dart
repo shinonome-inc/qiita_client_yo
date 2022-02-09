@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/constants.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
-import 'package:mobile_qiita_app/services/client.dart';
+import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/widgets/article_widget.dart';
 
@@ -61,7 +61,8 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureArticles = Client.fetchTagDetail(_currentPageNumber, _tagId);
+      _futureArticles =
+          QiitaClient.fetchArticle(_currentPageNumber, '', _tagId);
     });
   }
 
@@ -71,7 +72,8 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
       _isLoading = true;
       _currentPageNumber++;
       setState(() {
-        _futureArticles = Client.fetchArticle(_currentPageNumber, _tagId);
+        _futureArticles =
+            QiitaClient.fetchArticle(_currentPageNumber, '', _tagId);
       });
     }
   }
@@ -80,7 +82,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   void initState() {
     super.initState();
     _tagId = widget.tag.id;
-    _futureArticles = Client.fetchTagDetail(_currentPageNumber, _tagId);
+    _futureArticles = QiitaClient.fetchArticle(_currentPageNumber, '', _tagId);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
         _moreLoad();
