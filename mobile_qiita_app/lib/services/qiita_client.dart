@@ -33,6 +33,7 @@ class QiitaClient {
       final dynamic jsonResponse = json.decode(response.body);
       final AccessToken accessToken = AccessToken.fromJson(jsonResponse);
       Variables.accessToken = accessToken.token;
+      print(Variables.accessToken);
     } else {
       throw Exception('Request failed with status: ${response.statusCode}');
     }
@@ -75,6 +76,20 @@ class QiitaClient {
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = json.decode(response.body);
       return jsonResponse.map((json) => Tag.fromJson(json)).toList();
+    } else {
+      throw Exception('Request failed with status: ${response.statusCode}');
+    }
+  }
+
+  // QiitaAPIで認証中ユーザーの情報を取得
+  static Future<void> fetchAuthenticatedUser() async {
+    var url = 'https://qiita.com/api/v2/authenticated_user';
+    var response =
+        await http.get(Uri.parse(url), headers: authorizationRequestHeader);
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      // final List<dynamic> jsonResponse = json.decode(response.body);
     } else {
       throw Exception('Request failed with status: ${response.statusCode}');
     }
