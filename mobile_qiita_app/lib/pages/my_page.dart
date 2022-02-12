@@ -26,22 +26,24 @@ class _MyPageState extends State<MyPage> {
   int _currentPageNumber = 1;
   final String _searchWord = '';
   final String _tagId = '';
+  String _userId = '';
 
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
       _futureUser = QiitaClient.fetchUser();
-      _futureArticles =
-          QiitaClient.fetchArticle(_currentPageNumber, _searchWord, _tagId);
+      _futureArticles = QiitaClient.fetchArticle(
+          _currentPageNumber, _searchWord, _tagId, _userId);
     });
   }
 
   @override
   void initState() {
     super.initState();
+    _userId = Variables.userId;
     _futureUser = QiitaClient.fetchUser();
-    _futureArticles =
-        QiitaClient.fetchArticle(_currentPageNumber, _searchWord, _tagId);
+    _futureArticles = QiitaClient.fetchArticle(
+        _currentPageNumber, _searchWord, _tagId, _userId);
   }
 
   @override
@@ -72,6 +74,7 @@ class _MyPageState extends State<MyPage> {
                   } else if (_currentPageNumber != 1) {
                     child = Column(
                       children: <Widget>[
+                        WidgetFormats.userFormat(_fetchedUser),
                         Container(
                           padding: const EdgeInsets.all(8.0),
                           color: const Color(0xFFF2F2F2),

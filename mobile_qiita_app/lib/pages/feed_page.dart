@@ -20,6 +20,8 @@ class _FeedPageState extends State<FeedPage> {
   List<Article> _fetchedArticles = [];
   int _currentPageNumber = 1;
   String _searchWord = '';
+  final String _tagId = '';
+  final String _userId = '';
   bool _isNetworkError = false;
   bool _isLoading = false;
 
@@ -27,16 +29,16 @@ class _FeedPageState extends State<FeedPage> {
   void _searchArticles(String inputText) {
     _searchWord = inputText;
     setState(() {
-      _futureArticles =
-          QiitaClient.fetchArticle(_currentPageNumber, _searchWord, '');
+      _futureArticles = QiitaClient.fetchArticle(
+          _currentPageNumber, _searchWord, _tagId, _userId);
     });
   }
 
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureArticles =
-          QiitaClient.fetchArticle(_currentPageNumber, _searchWord, '');
+      _futureArticles = QiitaClient.fetchArticle(
+          _currentPageNumber, _searchWord, _tagId, _userId);
     });
   }
 
@@ -46,8 +48,8 @@ class _FeedPageState extends State<FeedPage> {
       _isLoading = true;
       _currentPageNumber++;
       setState(() {
-        _futureArticles =
-            QiitaClient.fetchArticle(_currentPageNumber, _searchWord, '');
+        _futureArticles = QiitaClient.fetchArticle(
+            _currentPageNumber, _searchWord, _tagId, _userId);
       });
     }
   }
@@ -55,8 +57,8 @@ class _FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
-    _futureArticles =
-        QiitaClient.fetchArticle(_currentPageNumber, _searchWord, '');
+    _futureArticles = QiitaClient.fetchArticle(
+        _currentPageNumber, _searchWord, _tagId, _userId);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
         _moreLoad();

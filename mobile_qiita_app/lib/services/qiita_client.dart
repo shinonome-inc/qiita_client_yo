@@ -34,22 +34,27 @@ class QiitaClient {
       final dynamic jsonResponse = json.decode(response.body);
       final AccessToken accessToken = AccessToken.fromJson(jsonResponse);
       Variables.accessToken = accessToken.token;
+      fetchUser();
     } else {
       throw Exception('Request failed with status: ${response.statusCode}');
     }
   }
 
   // QiitaAPIで記事を取得
-  static Future<List<Article>> fetchArticle(
-      int currentPageNumber, String searchWord, String tagId) async {
+  static Future<List<Article>> fetchArticle(int currentPageNumber,
+      String searchWord, String tagId, String userId) async {
     var url;
-    if (tagId.isEmpty) {
-      url = searchWord.isEmpty
-          ? 'https://qiita.com/api/v2/items?page=$currentPageNumber'
-          : 'https://qiita.com/api/v2/items?page=$currentPageNumber&query=$searchWord';
-    } else {
+    if (searchWord.isNotEmpty) {
+      url =
+          'https://qiita.com/api/v2/items?page=$currentPageNumber&query=$searchWord';
+    } else if (tagId.isNotEmpty) {
       url =
           'https://qiita.com/api/v2/tags/$tagId/items?page=$currentPageNumber';
+    } else if (userId.isNotEmpty) {
+      url =
+          'https://qiita.com/api/v2/users/$userId/items?page=$currentPageNumber';
+    } else {
+      url = 'https://qiita.com/api/v2/items?page=$currentPageNumber';
     }
 
     var response = Variables.accessToken.isNotEmpty
@@ -88,8 +93,8 @@ class QiitaClient {
         await http.get(Uri.parse(url), headers: authorizationRequestHeader);
 
     if (response.statusCode == 200) {
-      print(response.body);
       final dynamic jsonResponse = json.decode(response.body);
+      Variables.userId = User.fromJson(jsonResponse).id;
       return User.fromJson(jsonResponse);
     } else {
       throw Exception('Request failed with status: ${response.statusCode}');

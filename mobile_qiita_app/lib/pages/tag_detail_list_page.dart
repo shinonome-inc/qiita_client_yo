@@ -21,15 +21,17 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   late Future<List<Article>> _futureArticles;
   List<Article> _fetchedArticles = [];
   int _currentPageNumber = 1;
+  final String _searchWord = '';
   String _tagId = '';
+  final String _userId = '';
   bool _isNetworkError = false;
   bool _isLoading = false;
 
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureArticles =
-          QiitaClient.fetchArticle(_currentPageNumber, '', _tagId);
+      _futureArticles = QiitaClient.fetchArticle(
+          _currentPageNumber, _searchWord, _tagId, _userId);
     });
   }
 
@@ -39,8 +41,8 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
       _isLoading = true;
       _currentPageNumber++;
       setState(() {
-        _futureArticles =
-            QiitaClient.fetchArticle(_currentPageNumber, '', _tagId);
+        _futureArticles = QiitaClient.fetchArticle(
+            _currentPageNumber, _searchWord, _tagId, _userId);
       });
     }
   }
@@ -49,7 +51,8 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   void initState() {
     super.initState();
     _tagId = widget.tag.id;
-    _futureArticles = QiitaClient.fetchArticle(_currentPageNumber, '', _tagId);
+    _futureArticles = QiitaClient.fetchArticle(
+        _currentPageNumber, _searchWord, _tagId, _userId);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
         _moreLoad();
