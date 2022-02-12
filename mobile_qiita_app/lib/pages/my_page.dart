@@ -1,9 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
+import 'package:mobile_qiita_app/widgets/widget_formats.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({Key? key}) : super(key: key);
@@ -13,42 +14,63 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
-  late Future<User> _futureAuthenticatedUser;
-  late User _fetchedAuthenticatedUser;
+  late Future<List<Article>> _futureArticles;
+  late Future<User> _futureUser;
+  late User _fetchedUser;
+  late List<Article> _fetchedArticles;
   bool _isNetworkError = false;
   bool _isLoading = false;
+  int _currentPageNumber = 1;
+  final String _searchWord = '';
+  final String _tagId = '';
 
-  Widget _userFormat(User user) {
-    String userIconUrl =
-        user.iconUrl.isNotEmpty ? user.iconUrl : Constants.defaultUserIconUrl;
-
-    return Container(
-      child: Column(
-        children: <Widget>[
-          CircleAvatar(
-            radius: 24.0,
-            backgroundImage: CachedNetworkImageProvider(userIconUrl),
+  // 取得した記事一覧をListViewで表示
+  Widget _articleListView() {
+    return Column(
+      children: <Widget>[
+        Container(
+          padding: const EdgeInsets.all(8.0),
+          color: const Color(0xFFF2F2F2),
+          alignment: Alignment.centerLeft,
+          child: const Text(
+            '投稿記事',
+            style: TextStyle(
+              color: const Color(0xFF828282),
+            ),
           ),
-          Text(user.name),
-          Text(user.id),
-          Text(user.description),
-          Text('${user.followingsCount}フォロー中 ${user.followersCount}フォロワー'),
-        ],
-      ),
+        ),
+        Flexible(
+          child: RefreshIndicator(
+            onRefresh: _reload,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: _fetchedArticles.length,
+              itemBuilder: (context, index) {
+                return WidgetFormats.articleFormat(
+                    context, _fetchedArticles[index]);
+              },
+            ),
+          ),
+        )
+      ],
     );
   }
 
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureAuthenticatedUser = QiitaClient.fetchUser();
+      _futureUser = QiitaClient.fetchUser();
+      _futureArticles =
+          QiitaClient.fetchArticle(_currentPageNumber, _searchWord, _tagId);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _futureAuthenticatedUser = QiitaClient.fetchUser();
+    _futureUser = QiitaClient.fetchUser();
+    _futureArticles =
+        QiitaClient.fetchArticle(_currentPageNumber, _searchWord, _tagId);
   }
 
   @override
@@ -68,8 +90,10 @@ class _MyPageState extends State<MyPage> {
         child: Container(
           padding: const EdgeInsets.all(16.0),
           child: FutureBuilder(
-            future: _futureAuthenticatedUser,
+            future: Future.wait([_futureUser, _futureArticles]),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
+              _fetchedUser = snapshot.data[0];
+              _fetchedArticles = snapshot.data[1];
               Widget child = Container();
 
               if (snapshot.hasError) {
@@ -77,16 +101,15 @@ class _MyPageState extends State<MyPage> {
                 child = ErrorView.networkErrorView(_reload);
               } else if (snapshot.hasError) {
                 child = ErrorView.notLoginView();
-              } else {
-                child = _userFormat(snapshot.data);
+              } else if (_currentPageNumber != 1) {
+                child = WidgetFormats.userFormat(_fetchedUser);
               }
 
               if (snapshot.connectionState == ConnectionState.done) {
                 _isLoading = false;
                 if (snapshot.hasData) {
                   _isNetworkError = false;
-                  _fetchedAuthenticatedUser = snapshot.data;
-                  child = _userFormat(snapshot.data);
+                  child = WidgetFormats.userFormat(_fetchedUser);
                 } else if (snapshot.hasError) {
                   _isNetworkError = true;
                   child = ErrorView.networkErrorView(_reload);

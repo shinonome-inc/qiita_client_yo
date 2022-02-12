@@ -5,7 +5,7 @@ import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/widgets/article_widget.dart';
+import 'package:mobile_qiita_app/widgets/widget_formats.dart';
 
 class TagDetailListPage extends StatefulWidget {
   const TagDetailListPage({required this.tag, Key? key}) : super(key: key);
@@ -48,7 +48,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
               itemCount: _fetchedArticles.length,
               controller: _scrollController,
               itemBuilder: (context, index) {
-                return ArticleWidget.articleWidget(
+                return WidgetFormats.articleFormat(
                     context, _fetchedArticles[index]);
               },
             ),

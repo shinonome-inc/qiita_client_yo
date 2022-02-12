@@ -5,7 +5,7 @@ import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/widgets/article_widget.dart';
+import 'package:mobile_qiita_app/widgets/widget_formats.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -31,7 +31,7 @@ class _FeedPageState extends State<FeedPage> {
         itemCount: _fetchedArticles.length,
         controller: _scrollController,
         itemBuilder: (context, index) {
-          return ArticleWidget.articleWidget(context, _fetchedArticles[index]);
+          return WidgetFormats.articleFormat(context, _fetchedArticles[index]);
         },
       ),
       onRefresh: _reload,

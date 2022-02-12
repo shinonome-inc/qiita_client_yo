@@ -5,7 +5,7 @@ import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/widgets/tag_widget.dart';
+import 'package:mobile_qiita_app/widgets/widget_formats.dart';
 
 class TagPage extends StatefulWidget {
   const TagPage({Key? key}) : super(key: key);
@@ -38,7 +38,7 @@ class _TagPageState extends State<TagPage> {
           itemCount: _fetchedTags.length,
           shrinkWrap: true,
           itemBuilder: (context, index) =>
-              TagWidget.tagWidget(context, _fetchedTags[index]),
+              WidgetFormats.tagFormat(context, _fetchedTags[index]),
         ),
       ),
       onRefresh: _reload,
