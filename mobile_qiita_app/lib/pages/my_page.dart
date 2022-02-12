@@ -4,6 +4,7 @@ import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
+import 'package:mobile_qiita_app/widgets/view_formats.dart';
 import 'package:mobile_qiita_app/widgets/widget_formats.dart';
 
 class MyPage extends StatefulWidget {
@@ -14,6 +15,7 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
+  final ScrollController _scrollController = ScrollController();
   late Future<List<Article>> _futureArticles;
   late Future<User> _futureUser;
   late User _fetchedUser;
@@ -55,44 +57,72 @@ class _MyPageState extends State<MyPage> {
         ),
       ),
       body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          child: FutureBuilder(
-            future: Future.wait([_futureUser, _futureArticles]),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              _fetchedUser = snapshot.data[0];
-              _fetchedArticles = snapshot.data[1];
-              Widget child = Container();
+        child: FutureBuilder(
+          future: Future.wait([_futureUser, _futureArticles]),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            _fetchedUser = snapshot.data[0];
+            _fetchedArticles = snapshot.data[1];
+            Widget child = Container();
+            print(snapshot.data);
+            if (snapshot.hasError) {
+              _isNetworkError = true;
+              child = ErrorView.networkErrorView(_reload);
+            } else if (_currentPageNumber != 1) {
+              child = Column(
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    color: const Color(0xFFF2F2F2),
+                    alignment: Alignment.centerLeft,
+                    child: const Text(
+                      '投稿記事',
+                      style: TextStyle(
+                        color: const Color(0xFF828282),
+                      ),
+                    ),
+                  ),
+                  ViewFormats.articleListView(
+                      _reload, _fetchedArticles, _scrollController),
+                ],
+              );
+            }
 
-              if (snapshot.hasError) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              _isLoading = false;
+              if (snapshot.hasData) {
+                _isNetworkError = false;
+                child = Column(
+                  children: <Widget>[
+                    WidgetFormats.userFormat(_fetchedUser),
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      color: const Color(0xFFF2F2F2),
+                      alignment: Alignment.centerLeft,
+                      child: const Text(
+                        '投稿記事',
+                        style: TextStyle(
+                          color: const Color(0xFF828282),
+                        ),
+                      ),
+                    ),
+                    ViewFormats.articleListView(
+                        _reload, _fetchedArticles, _scrollController),
+                  ],
+                );
+              } else if (snapshot.hasError) {
                 _isNetworkError = true;
                 child = ErrorView.networkErrorView(_reload);
-              } else if (snapshot.hasError) {
-                child = ErrorView.notLoginView();
-              } else if (_currentPageNumber != 1) {
-                child = WidgetFormats.userFormat(_fetchedUser);
               }
+            } else {
+              child = CircularProgressIndicator();
+            }
 
-              if (snapshot.connectionState == ConnectionState.done) {
-                _isLoading = false;
-                if (snapshot.hasData) {
-                  _isNetworkError = false;
-                  child = WidgetFormats.userFormat(_fetchedUser);
-                } else if (snapshot.hasError) {
-                  _isNetworkError = true;
-                  child = ErrorView.networkErrorView(_reload);
-                }
-              } else {
-                child = CircularProgressIndicator();
-              }
-
-              return Container(
-                child: Center(
-                  child: child,
-                ),
-              );
-            },
-          ),
+            return Container(
+              child: Center(
+                child: child,
+              ),
+            );
+          },
         ),
       ),
     );

@@ -94,7 +94,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
             _isNetworkError = true;
             child = ErrorView.networkErrorView(_reload);
           } else if (_currentPageNumber != 1) {
-            child = ViewFormats.articleListView(
+            child = ViewFormats.postedArticleListView(
                 _reload, _fetchedArticles, _scrollController);
           }
 
@@ -104,7 +104,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
               _isNetworkError = false;
               if (_currentPageNumber == 1) {
                 _fetchedArticles = snapshot.data;
-                child = ViewFormats.articleListView(
+                child = ViewFormats.postedArticleListView(
                     _reload, _fetchedArticles, _scrollController);
               } else {
                 _fetchedArticles.addAll(snapshot.data);
