@@ -21,12 +21,13 @@ class _MyPageState extends State<MyPage> {
   late Future<User> _futureUser;
   late User _fetchedUser;
   late List<Article> _fetchedArticles;
-  bool _isNetworkError = false;
-  bool _isLoading = false;
   int _currentPageNumber = 1;
   final String _searchWord = '';
   final String _tagId = '';
   String _userId = '';
+  final bool _isUserPosts = true;
+  bool _isNetworkError = false;
+  bool _isLoading = false;
 
   // 再読み込み
   Future<void> _reload() async {
@@ -86,8 +87,8 @@ class _MyPageState extends State<MyPage> {
                             ),
                           ),
                         ),
-                        ViewFormats.articleListView(
-                            _reload, _fetchedArticles, _scrollController),
+                        ViewFormats.articleListView(_reload, _fetchedArticles,
+                            _scrollController, _isUserPosts),
                       ],
                     );
                   }
@@ -110,8 +111,8 @@ class _MyPageState extends State<MyPage> {
                               ),
                             ),
                           ),
-                          ViewFormats.articleListView(
-                              _reload, _fetchedArticles, _scrollController),
+                          ViewFormats.articleListView(_reload, _fetchedArticles,
+                              _scrollController, _isUserPosts),
                         ],
                       );
                     } else if (snapshot.hasError) {

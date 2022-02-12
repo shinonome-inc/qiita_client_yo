@@ -24,6 +24,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   final String _searchWord = '';
   String _tagId = '';
   final String _userId = '';
+  final bool _isUserPosts = false;
   bool _isNetworkError = false;
   bool _isLoading = false;
 
@@ -98,7 +99,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
             child = ErrorView.networkErrorView(_reload);
           } else if (_currentPageNumber != 1) {
             child = ViewFormats.postedArticleListView(
-                _reload, _fetchedArticles, _scrollController);
+                _reload, _fetchedArticles, _scrollController, _isUserPosts);
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
@@ -108,7 +109,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
               if (_currentPageNumber == 1) {
                 _fetchedArticles = snapshot.data;
                 child = ViewFormats.postedArticleListView(
-                    _reload, _fetchedArticles, _scrollController);
+                    _reload, _fetchedArticles, _scrollController, _isUserPosts);
               } else {
                 _fetchedArticles.addAll(snapshot.data);
               }

@@ -5,8 +5,11 @@ import 'package:mobile_qiita_app/widgets/widget_formats.dart';
 
 class ViewFormats {
   // 記事一覧をListViewで表示
-  static Widget articleListView(Future<void> Function() onTapReload,
-      List<Article> fetchedArticles, ScrollController scrollController) {
+  static Widget articleListView(
+      Future<void> Function() onTapReload,
+      List<Article> fetchedArticles,
+      ScrollController scrollController,
+      bool isUserPosts) {
     return Flexible(
       child: RefreshIndicator(
         onRefresh: onTapReload,
@@ -15,7 +18,8 @@ class ViewFormats {
           itemCount: fetchedArticles.length,
           controller: scrollController,
           itemBuilder: (context, index) {
-            return WidgetFormats.articleFormat(context, fetchedArticles[index]);
+            return WidgetFormats.articleFormat(
+                context, fetchedArticles[index], isUserPosts);
           },
         ),
       ),
@@ -23,8 +27,11 @@ class ViewFormats {
   }
 
   // 投稿記事一覧を表示
-  static Widget postedArticleListView(Future<void> Function() onTapReload,
-      List<Article> fetchedArticles, ScrollController scrollController) {
+  static Widget postedArticleListView(
+      Future<void> Function() onTapReload,
+      List<Article> fetchedArticles,
+      ScrollController scrollController,
+      bool isUserPosts) {
     return Column(
       children: <Widget>[
         Container(
@@ -38,7 +45,8 @@ class ViewFormats {
             ),
           ),
         ),
-        articleListView(onTapReload, fetchedArticles, scrollController),
+        articleListView(
+            onTapReload, fetchedArticles, scrollController, isUserPosts),
       ],
     );
   }

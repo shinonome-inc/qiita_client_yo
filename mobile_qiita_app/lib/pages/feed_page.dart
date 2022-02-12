@@ -22,6 +22,7 @@ class _FeedPageState extends State<FeedPage> {
   String _searchWord = '';
   final String _tagId = '';
   final String _userId = '';
+  final bool _isUserPosts = false;
   bool _isNetworkError = false;
   bool _isLoading = false;
 
@@ -134,7 +135,7 @@ class _FeedPageState extends State<FeedPage> {
             child = ErrorView.networkErrorView(_reload);
           } else if (_currentPageNumber != 1) {
             child = ViewFormats.articleListView(
-                _reload, _fetchedArticles, _scrollController);
+                _reload, _fetchedArticles, _scrollController, _isUserPosts);
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
@@ -146,7 +147,7 @@ class _FeedPageState extends State<FeedPage> {
               } else if (_currentPageNumber == 1) {
                 _fetchedArticles = snapshot.data;
                 child = ViewFormats.articleListView(
-                    _reload, _fetchedArticles, _scrollController);
+                    _reload, _fetchedArticles, _scrollController, _isUserPosts);
               } else {
                 _fetchedArticles.addAll(snapshot.data);
               }
