@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
-import 'package:mobile_qiita_app/qiita_auth_key.dart';
 
 class TopPage extends StatefulWidget {
   const TopPage({Key? key}) : super(key: key);
@@ -16,17 +15,6 @@ class TopPage extends StatefulWidget {
 
 class _TopPageState extends State<TopPage> {
   bool _isLoading = false;
-  late String loginUrl =
-      'https://qiita.com/api/v2/oauth/authorize?client_id=${QiitaAuthKey.clientId}&scope=${Constants.scopeOfQiitaAuthorization}';
-
-  // ログイン画面へ遷移
-  void _transitionToLoginScreen() {
-    Methods.showWebContent(
-      context,
-      'Qiita Auth',
-      loginUrl,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +78,9 @@ class _TopPageState extends State<TopPage> {
                                 Radius.circular(24.0),
                               ),
                             ),
-                            onPressed: _transitionToLoginScreen,
+                            onPressed: () {
+                              Methods.transitionToLoginScreen(context);
+                            },
                             child: const Text(
                               'ログイン',
                               style: TextStyle(

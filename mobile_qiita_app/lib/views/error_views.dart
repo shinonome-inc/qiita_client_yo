@@ -88,7 +88,7 @@ class ErrorView {
   }
 
   // 未ログインの場合に表示
-  static Widget notLoginView(/* Function onTapLogin */) {
+  static Widget notLoginView(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -120,7 +120,7 @@ class ErrorView {
               ),
               FlatButton(
                 onPressed: () {
-                  // onTapLogin();
+                  Navigator.of(context, rootNavigator: true).pop();
                 },
                 height: 48.0,
                 shape: RoundedRectangleBorder(

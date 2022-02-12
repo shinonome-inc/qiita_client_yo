@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/qiita_auth_key.dart';
 import 'package:mobile_qiita_app/widgets/web_view_screen.dart';
 
 // 各クラス共通で利用するメソッドを格納するためのクラス
@@ -20,6 +22,18 @@ class Methods {
           webViewUrl: webViewUrl,
         );
       },
+    );
+  }
+
+  // ログイン画面へ遷移
+  static void transitionToLoginScreen(BuildContext context) {
+    late String loginUrl =
+        'https://qiita.com/api/v2/oauth/authorize?client_id=${QiitaAuthKey.clientId}&scope=${Constants.scopeOfQiitaAuthorization}';
+    final String appBarText = 'Qiita Auth';
+    Methods.showWebContent(
+      context,
+      appBarText,
+      loginUrl,
     );
   }
 }
