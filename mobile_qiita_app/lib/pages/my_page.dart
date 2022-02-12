@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
-import 'package:mobile_qiita_app/models/authenticated_user.dart';
+import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 
@@ -13,15 +13,14 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
-  late Future<AuthenticatedUser> _futureAuthenticatedUser;
-  late AuthenticatedUser _fetchedAuthenticatedUser;
+  late Future<User> _futureAuthenticatedUser;
+  late User _fetchedAuthenticatedUser;
   bool _isNetworkError = false;
   bool _isLoading = false;
 
-  Widget _userFormat(AuthenticatedUser authenticatedUser) {
-    String userIconUrl = authenticatedUser.thumbnail.isNotEmpty
-        ? authenticatedUser.thumbnail
-        : Constants.defaultUserIconUrl;
+  Widget _userFormat(User user) {
+    String userIconUrl =
+        user.iconUrl.isNotEmpty ? user.iconUrl : Constants.defaultUserIconUrl;
 
     return Container(
       child: Column(
@@ -30,11 +29,10 @@ class _MyPageState extends State<MyPage> {
             radius: 24.0,
             backgroundImage: CachedNetworkImageProvider(userIconUrl),
           ),
-          Text(authenticatedUser.name),
-          Text(authenticatedUser.id),
-          Text(authenticatedUser.description),
-          Text(
-              '${authenticatedUser.followingsCount}フォロー中 ${authenticatedUser.followersCount}フォロワー'),
+          Text(user.name),
+          Text(user.id),
+          Text(user.description),
+          Text('${user.followingsCount}フォロー中 ${user.followersCount}フォロワー'),
         ],
       ),
     );
@@ -43,14 +41,14 @@ class _MyPageState extends State<MyPage> {
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureAuthenticatedUser = QiitaClient.fetchAuthenticatedUser();
+      _futureAuthenticatedUser = QiitaClient.fetchUser();
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _futureAuthenticatedUser = QiitaClient.fetchAuthenticatedUser();
+    _futureAuthenticatedUser = QiitaClient.fetchUser();
   }
 
   @override

@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/models/access_token.dart';
 import 'package:mobile_qiita_app/models/article.dart';
-import 'package:mobile_qiita_app/models/authenticated_user.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
+import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/qiita_auth_key.dart';
 
 class QiitaClient {
@@ -82,7 +82,7 @@ class QiitaClient {
   }
 
   // QiitaAPIで認証中ユーザーの情報を取得
-  static Future<AuthenticatedUser> fetchAuthenticatedUser() async {
+  static Future<User> fetchUser() async {
     var url = 'https://qiita.com/api/v2/authenticated_user';
     var response =
         await http.get(Uri.parse(url), headers: authorizationRequestHeader);
@@ -90,8 +90,7 @@ class QiitaClient {
     if (response.statusCode == 200) {
       print(response.body);
       final dynamic jsonResponse = json.decode(response.body);
-      print(AuthenticatedUser.fromJson(jsonResponse));
-      return AuthenticatedUser.fromJson(jsonResponse);
+      return User.fromJson(jsonResponse);
     } else {
       throw Exception('Request failed with status: ${response.statusCode}');
     }
