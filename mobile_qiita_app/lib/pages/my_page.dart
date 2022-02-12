@@ -24,38 +24,6 @@ class _MyPageState extends State<MyPage> {
   final String _searchWord = '';
   final String _tagId = '';
 
-  // 取得した記事一覧をListViewで表示
-  Widget _articleListView() {
-    return Column(
-      children: <Widget>[
-        Container(
-          padding: const EdgeInsets.all(8.0),
-          color: const Color(0xFFF2F2F2),
-          alignment: Alignment.centerLeft,
-          child: const Text(
-            '投稿記事',
-            style: TextStyle(
-              color: const Color(0xFF828282),
-            ),
-          ),
-        ),
-        Flexible(
-          child: RefreshIndicator(
-            onRefresh: _reload,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: _fetchedArticles.length,
-              itemBuilder: (context, index) {
-                return WidgetFormats.articleFormat(
-                    context, _fetchedArticles[index]);
-              },
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
   // 再読み込み
   Future<void> _reload() async {
     setState(() {

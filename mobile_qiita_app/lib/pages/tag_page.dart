@@ -5,7 +5,7 @@ import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/widgets/widget_formats.dart';
+import 'package:mobile_qiita_app/widgets/view_formats.dart';
 
 class TagPage extends StatefulWidget {
   const TagPage({Key? key}) : super(key: key);
@@ -22,28 +22,6 @@ class _TagPageState extends State<TagPage> {
   int _currentPageNumber = 1;
   bool _isNetworkError = false;
   bool _isLoading = false;
-
-  // 取得したタグ一覧をGridViewで表示
-  Widget _tagGridView() {
-    return RefreshIndicator(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: _tagContainerLength,
-            mainAxisSpacing: 16.0,
-            crossAxisSpacing: 16.0,
-          ),
-          controller: _scrollController,
-          itemCount: _fetchedTags.length,
-          shrinkWrap: true,
-          itemBuilder: (context, index) =>
-              WidgetFormats.tagFormat(context, _fetchedTags[index]),
-        ),
-      ),
-      onRefresh: _reload,
-    );
-  }
 
   // 再読み込み
   Future<void> _reload() async {
@@ -106,7 +84,8 @@ class _TagPageState extends State<TagPage> {
                 _isNetworkError = true;
                 child = ErrorView.networkErrorView(_reload);
               } else if (_currentPageNumber != 1) {
-                child = _tagGridView();
+                child = ViewFormats.tagGridView(_reload, _fetchedTags,
+                    _scrollController, _tagContainerLength);
               }
 
               if (snapshot.connectionState == ConnectionState.done) {
@@ -115,7 +94,8 @@ class _TagPageState extends State<TagPage> {
                   _isNetworkError = false;
                   if (_currentPageNumber == 1) {
                     _fetchedTags = snapshot.data;
-                    child = _tagGridView();
+                    child = ViewFormats.tagGridView(_reload, _fetchedTags,
+                        _scrollController, _tagContainerLength);
                   } else {
                     _fetchedTags.addAll(snapshot.data);
                   }

@@ -5,7 +5,7 @@ import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/widgets/widget_formats.dart';
+import 'package:mobile_qiita_app/widgets/view_formats.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -22,21 +22,6 @@ class _FeedPageState extends State<FeedPage> {
   String _searchWord = '';
   bool _isNetworkError = false;
   bool _isLoading = false;
-
-  // 取得した記事一覧をListViewで表示
-  Widget _articleListView() {
-    return RefreshIndicator(
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: _fetchedArticles.length,
-        controller: _scrollController,
-        itemBuilder: (context, index) {
-          return WidgetFormats.articleFormat(context, _fetchedArticles[index]);
-        },
-      ),
-      onRefresh: _reload,
-    );
-  }
 
   // Search Barに任意のテキストを入力して記事を検索
   void _searchArticles(String inputText) {
@@ -146,7 +131,8 @@ class _FeedPageState extends State<FeedPage> {
             _isNetworkError = true;
             child = ErrorView.networkErrorView(_reload);
           } else if (_currentPageNumber != 1) {
-            child = _articleListView();
+            child = ViewFormats.articleListView(
+                _reload, _fetchedArticles, _scrollController);
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
@@ -157,7 +143,8 @@ class _FeedPageState extends State<FeedPage> {
                 child = ErrorView.emptySearchResultView();
               } else if (_currentPageNumber == 1) {
                 _fetchedArticles = snapshot.data;
-                child = _articleListView();
+                child = ViewFormats.articleListView(
+                    _reload, _fetchedArticles, _scrollController);
               } else {
                 _fetchedArticles.addAll(snapshot.data);
               }
