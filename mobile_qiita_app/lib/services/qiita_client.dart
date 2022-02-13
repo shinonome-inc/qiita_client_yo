@@ -34,7 +34,7 @@ class QiitaClient {
       final dynamic jsonResponse = json.decode(response.body);
       final AccessToken accessToken = AccessToken.fromJson(jsonResponse);
       Variables.accessToken = accessToken.token;
-      fetchUser();
+      await fetchUser();
     } else {
       throw Exception('Request failed with status: ${response.statusCode}');
     }

@@ -52,10 +52,12 @@ class _MyPageState extends State<MyPage> {
   @override
   void initState() {
     super.initState();
-    _fetchedUser = Variables.authenticatedUser;
-    _userId = _fetchedUser.id;
-    _futureArticles = QiitaClient.fetchArticle(
-        _currentPageNumber, _searchWord, _tagId, _userId);
+    if (Variables.accessToken.isNotEmpty) {
+      _fetchedUser = Variables.authenticatedUser;
+      _userId = _fetchedUser.id;
+      _futureArticles = QiitaClient.fetchArticle(
+          _currentPageNumber, _searchWord, _tagId, _userId);
+    }
   }
 
   @override

@@ -10,18 +10,16 @@ class ViewFormats {
       List<Article> fetchedArticles,
       ScrollController scrollController,
       bool isUserPosts) {
-    return Flexible(
-      child: RefreshIndicator(
-        onRefresh: onTapReload,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: fetchedArticles.length,
-          controller: scrollController,
-          itemBuilder: (context, index) {
-            return WidgetFormats.articleFormat(
-                context, fetchedArticles[index], isUserPosts);
-          },
-        ),
+    return RefreshIndicator(
+      onRefresh: onTapReload,
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: fetchedArticles.length,
+        controller: scrollController,
+        itemBuilder: (context, index) {
+          return WidgetFormats.articleFormat(
+              context, fetchedArticles[index], isUserPosts);
+        },
       ),
     );
   }
