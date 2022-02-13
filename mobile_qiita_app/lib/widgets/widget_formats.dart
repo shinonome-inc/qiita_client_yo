@@ -11,7 +11,8 @@ import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
 class WidgetFormats {
   // 取得した記事を基にユーザーアイコン、記事タイトル、ユーザー名、投稿日、LGTM数を表示
   static Widget articleFormat(
-      BuildContext context, Article article, bool isUserPosts) {
+      BuildContext context, Article article, bool isUserPage) {
+    final String headerTitle = 'article';
     DateTime postedTime = DateTime.parse(article.createdAt);
     String postedDate = Constants.postedDateFormat.format(postedTime);
     String userIconUrl = article.user.iconUrl.isEmpty
@@ -38,28 +39,26 @@ class WidgetFormats {
         ),
       ),
       child: Text(
-        '${article.user.id} 投稿日: $postedDate LGTM: ${article.likesCount}',
+        '@${article.user.id} 投稿日: $postedDate LGTM: ${article.likesCount}',
       ),
     );
 
-    if (isUserPosts) {
-      return ListTile(
-        onTap: () {
-          Methods.showWebContent(context, 'article', article.url);
-        },
-        title: articleTitle,
-        subtitle: articleSubtitle,
-      );
-    } else {
-      return ListTile(
-        onTap: () {
-          Methods.showWebContent(context, 'article', article.url);
-        },
-        leading: userIcon,
-        title: articleTitle,
-        subtitle: articleSubtitle,
-      );
-    }
+    return isUserPage
+        ? ListTile(
+            onTap: () {
+              Methods.showWebContent(context, headerTitle, article.url);
+            },
+            title: articleTitle,
+            subtitle: articleSubtitle,
+          )
+        : ListTile(
+            onTap: () {
+              Methods.showWebContent(context, headerTitle, article.url);
+            },
+            leading: userIcon,
+            title: articleTitle,
+            subtitle: articleSubtitle,
+          );
   }
 
   // 取得したタグを基にアイコン、タグ名、記事件数、フォロワー数を表示

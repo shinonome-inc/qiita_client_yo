@@ -5,31 +5,29 @@ import 'package:mobile_qiita_app/widgets/widget_formats.dart';
 
 class ViewFormats {
   // 記事一覧をListViewで表示
-  static Widget articleListView(
-      Future<void> Function() onTapReload,
-      List<Article> fetchedArticles,
-      ScrollController scrollController,
-      bool isUserPosts) {
+  static Widget articleListView(Future<void> Function() onTapReload,
+      List<Article> articles, ScrollController scrollController) {
+    final bool isUserPage = false;
     return RefreshIndicator(
       onRefresh: onTapReload,
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount: fetchedArticles.length,
+        itemCount: articles.length,
         controller: scrollController,
         itemBuilder: (context, index) {
           return WidgetFormats.articleFormat(
-              context, fetchedArticles[index], isUserPosts);
+              context, articles[index], isUserPage);
         },
       ),
     );
   }
 
-  // 投稿記事一覧を表示
+  // 記事一覧のListViewと「投稿記事」のラベルを表示
   static Widget postedArticleListView(
       Future<void> Function() onTapReload,
-      List<Article> fetchedArticles,
+      List<Article> articles,
       ScrollController scrollController,
-      bool isUserPosts) {
+      bool isUserPage) {
     return Column(
       children: <Widget>[
         Container(
@@ -43,8 +41,17 @@ class ViewFormats {
             ),
           ),
         ),
-        articleListView(
-            onTapReload, fetchedArticles, scrollController, isUserPosts),
+        Flexible(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: articles.length,
+            controller: scrollController,
+            itemBuilder: (context, index) {
+              return WidgetFormats.articleFormat(
+                  context, articles[index], isUserPage);
+            },
+          ),
+        ),
       ],
     );
   }

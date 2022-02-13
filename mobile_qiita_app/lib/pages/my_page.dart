@@ -7,7 +7,6 @@ import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/widgets/view_formats.dart';
 import 'package:mobile_qiita_app/widgets/widget_formats.dart';
-import 'package:mobile_qiita_app/widgets/widget_parts.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({Key? key}) : super(key: key);
@@ -34,9 +33,10 @@ class _MyPageState extends State<MyPage> {
     return Column(
       children: <Widget>[
         WidgetFormats.userFormat(_fetchedUser),
-        WidgetParts.postedArticleLabel,
-        ViewFormats.articleListView(
-            _reload, _fetchedArticles, _scrollController, _isUserPosts),
+        Flexible(
+          child: ViewFormats.postedArticleListView(
+              _reload, _fetchedArticles, _scrollController, _isUserPosts),
+        ),
       ],
     );
   }
