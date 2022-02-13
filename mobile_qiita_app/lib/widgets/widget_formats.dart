@@ -7,6 +7,7 @@ import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
+import 'package:mobile_qiita_app/widgets/view_formats.dart';
 
 class WidgetFormats {
   // 取得した記事を基にユーザーアイコン、記事タイトル、ユーザー名、投稿日、LGTM数を表示
@@ -155,7 +156,7 @@ class WidgetFormats {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Text(
-              '${user.description}${user.description}${user.description}${user.description}${user.description}',
+              user.description,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -164,32 +165,54 @@ class WidgetFormats {
             ),
           ),
           RichText(
-            text: TextSpan(style: TextStyle(color: Colors.black), children: [
-              TextSpan(
-                text: '${user.followingsCount}',
+            text: TextSpan(
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
-              ),
-              TextSpan(
-                text: 'フォロー中  ',
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
-              ),
-              TextSpan(
-                text: '${user.followersCount}',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              TextSpan(
-                text: 'フォロワー',
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
-              ),
-            ]),
+                children: [
+                  TextSpan(
+                    text: '${user.followingsCount}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const TextSpan(
+                    text: 'フォロー中  ',
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '${user.followersCount}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const TextSpan(
+                    text: 'フォロワー',
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ユーザーのプロフィールと投稿記事一覧を表示
+  static Widget userPageFormat(Future<void> Function() onTapReload, User user,
+      List<Article> articles, ScrollController scrollController) {
+    final bool isUserPage = true;
+    return RefreshIndicator(
+      onRefresh: onTapReload,
+      child: Column(
+        children: <Widget>[
+          userFormat(user),
+          Flexible(
+            child: ViewFormats.postedArticleListView(
+                onTapReload, articles, scrollController, isUserPage),
           ),
         ],
       ),

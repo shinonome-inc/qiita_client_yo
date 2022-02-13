@@ -5,7 +5,6 @@ import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/widgets/view_formats.dart';
 import 'package:mobile_qiita_app/widgets/widget_formats.dart';
 
 class MyPage extends StatefulWidget {
@@ -24,22 +23,8 @@ class _MyPageState extends State<MyPage> {
   final String _searchWord = '';
   final String _tagId = '';
   late final String _userId;
-  final bool _isUserPosts = true;
   bool _isNetworkError = false;
   bool _isLoading = false;
-
-  // 投稿記事
-  Widget _postedArticleList() {
-    return Column(
-      children: <Widget>[
-        WidgetFormats.userFormat(_fetchedUser),
-        Flexible(
-          child: ViewFormats.postedArticleListView(
-              _reload, _fetchedArticles, _scrollController, _isUserPosts),
-        ),
-      ],
-    );
-  }
 
   // 再読み込み
   Future<void> _reload() async {
@@ -85,7 +70,8 @@ class _MyPageState extends State<MyPage> {
                     child = ErrorView.networkErrorView(_reload);
                   } else if (_currentPageNumber != 1) {
                     _fetchedArticles = snapshot.data;
-                    child = _postedArticleList();
+                    child = WidgetFormats.userPageFormat(_reload, _fetchedUser,
+                        _fetchedArticles, _scrollController);
                   }
 
                   if (snapshot.connectionState == ConnectionState.done) {
@@ -93,7 +79,8 @@ class _MyPageState extends State<MyPage> {
                     if (snapshot.hasData) {
                       _isNetworkError = false;
                       _fetchedArticles = snapshot.data;
-                      child = _postedArticleList();
+                      child = WidgetFormats.userPageFormat(_reload,
+                          _fetchedUser, _fetchedArticles, _scrollController);
                     } else if (snapshot.hasError) {
                       _isNetworkError = true;
                       child = ErrorView.networkErrorView(_reload);

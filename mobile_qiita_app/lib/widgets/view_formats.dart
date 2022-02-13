@@ -28,32 +28,49 @@ class ViewFormats {
       List<Article> articles,
       ScrollController scrollController,
       bool isUserPage) {
-    return Column(
-      children: <Widget>[
-        Container(
-          padding: const EdgeInsets.all(8.0),
-          color: const Color(0xFFF2F2F2),
-          alignment: Alignment.centerLeft,
-          child: const Text(
-            '投稿記事',
-            style: TextStyle(
-              color: const Color(0xFF828282),
+    List<Widget> children = [
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        color: const Color(0xFFF2F2F2),
+        alignment: Alignment.centerLeft,
+        child: const Text(
+          '投稿記事',
+          style: TextStyle(
+            color: const Color(0xFF828282),
+          ),
+        ),
+      ),
+      articles.length < 20
+          ? RefreshIndicator(
+              onRefresh: onTapReload,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: articles.length,
+                controller: scrollController,
+                itemBuilder: (context, index) {
+                  return WidgetFormats.articleFormat(
+                      context, articles[index], isUserPage);
+                },
+              ),
+            )
+          : Flexible(
+              child: RefreshIndicator(
+                onRefresh: onTapReload,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: articles.length,
+                  controller: scrollController,
+                  itemBuilder: (context, index) {
+                    return WidgetFormats.articleFormat(
+                        context, articles[index], isUserPage);
+                  },
+                ),
+              ),
             ),
-          ),
-        ),
-        Flexible(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: articles.length,
-            controller: scrollController,
-            itemBuilder: (context, index) {
-              return WidgetFormats.articleFormat(
-                  context, articles[index], isUserPage);
-            },
-          ),
-        ),
-      ],
-    );
+    ];
+    return articles.length < 20
+        ? ListView(children: children)
+        : Column(children: children);
   }
 
   // タグ一覧をGridViewで表示
