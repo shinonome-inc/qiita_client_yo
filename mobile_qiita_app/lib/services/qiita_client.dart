@@ -87,15 +87,14 @@ class QiitaClient {
   }
 
   // QiitaAPIで認証中ユーザーの情報を取得
-  static Future<User> fetchUser() async {
+  static Future<void> fetchUser() async {
     var url = 'https://qiita.com/api/v2/authenticated_user';
     var response =
         await http.get(Uri.parse(url), headers: authorizationRequestHeader);
 
     if (response.statusCode == 200) {
       final dynamic jsonResponse = json.decode(response.body);
-      Variables.userId = User.fromJson(jsonResponse).id;
-      return User.fromJson(jsonResponse);
+      Variables.authenticatedUser = User.fromJson(jsonResponse);
     } else {
       throw Exception('Request failed with status: ${response.statusCode}');
     }
