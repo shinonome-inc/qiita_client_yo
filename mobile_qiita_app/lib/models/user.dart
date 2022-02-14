@@ -1,4 +1,6 @@
 // Qiita上のユーザー
+import 'package:mobile_qiita_app/common/constants.dart';
+
 class User {
   final String id;
   final String name;
@@ -19,9 +21,11 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'],
-      name: json['name'] == null ? '' : json['name'],
-      iconUrl: json['profile_image_url'],
-      description: json['description'] == null ? '' : json['description'],
+      name: json['name'] != null ? json['name'] : '',
+      iconUrl: json['profile_image_url'] != ''
+          ? json['profile_image_url']
+          : Constants.defaultUserIconUrl,
+      description: json['description'] != null ? json['description'] : '',
       followingsCount: json['followees_count'],
       followersCount: json['followers_count'],
     );

@@ -16,13 +16,10 @@ class WidgetFormats {
     final String headerTitle = 'article';
     DateTime postedTime = DateTime.parse(article.createdAt);
     String postedDate = Constants.postedDateFormat.format(postedTime);
-    String userIconUrl = article.user.iconUrl.isEmpty
-        ? Constants.defaultUserIconUrl
-        : article.user.iconUrl;
 
     Widget userIcon = CircleAvatar(
       radius: 24,
-      backgroundImage: CachedNetworkImageProvider(userIconUrl),
+      backgroundImage: CachedNetworkImageProvider(article.user.iconUrl),
     );
     Widget articleTitle = Text(
       article.title,
@@ -64,8 +61,6 @@ class WidgetFormats {
 
   // 取得したタグを基にアイコン、タグ名、記事件数、フォロワー数を表示
   static Widget tagFormat(BuildContext context, Tag tag) {
-    String tagIconUrl =
-        tag.iconUrl.isEmpty ? Constants.defaultTagIconUrl : tag.iconUrl;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
@@ -90,7 +85,7 @@ class WidgetFormats {
             Container(
               height: 48.0,
               width: 48.0,
-              child: CachedNetworkImage(imageUrl: tagIconUrl),
+              child: CachedNetworkImage(imageUrl: tag.iconUrl),
             ),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -131,8 +126,6 @@ class WidgetFormats {
 
   // 取得したユーザー情報を基にユーザーアイコン、ユーザー名、ID、自己紹介、フォロー数、フォロワー数を表示
   static Widget userFormat(User user) {
-    String userIconUrl =
-        user.iconUrl.isNotEmpty ? user.iconUrl : Constants.defaultUserIconUrl;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
       child: Column(
@@ -143,7 +136,7 @@ class WidgetFormats {
             padding: const EdgeInsets.only(bottom: 16.0),
             child: CircleAvatar(
               radius: 24.0,
-              backgroundImage: CachedNetworkImageProvider(userIconUrl),
+              backgroundImage: CachedNetworkImageProvider(user.iconUrl),
             ),
           ),
           Text(user.name),
