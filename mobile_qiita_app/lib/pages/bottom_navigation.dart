@@ -61,7 +61,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             return CupertinoTabView(
               builder: (context) => CupertinoPageScaffold(
                 child: FollowsFollowersListPage(
-                  usersType: 'Follows',
+                  usersType: 'Followers',
                   userId: 'Qiita',
                 ),
               ),

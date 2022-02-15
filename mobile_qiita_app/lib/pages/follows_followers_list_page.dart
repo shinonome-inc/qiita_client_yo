@@ -121,6 +121,15 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
         centerTitle: true,
         automaticallyImplyLeading: false,
         elevation: 1.6,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: const Color(0xFF468300),
+          ),
+        ),
         title: RichText(
           text: TextSpan(
               style: TextStyle(

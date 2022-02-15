@@ -162,7 +162,6 @@ class WidgetFormats {
             children: <Widget>[
               InkWell(
                 onTap: () {
-                  // TODO: FollowsPageへ遷移
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -198,7 +197,6 @@ class WidgetFormats {
               ),
               InkWell(
                 onTap: () {
-                  // TODO: FollowersPageへ遷移
                   Navigator.push(
                     context,
                     MaterialPageRoute(
