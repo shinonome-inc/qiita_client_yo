@@ -125,7 +125,7 @@ class WidgetFormats {
   }
 
   // 取得したユーザー情報を基にユーザーアイコン、ユーザー名、ID、自己紹介、フォロー数、フォロワー数を表示
-  static Widget userFormat(User user) {
+  static Widget userFormat(User user, BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
       child: Column(
@@ -157,37 +157,64 @@ class WidgetFormats {
               ),
             ),
           ),
-          RichText(
-            text: TextSpan(
-                style: TextStyle(
-                  color: Colors.black,
+          Row(
+            children: <Widget>[
+              InkWell(
+                onTap: () {
+                  // TODO: FollowsPageへ遷移
+                },
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: '${user.followingsCount}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: 'フォロー中  ',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                children: [
-                  TextSpan(
-                    text: '${user.followingsCount}',
+              ),
+              SizedBox(
+                width: 8.0,
+              ),
+              InkWell(
+                onTap: () {
+                  // TODO: FollowersPageへ遷移
+                },
+                child: RichText(
+                  text: TextSpan(
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
+                    children: [
+                      TextSpan(
+                        text: '${user.followersCount}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: 'フォロワー',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
-                  const TextSpan(
-                    text: 'フォロー中  ',
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                  TextSpan(
-                    text: '${user.followersCount}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const TextSpan(
-                    text: 'フォロワー',
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                ]),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -195,14 +222,18 @@ class WidgetFormats {
   }
 
   // ユーザーのプロフィールと投稿記事一覧を表示
-  static Widget userPageFormat(Future<void> Function() onTapReload, User user,
-      List<Article> articles, ScrollController scrollController) {
+  static Widget userPageFormat(
+      Future<void> Function() onTapReload,
+      User user,
+      List<Article> articles,
+      ScrollController scrollController,
+      BuildContext context) {
     final bool isUserPage = true;
     return RefreshIndicator(
       onRefresh: onTapReload,
       child: Column(
         children: <Widget>[
-          userFormat(user),
+          userFormat(user, context),
           Flexible(
             child: ViewFormats.postedArticleListView(
                 onTapReload, articles, scrollController, isUserPage),

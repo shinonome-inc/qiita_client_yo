@@ -7,17 +7,21 @@ import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/widgets/widget_formats.dart';
 
-class MyPage extends StatefulWidget {
-  const MyPage({Key? key}) : super(key: key);
+class UserPage extends StatefulWidget {
+  const UserPage({required this.user, required this.appBarTitle, Key? key})
+      : super(key: key);
+
+  final User user;
+  final String appBarTitle;
 
   @override
-  _MyPageState createState() => _MyPageState();
+  _UserPageState createState() => _UserPageState();
 }
 
-class _MyPageState extends State<MyPage> {
+class _UserPageState extends State<UserPage> {
   final ScrollController _scrollController = ScrollController();
   late Future<List<Article>> _futureArticles;
-  late User _fetchedUser;
+  late User _user;
   late List<Article> _fetchedArticles;
   int _currentPageNumber = 1;
   final String _searchWord = '';
@@ -38,8 +42,8 @@ class _MyPageState extends State<MyPage> {
   void initState() {
     super.initState();
     if (Variables.accessToken.isNotEmpty) {
-      _fetchedUser = Variables.authenticatedUser;
-      _userId = _fetchedUser.id;
+      _user = widget.user;
+      _userId = _user.id;
       _futureArticles = QiitaClient.fetchArticle(
           _currentPageNumber, _searchWord, _tagId, _userId);
     }
@@ -53,8 +57,8 @@ class _MyPageState extends State<MyPage> {
         centerTitle: true,
         automaticallyImplyLeading: false,
         elevation: 1.6,
-        title: const Text(
-          'MyPage',
+        title: Text(
+          widget.appBarTitle,
           style: Constants.headerTextStyle,
         ),
       ),
@@ -70,8 +74,8 @@ class _MyPageState extends State<MyPage> {
                     child = ErrorView.networkErrorView(_reload);
                   } else if (_currentPageNumber != 1) {
                     _fetchedArticles = snapshot.data;
-                    child = WidgetFormats.userPageFormat(_reload, _fetchedUser,
-                        _fetchedArticles, _scrollController);
+                    child = WidgetFormats.userPageFormat(_reload, _user,
+                        _fetchedArticles, _scrollController, context);
                   }
 
                   if (snapshot.connectionState == ConnectionState.done) {
@@ -79,8 +83,8 @@ class _MyPageState extends State<MyPage> {
                     if (snapshot.hasData) {
                       _isNetworkError = false;
                       _fetchedArticles = snapshot.data;
-                      child = WidgetFormats.userPageFormat(_reload,
-                          _fetchedUser, _fetchedArticles, _scrollController);
+                      child = WidgetFormats.userPageFormat(_reload, _user,
+                          _fetchedArticles, _scrollController, context);
                     } else if (snapshot.hasError) {
                       _isNetworkError = true;
                       child = ErrorView.networkErrorView(_reload);
