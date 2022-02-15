@@ -2,6 +2,7 @@
 // TODO: User Pageへ遷移
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/models/user.dart';
@@ -31,37 +32,86 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
   bool _isNetworkError = false;
   bool _isLoading = false;
 
-  AppBar appBar(Widget appBarText) {
+  AppBar appBar(String appBarTitle) {
     return AppBar(
+      leading: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: Icon(
+          Icons.arrow_back_ios,
+          color: const Color(0xFF468300),
+        ),
+      ),
       backgroundColor: Colors.white,
       centerTitle: true,
       automaticallyImplyLeading: false,
       elevation: 1.6,
-      title: appBarText,
+      title: Text(
+        appBarTitle,
+        style: Constants.headerTextStyle,
+      ),
     );
   }
 
-  // ユーザーのアイコン、名前、ID？を表示
+  // ユーザー情報を元にアイコン、名前、ID、記事投稿数、Contribution?、自己紹介文を表示
   Widget userFormat(BuildContext context, User user) {
-    return ListTile(
-      leading: CircleAvatar(
-        radius: 24,
-        backgroundImage: CachedNetworkImageProvider(user.iconUrl),
-      ),
-      title: Text(user.id),
-      // subtitle: Text(user.name),
-      subtitle: Container(
-        padding: const EdgeInsets.only(bottom: 8),
+    return GestureDetector(
+      onTap: () {
+        // TODO: UserPageへ遷移
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: const Color(0xEFEFF0FF),
-              width: 1.6,
-            ),
+          borderRadius: BorderRadius.circular(8.0),
+          border: Border.all(
+            color: const Color(0xFFE0E0E0),
+            width: 1.6,
           ),
         ),
-        child: Text(
-          user.name,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                CircleAvatar(
+                  radius: 24,
+                  backgroundImage: CachedNetworkImageProvider(user.iconUrl),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        user.name,
+                      ),
+                      Text(
+                        '@${user.id}',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 8.0),
+              // child: Text('Posts: ${user.posts}, Contribution: ${user.posts}'),
+              child: Text('Posts: ${user.posts}'),
+            ),
+            Text(
+              user.description,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 3,
+              style: TextStyle(
+                color: Colors.grey,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -116,39 +166,7 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        elevation: 1.6,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: const Color(0xFF468300),
-          ),
-        ),
-        title: RichText(
-          text: TextSpan(
-              style: TextStyle(
-                // TODO: Constants.headerTextStyleにColors.blackを追加
-                color: Colors.black,
-                fontFamily: Constants.pacifico,
-              ),
-              children: [
-                TextSpan(
-                  text: _userId,
-                ),
-                TextSpan(text: '\n'),
-                TextSpan(
-                  text: _usersType,
-                  style: Constants.headerTextStyle,
-                ),
-              ]),
-        ),
-      ),
+      appBar: appBar(_usersType),
       body: SafeArea(
         child: FutureBuilder(
           future: _futureUsers,
