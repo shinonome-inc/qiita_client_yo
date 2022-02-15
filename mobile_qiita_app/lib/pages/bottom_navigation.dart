@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/pages/feed_page.dart';
+import 'package:mobile_qiita_app/pages/setting_page.dart';
 import 'package:mobile_qiita_app/pages/tag_page.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -52,8 +53,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             );
           case 3:
             return CupertinoTabView(
-              builder: (context) =>
-                  CupertinoPageScaffold(child: const Text('SettingPage')),
+              builder: (context) => CupertinoPageScaffold(child: SettingPage()),
             );
           default:
             return Container();
