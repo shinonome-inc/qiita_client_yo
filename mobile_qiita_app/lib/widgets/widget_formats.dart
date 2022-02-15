@@ -6,6 +6,7 @@ import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/models/user.dart';
+import 'package:mobile_qiita_app/pages/follows_followers_list_page.dart';
 import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
 import 'package:mobile_qiita_app/widgets/view_formats.dart';
 
@@ -125,7 +126,7 @@ class WidgetFormats {
   }
 
   // 取得したユーザー情報を基にユーザーアイコン、ユーザー名、ID、自己紹介、フォロー数、フォロワー数を表示
-  static Widget userFormat(User user) {
+  static Widget userFormat(User user, BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
       child: Column(
@@ -162,6 +163,13 @@ class WidgetFormats {
               InkWell(
                 onTap: () {
                   // TODO: FollowsPageへ遷移
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FollowsFollowersListPage(
+                          usersType: 'Follows', userId: user.id),
+                    ),
+                  );
                 },
                 child: RichText(
                   text: TextSpan(
@@ -191,6 +199,13 @@ class WidgetFormats {
               InkWell(
                 onTap: () {
                   // TODO: FollowersPageへ遷移
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FollowsFollowersListPage(
+                          usersType: 'Followers', userId: user.id),
+                    ),
+                  );
                 },
                 child: RichText(
                   text: TextSpan(
@@ -222,14 +237,18 @@ class WidgetFormats {
   }
 
   // ユーザーのプロフィールと投稿記事一覧を表示
-  static Widget userPageFormat(Future<void> Function() onTapReload, User user,
-      List<Article> articles, ScrollController scrollController) {
+  static Widget userPageFormat(
+      Future<void> Function() onTapReload,
+      User user,
+      List<Article> articles,
+      ScrollController scrollController,
+      BuildContext context) {
     final bool isUserPage = true;
     return RefreshIndicator(
       onRefresh: onTapReload,
       child: Column(
         children: <Widget>[
-          userFormat(user),
+          userFormat(user, context),
           Flexible(
             child: ViewFormats.postedArticleListView(
                 onTapReload, articles, scrollController, isUserPage),

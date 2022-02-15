@@ -74,8 +74,8 @@ class _UserPageState extends State<UserPage> {
                     child = ErrorView.networkErrorView(_reload);
                   } else if (_currentPageNumber != 1) {
                     _fetchedArticles = snapshot.data;
-                    child = WidgetFormats.userPageFormat(
-                        _reload, _user, _fetchedArticles, _scrollController);
+                    child = WidgetFormats.userPageFormat(_reload, _user,
+                        _fetchedArticles, _scrollController, context);
                   }
 
                   if (snapshot.connectionState == ConnectionState.done) {
@@ -83,8 +83,8 @@ class _UserPageState extends State<UserPage> {
                     if (snapshot.hasData) {
                       _isNetworkError = false;
                       _fetchedArticles = snapshot.data;
-                      child = WidgetFormats.userPageFormat(
-                          _reload, _user, _fetchedArticles, _scrollController);
+                      child = WidgetFormats.userPageFormat(_reload, _user,
+                          _fetchedArticles, _scrollController, context);
                     } else if (snapshot.hasError) {
                       _isNetworkError = true;
                       child = ErrorView.networkErrorView(_reload);

@@ -71,7 +71,7 @@ class _MyPageState extends State<MyPage> {
                   } else if (_currentPageNumber != 1) {
                     _fetchedArticles = snapshot.data;
                     child = WidgetFormats.userPageFormat(_reload, _fetchedUser,
-                        _fetchedArticles, _scrollController);
+                        _fetchedArticles, _scrollController, context);
                   }
 
                   if (snapshot.connectionState == ConnectionState.done) {
@@ -79,8 +79,12 @@ class _MyPageState extends State<MyPage> {
                     if (snapshot.hasData) {
                       _isNetworkError = false;
                       _fetchedArticles = snapshot.data;
-                      child = WidgetFormats.userPageFormat(_reload,
-                          _fetchedUser, _fetchedArticles, _scrollController);
+                      child = WidgetFormats.userPageFormat(
+                          _reload,
+                          _fetchedUser,
+                          _fetchedArticles,
+                          _scrollController,
+                          context);
                     } else if (snapshot.hasError) {
                       _isNetworkError = true;
                       child = ErrorView.networkErrorView(_reload);
