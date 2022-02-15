@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
 
 class ErrorView {
   // ネットワークエラー
@@ -90,6 +91,16 @@ class ErrorView {
   // 未ログインの場合に表示
   static Widget notLoginView(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        elevation: 1.6,
+        title: Text(
+          'MyPage',
+          style: Constants.headerTextStyle,
+        ),
+      ),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 16.0),
