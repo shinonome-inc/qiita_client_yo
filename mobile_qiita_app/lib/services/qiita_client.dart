@@ -99,4 +99,22 @@ class QiitaClient {
       throw Exception('Request failed with status: ${response.statusCode}');
     }
   }
+
+  // QiitaAPIでユーザー一覧を取得
+  static Future<List<User>> fetchUsers(String usersType, String userId) async {
+    var url = usersType == 'Follows'
+        ? 'https://qiita.com/api/v2/users/$userId/followees'
+        : 'https://qiita.com/api/v2/users/$userId/followers';
+
+    var response = Variables.accessToken.isNotEmpty
+        ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
+        : await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonResponse = json.decode(response.body);
+      return jsonResponse.map((json) => User.fromJson(json)).toList();
+    } else {
+      throw Exception('Request failed with status: ${response.statusCode}');
+    }
+  }
 }

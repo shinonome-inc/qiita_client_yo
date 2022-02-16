@@ -10,5 +10,6 @@ class Variables {
     description: '',
     followingsCount: 0,
     followersCount: 0,
+    posts: 0,
   );
 }
