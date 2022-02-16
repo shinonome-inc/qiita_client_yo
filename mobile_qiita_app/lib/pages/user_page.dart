@@ -21,12 +21,10 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   final ScrollController _scrollController = ScrollController();
   late Future<List<Article>> _futureArticles;
-  late User _user;
   late List<Article> _fetchedArticles;
   int _currentPageNumber = 1;
   final String _searchWord = '';
   final String _tagId = '';
-  late final String _userId;
   bool _isNetworkError = false;
   bool _isLoading = false;
 
@@ -34,7 +32,7 @@ class _UserPageState extends State<UserPage> {
   Future<void> _reload() async {
     setState(() {
       _futureArticles = QiitaClient.fetchArticle(
-          _currentPageNumber, _searchWord, _tagId, _userId);
+          _currentPageNumber, _searchWord, _tagId, widget.user.id);
     });
   }
 
@@ -42,10 +40,8 @@ class _UserPageState extends State<UserPage> {
   void initState() {
     super.initState();
     if (Variables.accessToken.isNotEmpty) {
-      _user = widget.user;
-      _userId = _user.id;
       _futureArticles = QiitaClient.fetchArticle(
-          _currentPageNumber, _searchWord, _tagId, _userId);
+          _currentPageNumber, _searchWord, _tagId, widget.user.id);
     }
   }
 
@@ -74,7 +70,7 @@ class _UserPageState extends State<UserPage> {
                     child = ErrorView.networkErrorView(_reload);
                   } else if (_currentPageNumber != 1) {
                     _fetchedArticles = snapshot.data;
-                    child = WidgetFormats.userPageFormat(_reload, _user,
+                    child = WidgetFormats.userPageFormat(_reload, widget.user,
                         _fetchedArticles, _scrollController, context);
                   }
 
@@ -83,7 +79,7 @@ class _UserPageState extends State<UserPage> {
                     if (snapshot.hasData) {
                       _isNetworkError = false;
                       _fetchedArticles = snapshot.data;
-                      child = WidgetFormats.userPageFormat(_reload, _user,
+                      child = WidgetFormats.userPageFormat(_reload, widget.user,
                           _fetchedArticles, _scrollController, context);
                     } else if (snapshot.hasError) {
                       _isNetworkError = true;
