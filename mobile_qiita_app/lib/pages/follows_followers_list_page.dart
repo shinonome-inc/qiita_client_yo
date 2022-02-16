@@ -4,7 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
-import 'package:mobile_qiita_app/components/user_component_of_user_list.dart';
+import 'package:mobile_qiita_app/components/list_component.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
@@ -54,37 +54,6 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
     );
   }
 
-  // ユーザー一覧を表示
-  Widget usersListView() {
-    return _fetchedUsers.length < 20
-        ? RefreshIndicator(
-            onRefresh: _reload,
-            child: ListView(
-              children: [
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _fetchedUsers.length,
-                  controller: _scrollController,
-                  itemBuilder: (context, index) {
-                    return UserComponentOfUserList(user: _fetchedUsers[index]);
-                  },
-                ),
-              ],
-            ),
-          )
-        : RefreshIndicator(
-            onRefresh: _reload,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: _fetchedUsers.length,
-              controller: _scrollController,
-              itemBuilder: (context, index) {
-                return UserComponentOfUserList(user: _fetchedUsers[index]);
-              },
-            ),
-          );
-  }
-
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
@@ -114,7 +83,8 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
             if (snapshot.hasError) {
               child = ErrorView.networkErrorView(_reload);
             } else if (_currentPageNumber != 1) {
-              child = usersListView();
+              child = ListComponent.userListView(
+                  _reload, _fetchedUsers, _scrollController);
             }
 
             if (snapshot.connectionState == ConnectionState.done) {
@@ -123,7 +93,8 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
                 _isNetworkError = false;
                 if (_currentPageNumber == 1) {
                   _fetchedUsers = snapshot.data;
-                  child = usersListView();
+                  child = ListComponent.userListView(
+                      _reload, _fetchedUsers, _scrollController);
                 } else if (snapshot.hasError) {
                   _isNetworkError = true;
                   child = ErrorView.networkErrorView(_reload);
