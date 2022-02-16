@@ -14,7 +14,7 @@ class SettingItemContainer extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: const Color(0xFFE0E0E0),
+              color: const Color(0xFFE7E7E7),
               width: 1.6,
             ),
           ),

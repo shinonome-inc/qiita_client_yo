@@ -9,7 +9,7 @@ class SettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFAFAFAFF),
+      backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -25,9 +25,13 @@ class SettingPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: Text('アプリ情報'),
+              margin: const EdgeInsets.only(left: 16.0, top: 31.5, bottom: 8.0),
+              child: Text(
+                'アプリ情報',
+                style: TextStyle(
+                  color: const Color(0xFF828282),
+                ),
+              ),
             ),
             SettingItem(
               settingTitle: 'プライバシーポリシー',
@@ -35,7 +39,10 @@ class SettingPage extends StatelessWidget {
                 onPressed: () {
                   // TODO: プライバシーポリシーへ遷移
                 },
-                icon: Icon(Icons.arrow_forward_ios_outlined),
+                icon: Icon(
+                  Icons.arrow_forward_ios_outlined,
+                  color: const Color(0xFF333333),
+                ),
               ),
             ),
             SettingItem(
@@ -44,20 +51,33 @@ class SettingPage extends StatelessWidget {
                 onPressed: () {
                   // TODO: 利用規約へ遷移
                 },
-                icon: Icon(Icons.arrow_forward_ios_outlined),
+                icon: Icon(
+                  Icons.arrow_forward_ios_outlined,
+                  color: const Color(0xFF333333),
+                ),
               ),
             ),
             SettingItem(
               settingTitle: 'アプリバージョン',
               settingItem: Container(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: Text('1.0.0'),
+                margin: const EdgeInsets.only(right: 16.0),
+                child: Text(
+                  'v1.0.0',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ),
             Container(
               padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: Text('その他'),
+                  const EdgeInsets.only(left: 16.0, top: 36.0, bottom: 8.0),
+              child: Text(
+                'その他',
+                style: TextStyle(
+                  color: const Color(0xFF828282),
+                ),
+              ),
             ),
             GestureDetector(
               onTap: () {
