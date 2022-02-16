@@ -1,10 +1,10 @@
 // TODO: ページネーションの実装
 // TODO: User Pageへ遷移
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/components/user_component_of_user_list.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
@@ -54,69 +54,6 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
     );
   }
 
-  // ユーザー情報を元にアイコン、名前、ID、記事投稿数、Contribution?、自己紹介文を表示
-  Widget userFormat(BuildContext context, User user) {
-    return GestureDetector(
-      onTap: () {
-        // TODO: UserPageへ遷移
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(
-            color: const Color(0xFFE0E0E0),
-            width: 1.6,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                CircleAvatar(
-                  radius: 24,
-                  backgroundImage: CachedNetworkImageProvider(user.iconUrl),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        user.name,
-                      ),
-                      Text(
-                        '@${user.id}',
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 8.0),
-              // child: Text('Posts: ${user.posts}, Contribution: ${user.posts}'),
-              child: Text('Posts: ${user.posts}'),
-            ),
-            Text(
-              user.description,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 3,
-              style: TextStyle(
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   // ユーザー一覧を表示
   Widget usersListView() {
     return _fetchedUsers.length < 20
@@ -129,7 +66,7 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
                   itemCount: _fetchedUsers.length,
                   controller: _scrollController,
                   itemBuilder: (context, index) {
-                    return userFormat(context, _fetchedUsers[index]);
+                    return UserComponentOfUserList(user: _fetchedUsers[index]);
                   },
                 ),
               ],
@@ -142,7 +79,7 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
               itemCount: _fetchedUsers.length,
               controller: _scrollController,
               itemBuilder: (context, index) {
-                return userFormat(context, _fetchedUsers[index]);
+                return UserComponentOfUserList(user: _fetchedUsers[index]);
               },
             ),
           );
@@ -166,6 +103,7 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: appBar(_usersType),
       body: SafeArea(
         child: FutureBuilder(
