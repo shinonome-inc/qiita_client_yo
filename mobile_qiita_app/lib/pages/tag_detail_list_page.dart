@@ -5,7 +5,7 @@ import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/widgets/article_widget.dart';
+import 'package:mobile_qiita_app/widgets/view_formats.dart';
 
 class TagDetailListPage extends StatefulWidget {
   const TagDetailListPage({required this.tag, Key? key}) : super(key: key);
@@ -21,48 +21,18 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   late Future<List<Article>> _futureArticles;
   List<Article> _fetchedArticles = [];
   int _currentPageNumber = 1;
+  final String _searchWord = '';
   String _tagId = '';
+  final String _userId = '';
+  final bool _isUserPosts = false;
   bool _isNetworkError = false;
   bool _isLoading = false;
-
-  // 取得した記事一覧をListViewで表示
-  Widget _articleListView() {
-    return Column(
-      children: <Widget>[
-        Container(
-          padding: const EdgeInsets.all(8.0),
-          color: const Color(0xFFF2F2F2),
-          alignment: Alignment.centerLeft,
-          child: const Text(
-            '投稿記事',
-            style: TextStyle(
-              color: const Color(0xFF828282),
-            ),
-          ),
-        ),
-        Flexible(
-          child: RefreshIndicator(
-            onRefresh: _reload,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: _fetchedArticles.length,
-              controller: _scrollController,
-              itemBuilder: (context, index) {
-                return ArticleWidget.articleWidget(
-                    context, _fetchedArticles[index]);
-              },
-            ),
-          ),
-        )
-      ],
-    );
-  }
 
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureArticles =
-          QiitaClient.fetchArticle(_currentPageNumber, '', _tagId);
+      _futureArticles = QiitaClient.fetchArticle(
+          _currentPageNumber, _searchWord, _tagId, _userId);
     });
   }
 
@@ -72,8 +42,8 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
       _isLoading = true;
       _currentPageNumber++;
       setState(() {
-        _futureArticles =
-            QiitaClient.fetchArticle(_currentPageNumber, '', _tagId);
+        _futureArticles = QiitaClient.fetchArticle(
+            _currentPageNumber, _searchWord, _tagId, _userId);
       });
     }
   }
@@ -82,7 +52,8 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   void initState() {
     super.initState();
     _tagId = widget.tag.id;
-    _futureArticles = QiitaClient.fetchArticle(_currentPageNumber, '', _tagId);
+    _futureArticles = QiitaClient.fetchArticle(
+        _currentPageNumber, _searchWord, _tagId, _userId);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
         _moreLoad();
@@ -127,7 +98,8 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
             _isNetworkError = true;
             child = ErrorView.networkErrorView(_reload);
           } else if (_currentPageNumber != 1) {
-            child = _articleListView();
+            child = ViewFormats.postedArticleListView(
+                _reload, _fetchedArticles, _scrollController, _isUserPosts);
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
@@ -136,7 +108,8 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
               _isNetworkError = false;
               if (_currentPageNumber == 1) {
                 _fetchedArticles = snapshot.data;
-                child = _articleListView();
+                child = ViewFormats.postedArticleListView(
+                    _reload, _fetchedArticles, _scrollController, _isUserPosts);
               } else {
                 _fetchedArticles.addAll(snapshot.data);
               }

@@ -5,7 +5,7 @@ import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/widgets/article_widget.dart';
+import 'package:mobile_qiita_app/widgets/view_formats.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -20,38 +20,25 @@ class _FeedPageState extends State<FeedPage> {
   List<Article> _fetchedArticles = [];
   int _currentPageNumber = 1;
   String _searchWord = '';
+  final String _tagId = '';
+  final String _userId = '';
   bool _isNetworkError = false;
   bool _isLoading = false;
-
-  // 取得した記事一覧をListViewで表示
-  Widget _articleListView() {
-    return RefreshIndicator(
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: _fetchedArticles.length,
-        controller: _scrollController,
-        itemBuilder: (context, index) {
-          return ArticleWidget.articleWidget(context, _fetchedArticles[index]);
-        },
-      ),
-      onRefresh: _reload,
-    );
-  }
 
   // Search Barに任意のテキストを入力して記事を検索
   void _searchArticles(String inputText) {
     _searchWord = inputText;
     setState(() {
-      _futureArticles =
-          QiitaClient.fetchArticle(_currentPageNumber, _searchWord, '');
+      _futureArticles = QiitaClient.fetchArticle(
+          _currentPageNumber, _searchWord, _tagId, _userId);
     });
   }
 
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureArticles =
-          QiitaClient.fetchArticle(_currentPageNumber, _searchWord, '');
+      _futureArticles = QiitaClient.fetchArticle(
+          _currentPageNumber, _searchWord, _tagId, _userId);
     });
   }
 
@@ -61,8 +48,8 @@ class _FeedPageState extends State<FeedPage> {
       _isLoading = true;
       _currentPageNumber++;
       setState(() {
-        _futureArticles =
-            QiitaClient.fetchArticle(_currentPageNumber, _searchWord, '');
+        _futureArticles = QiitaClient.fetchArticle(
+            _currentPageNumber, _searchWord, _tagId, _userId);
       });
     }
   }
@@ -70,8 +57,8 @@ class _FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
-    _futureArticles =
-        QiitaClient.fetchArticle(_currentPageNumber, _searchWord, '');
+    _futureArticles = QiitaClient.fetchArticle(
+        _currentPageNumber, _searchWord, _tagId, _userId);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
         _moreLoad();
@@ -146,7 +133,8 @@ class _FeedPageState extends State<FeedPage> {
             _isNetworkError = true;
             child = ErrorView.networkErrorView(_reload);
           } else if (_currentPageNumber != 1) {
-            child = _articleListView();
+            child = ViewFormats.articleListView(
+                _reload, _fetchedArticles, _scrollController);
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
@@ -157,7 +145,8 @@ class _FeedPageState extends State<FeedPage> {
                 child = ErrorView.emptySearchResultView();
               } else if (_currentPageNumber == 1) {
                 _fetchedArticles = snapshot.data;
-                child = _articleListView();
+                child = ViewFormats.articleListView(
+                    _reload, _fetchedArticles, _scrollController);
               } else {
                 _fetchedArticles.addAll(snapshot.data);
               }
