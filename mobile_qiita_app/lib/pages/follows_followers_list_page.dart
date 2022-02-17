@@ -56,6 +56,7 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
             Widget child = Container();
 
             if (snapshot.hasError) {
+              _isNetworkError = true;
               child = ErrorView.networkErrorView(_reload);
             }
             // TODO: ページネーション実装

@@ -81,7 +81,7 @@ class _TagPageState extends State<TagPage> {
                     _scrollController, _tagContainerLength);
               }
 
-              if (snapshot.connectionStateDone && snapshot.data) {
+              if (snapshot.connectionStateDone && snapshot.hasData) {
                 _isLoading = false;
                 _isNetworkError = false;
                 if (_currentPageNumber == 1) {

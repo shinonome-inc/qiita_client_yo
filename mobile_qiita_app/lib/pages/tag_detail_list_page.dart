@@ -85,7 +85,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
                 _reload, _fetchedArticles, _scrollController, _isUserPosts);
           }
 
-          if (snapshot.connectionStateDone && snapshot.data) {
+          if (snapshot.connectionStateDone && snapshot.hasData) {
             _isLoading = false;
             _isNetworkError = false;
             if (_currentPageNumber == 1) {

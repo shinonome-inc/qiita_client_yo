@@ -68,7 +68,7 @@ class _UserPageState extends State<UserPage> {
                   //       _fetchedArticles, _scrollController, context);
                   // }
 
-                  if (snapshot.connectionStateDone && snapshot.data) {
+                  if (snapshot.connectionStateDone && snapshot.hasData) {
                     _isLoading = false;
                     _isNetworkError = false;
                     if (_currentPageNumber == 1) {
