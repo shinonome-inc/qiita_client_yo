@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
+import 'package:mobile_qiita_app/extension/connection_state_done.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
@@ -59,24 +60,30 @@ class _UserPageState extends State<UserPage> {
                   if (snapshot.hasError) {
                     _isNetworkError = true;
                     child = ErrorView.networkErrorView(_reload);
-                  } else if (_currentPageNumber != 1) {
-                    _fetchedArticles = snapshot.data;
-                    child = WidgetFormats.userPageFormat(_reload, widget.user,
-                        _fetchedArticles, _scrollController, context);
                   }
+                  // TODO: ページネーション実装
+                  // else if (_currentPageNumber != 1) {
+                  //   _fetchedArticles = snapshot.data;
+                  //   child = WidgetFormats.userPageFormat(_reload, widget.user,
+                  //       _fetchedArticles, _scrollController, context);
+                  // }
 
-                  if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.connectionStateDone && snapshot.data) {
                     _isLoading = false;
-                    if (snapshot.hasData) {
-                      _isNetworkError = false;
+                    _isNetworkError = false;
+                    if (_currentPageNumber == 1) {
                       _fetchedArticles = snapshot.data;
                       child = WidgetFormats.userPageFormat(_reload, widget.user,
                           _fetchedArticles, _scrollController, context);
-                    } else if (snapshot.hasError) {
-                      _isNetworkError = true;
-                      child = ErrorView.networkErrorView(_reload);
                     }
-                  } else {
+                    // TODO: ページネーション実装
+                    // else {
+                    //   _fetchedArticles.addAll(snapshot.data);
+                    // }
+                  } else if (snapshot.hasError) {
+                    _isNetworkError = true;
+                    child = ErrorView.networkErrorView(_reload);
+                  } else if (_isNetworkError || _currentPageNumber == 1) {
                     child = CircularProgressIndicator();
                   }
 

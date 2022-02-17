@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
 import 'package:mobile_qiita_app/components/list_component.dart';
+import 'package:mobile_qiita_app/extension/connection_state_done.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
@@ -56,28 +57,30 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
 
             if (snapshot.hasError) {
               child = ErrorView.networkErrorView(_reload);
-            } else if (_currentPageNumber != 1) {
-              child = ListComponent.userListView(
-                  _reload, _fetchedUsers, _scrollController);
             }
+            // TODO: ページネーション実装
+            // else if (_currentPageNumber != 1) {
+            //   child = ListComponent.userListView(
+            //       _reload, _fetchedUsers, _scrollController);
+            // }
 
-            if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.connectionStateDone && snapshot.hasData) {
               _isLoading = false;
-              if (snapshot.hasData) {
-                _isNetworkError = false;
-                if (_currentPageNumber == 1) {
-                  _fetchedUsers = snapshot.data;
-                  child = ListComponent.userListView(
-                      _reload, _fetchedUsers, _scrollController);
-                } else if (snapshot.hasError) {
-                  _isNetworkError = true;
-                  child = ErrorView.networkErrorView(_reload);
-                }
+              _isNetworkError = false;
+              if (_currentPageNumber == 1) {
+                _fetchedUsers = snapshot.data;
+                child = ListComponent.userListView(
+                    _reload, _fetchedUsers, _scrollController);
               }
-            } else {
-              if (_isNetworkError || _currentPageNumber == 1) {
-                child = Center(child: CircularProgressIndicator());
-              }
+              // TODO: ページネーション実装
+              // else {
+              //   _fetchedUsers.addAll(snapshot.data);
+              // }
+            } else if (snapshot.hasError) {
+              _isNetworkError = true;
+              child = ErrorView.networkErrorView(_reload);
+            } else if (_isNetworkError || _currentPageNumber == 1) {
+              child = Center(child: CircularProgressIndicator());
             }
 
             return Container(

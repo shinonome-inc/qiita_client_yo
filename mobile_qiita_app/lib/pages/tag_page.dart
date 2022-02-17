@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
+import 'package:mobile_qiita_app/extension/connection_state_done.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
@@ -80,24 +81,21 @@ class _TagPageState extends State<TagPage> {
                     _scrollController, _tagContainerLength);
               }
 
-              if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.connectionStateDone && snapshot.data) {
                 _isLoading = false;
-                if (snapshot.hasData) {
-                  _isNetworkError = false;
-                  if (_currentPageNumber == 1) {
-                    _fetchedTags = snapshot.data;
-                    child = ViewFormats.tagGridView(_reload, _fetchedTags,
-                        _scrollController, _tagContainerLength);
-                  } else {
-                    _fetchedTags.addAll(snapshot.data);
-                  }
-                } else if (snapshot.hasError) {
-                  child = ErrorView.networkErrorView(_reload);
+                _isNetworkError = false;
+                if (_currentPageNumber == 1) {
+                  _fetchedTags = snapshot.data;
+                  child = ViewFormats.tagGridView(_reload, _fetchedTags,
+                      _scrollController, _tagContainerLength);
+                } else {
+                  _fetchedTags.addAll(snapshot.data);
                 }
-              } else {
-                if (_isNetworkError || _currentPageNumber == 1) {
-                  child = CircularProgressIndicator();
-                }
+              } else if (snapshot.hasError) {
+                _isNetworkError = true;
+                child = ErrorView.networkErrorView(_reload);
+              } else if (_isNetworkError || _currentPageNumber == 1) {
+                child = CircularProgressIndicator();
               }
 
               return Container(
