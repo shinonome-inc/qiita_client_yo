@@ -3,7 +3,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/components/app_bar_component.dart';
 import 'package:mobile_qiita_app/components/list_component.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
@@ -32,28 +32,6 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
   bool _isNetworkError = false;
   bool _isLoading = false;
 
-  AppBar appBar(String appBarTitle) {
-    return AppBar(
-      leading: IconButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: Icon(
-          Icons.arrow_back_ios,
-          color: const Color(0xFF468300),
-        ),
-      ),
-      backgroundColor: Colors.white,
-      centerTitle: true,
-      automaticallyImplyLeading: false,
-      elevation: 1.6,
-      title: Text(
-        appBarTitle,
-        style: Constants.headerTextStyle,
-      ),
-    );
-  }
-
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
@@ -73,7 +51,7 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: appBar(_usersType),
+      appBar: AppBarComponent(title: _usersType, useBackButton: true),
       body: SafeArea(
         child: FutureBuilder(
           future: _futureUsers,

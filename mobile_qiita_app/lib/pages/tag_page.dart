@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/components/app_bar_component.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
@@ -62,16 +62,17 @@ class _TagPageState extends State<TagPage> {
   Widget build(BuildContext context) {
     _tagContainerLength = (MediaQuery.of(context).size.width ~/ 192).toInt();
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        elevation: 1.6,
-        title: const Text(
-          'Tag',
-          style: Constants.headerTextStyle,
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.white,
+      //   centerTitle: true,
+      //   automaticallyImplyLeading: false,
+      //   elevation: 1.6,
+      //   title: const Text(
+      //     'Tag',
+      //     style: Constants.headerTextStyle,
+      //   ),
+      // ),
+      appBar: AppBarComponent(title: 'Tag', useBackButton: false),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.only(top: 16.0),

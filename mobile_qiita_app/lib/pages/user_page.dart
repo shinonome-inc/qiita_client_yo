@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
+import 'package:mobile_qiita_app/components/app_bar_component.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
@@ -48,16 +48,7 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        elevation: 1.6,
-        title: Text(
-          widget.appBarTitle,
-          style: Constants.headerTextStyle,
-        ),
-      ),
+      appBar: AppBarComponent(title: widget.appBarTitle, useBackButton: false),
       body: Variables.accessToken.isNotEmpty
           ? SafeArea(
               child: FutureBuilder(
