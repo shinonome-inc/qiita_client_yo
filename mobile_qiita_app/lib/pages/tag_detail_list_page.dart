@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/components/app_bar_component.dart';
+import 'package:mobile_qiita_app/extension/connection_state_done.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
@@ -70,25 +71,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        elevation: 1.6,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: const Color(0xFF468300),
-          ),
-        ),
-        title: Text(
-          _tagId,
-          style: Constants.headerTextStyle,
-        ),
-      ),
+      appBar: AppBarComponent(title: _tagId, useBackButton: true),
       body: FutureBuilder(
         future: _futureArticles,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -102,26 +85,23 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
                 _reload, _fetchedArticles, _scrollController, _isUserPosts);
           }
 
-          if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.connectionStateDone && snapshot.hasData) {
             _isLoading = false;
-            if (snapshot.hasData) {
-              _isNetworkError = false;
-              if (_currentPageNumber == 1) {
-                _fetchedArticles = snapshot.data;
-                child = ViewFormats.postedArticleListView(
-                    _reload, _fetchedArticles, _scrollController, _isUserPosts);
-              } else {
-                _fetchedArticles.addAll(snapshot.data);
-              }
-            } else if (snapshot.hasError) {
-              _isNetworkError = true;
-              child = ErrorView.networkErrorView(_reload);
+            _isNetworkError = false;
+            if (_currentPageNumber == 1) {
+              _fetchedArticles = snapshot.data;
+              child = ViewFormats.postedArticleListView(
+                  _reload, _fetchedArticles, _scrollController, _isUserPosts);
+            } else {
+              _fetchedArticles.addAll(snapshot.data);
             }
-          } else {
-            if (_isNetworkError || _currentPageNumber == 1) {
-              child = CircularProgressIndicator();
-            }
+          } else if (snapshot.hasError) {
+            _isNetworkError = true;
+            child = ErrorView.networkErrorView(_reload);
+          } else if (_isNetworkError || _currentPageNumber == 1) {
+            child = CircularProgressIndicator();
           }
+
           return Container(
             child: Center(
               child: child,

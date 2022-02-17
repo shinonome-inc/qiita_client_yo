@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/components/app_bar_component.dart';
+import 'package:mobile_qiita_app/extension/connection_state_done.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
@@ -22,6 +23,7 @@ class _TagPageState extends State<TagPage> {
   int _currentPageNumber = 1;
   bool _isNetworkError = false;
   bool _isLoading = false;
+  final String _appBarTitle = 'Tag';
 
   // 再読み込み
   Future<void> _reload() async {
@@ -62,16 +64,7 @@ class _TagPageState extends State<TagPage> {
   Widget build(BuildContext context) {
     _tagContainerLength = (MediaQuery.of(context).size.width ~/ 192).toInt();
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        elevation: 1.6,
-        title: const Text(
-          'Tag',
-          style: Constants.headerTextStyle,
-        ),
-      ),
+      appBar: AppBarComponent(title: _appBarTitle, useBackButton: false),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.only(top: 16.0),
@@ -88,24 +81,21 @@ class _TagPageState extends State<TagPage> {
                     _scrollController, _tagContainerLength);
               }
 
-              if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.connectionStateDone && snapshot.hasData) {
                 _isLoading = false;
-                if (snapshot.hasData) {
-                  _isNetworkError = false;
-                  if (_currentPageNumber == 1) {
-                    _fetchedTags = snapshot.data;
-                    child = ViewFormats.tagGridView(_reload, _fetchedTags,
-                        _scrollController, _tagContainerLength);
-                  } else {
-                    _fetchedTags.addAll(snapshot.data);
-                  }
-                } else if (snapshot.hasError) {
-                  child = ErrorView.networkErrorView(_reload);
+                _isNetworkError = false;
+                if (_currentPageNumber == 1) {
+                  _fetchedTags = snapshot.data;
+                  child = ViewFormats.tagGridView(_reload, _fetchedTags,
+                      _scrollController, _tagContainerLength);
+                } else {
+                  _fetchedTags.addAll(snapshot.data);
                 }
-              } else {
-                if (_isNetworkError || _currentPageNumber == 1) {
-                  child = CircularProgressIndicator();
-                }
+              } else if (snapshot.hasError) {
+                _isNetworkError = true;
+                child = ErrorView.networkErrorView(_reload);
+              } else if (_isNetworkError || _currentPageNumber == 1) {
+                child = CircularProgressIndicator();
               }
 
               return Container(

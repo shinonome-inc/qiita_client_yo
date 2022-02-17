@@ -10,6 +10,13 @@ class Constants {
     fontFamily: pacifico,
     fontWeight: FontWeight.bold,
   );
+  static const appBarTextStyle = TextStyle(
+    color: Color(0xFF000000),
+    fontSize: 17.0,
+    fontWeight: FontWeight.w400,
+    fontFamily: pacifico,
+  );
+
   static const String defaultUserIconUrl =
       'https://secure.gravatar.com/avatar/931b4bb04a18ab8874b2114493d0ea8e';
   static const String defaultTagIconUrl =

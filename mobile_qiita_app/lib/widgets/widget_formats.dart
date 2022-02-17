@@ -6,6 +6,7 @@ import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/models/user.dart';
+import 'package:mobile_qiita_app/pages/follows_followers_list_page.dart';
 import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
 import 'package:mobile_qiita_app/widgets/view_formats.dart';
 
@@ -161,7 +162,13 @@ class WidgetFormats {
             children: <Widget>[
               InkWell(
                 onTap: () {
-                  // TODO: FollowsPageへ遷移
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FollowsFollowersListPage(
+                          usersType: 'Follows', userId: user.id),
+                    ),
+                  );
                 },
                 child: RichText(
                   text: TextSpan(
@@ -190,7 +197,13 @@ class WidgetFormats {
               ),
               InkWell(
                 onTap: () {
-                  // TODO: FollowersPageへ遷移
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FollowsFollowersListPage(
+                          usersType: 'Followers', userId: user.id),
+                    ),
+                  );
                 },
                 child: RichText(
                   text: TextSpan(
