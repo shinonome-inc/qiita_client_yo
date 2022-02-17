@@ -58,6 +58,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
               ),
             );
           case 3:
+            // FollowsFollowersListPageのテスト用
+            // TODO: SettingPageに戻す
             return CupertinoTabView(
               builder: (context) => CupertinoPageScaffold(
                 child: FollowsFollowersListPage(

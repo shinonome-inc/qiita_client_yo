@@ -27,31 +27,27 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
   late Future<List<User>> _futureUsers;
   List<User> _fetchedUsers = [];
   int _currentPageNumber = 1;
-  String _usersType = '';
-  String _userId = '';
   bool _isNetworkError = false;
   bool _isLoading = false;
 
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureUsers = QiitaClient.fetchUsers(_usersType, _userId);
+      _futureUsers = QiitaClient.fetchUsers(widget.usersType, widget.userId);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _usersType = widget.usersType;
-    _userId = widget.userId;
-    _futureUsers = QiitaClient.fetchUsers(_usersType, _userId);
+    _futureUsers = QiitaClient.fetchUsers(widget.usersType, widget.userId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBarComponent(title: _usersType, useBackButton: true),
+      appBar: AppBarComponent(title: widget.usersType, useBackButton: true),
       body: SafeArea(
         child: FutureBuilder(
           future: _futureUsers,
