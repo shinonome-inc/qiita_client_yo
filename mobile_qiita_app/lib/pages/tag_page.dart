@@ -22,6 +22,7 @@ class _TagPageState extends State<TagPage> {
   int _currentPageNumber = 1;
   bool _isNetworkError = false;
   bool _isLoading = false;
+  final String _appBarTitle = 'Tag';
 
   // 再読み込み
   Future<void> _reload() async {
@@ -62,17 +63,7 @@ class _TagPageState extends State<TagPage> {
   Widget build(BuildContext context) {
     _tagContainerLength = (MediaQuery.of(context).size.width ~/ 192).toInt();
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.white,
-      //   centerTitle: true,
-      //   automaticallyImplyLeading: false,
-      //   elevation: 1.6,
-      //   title: const Text(
-      //     'Tag',
-      //     style: Constants.headerTextStyle,
-      //   ),
-      // ),
-      appBar: AppBarComponent(title: 'Tag', useBackButton: false),
+      appBar: AppBarComponent(title: _appBarTitle, useBackButton: false),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.only(top: 16.0),
