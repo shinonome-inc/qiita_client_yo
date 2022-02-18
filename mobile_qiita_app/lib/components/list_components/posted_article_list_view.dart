@@ -52,19 +52,16 @@ class _PostedArticleListViewState extends State<PostedArticleListView> {
               ),
             )
           : Flexible(
-              child: RefreshIndicator(
-                onRefresh: widget.onTapReload,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: widget.articles.length,
-                  controller: widget.scrollController,
-                  itemBuilder: (context, index) {
-                    return ArticleComponent(
-                      article: widget.articles[index],
-                      isUserPage: widget.isUserPage,
-                    );
-                  },
-                ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: widget.articles.length,
+                controller: widget.scrollController,
+                itemBuilder: (context, index) {
+                  return ArticleComponent(
+                    article: widget.articles[index],
+                    isUserPage: widget.isUserPage,
+                  );
+                },
               ),
             ),
     ];
