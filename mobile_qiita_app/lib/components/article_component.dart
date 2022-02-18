@@ -12,16 +12,16 @@ class ArticleComponent extends StatelessWidget {
 
   final Article article;
   final bool isUserPage;
-  final String headerTitle = 'article';
+  final String _headerTitle = 'article';
 
-  Widget userIcon() {
+  Widget _userIcon() {
     return CircleAvatar(
       radius: 24,
       backgroundImage: CachedNetworkImageProvider(article.user.iconUrl),
     );
   }
 
-  Widget articleTitle() {
+  Widget _articleTitle() {
     return Text(
       article.title,
       overflow: TextOverflow.ellipsis,
@@ -29,7 +29,7 @@ class ArticleComponent extends StatelessWidget {
     );
   }
 
-  Widget articleSubtitle() {
+  Widget _articleSubtitle() {
     final DateTime postedTime = DateTime.parse(article.createdAt);
     final String postedDate = Constants.postedDateFormat.format(postedTime);
     return Container(
@@ -53,18 +53,18 @@ class ArticleComponent extends StatelessWidget {
     return isUserPage
         ? ListTile(
             onTap: () {
-              Methods.showWebContent(context, headerTitle, article.url);
+              Methods.showWebContent(context, _headerTitle, article.url);
             },
-            title: articleTitle(),
-            subtitle: articleSubtitle(),
+            title: _articleTitle(),
+            subtitle: _articleSubtitle(),
           )
         : ListTile(
             onTap: () {
-              Methods.showWebContent(context, headerTitle, article.url);
+              Methods.showWebContent(context, _headerTitle, article.url);
             },
-            leading: userIcon(),
-            title: articleTitle(),
-            subtitle: articleSubtitle(),
+            leading: _userIcon(),
+            title: _articleTitle(),
+            subtitle: _articleSubtitle(),
           );
   }
 }
