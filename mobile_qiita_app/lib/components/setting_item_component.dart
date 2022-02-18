@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
-class SettingItemContainer extends StatelessWidget {
-  const SettingItemContainer({required this.child, Key? key}) : super(key: key);
-  final Widget child;
+class SettingsItemComponent extends StatelessWidget {
+  const SettingsItemComponent(
+      {required this.title, required this.item, Key? key})
+      : super(key: key);
+
+  final String title;
+  final Widget item;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +23,13 @@ class SettingItemContainer extends StatelessWidget {
             ),
           ),
         ),
-        child: child,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(title),
+            item,
+          ],
+        ),
       ),
     );
   }

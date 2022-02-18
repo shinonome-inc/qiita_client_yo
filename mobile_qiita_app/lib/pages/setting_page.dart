@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
-import 'package:mobile_qiita_app/widgets/setting_item.dart';
-import 'package:mobile_qiita_app/widgets/setting_item_container.dart';
+import 'package:mobile_qiita_app/components/setting_item_component.dart';
 
 class SettingPage extends StatelessWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -33,9 +32,9 @@ class SettingPage extends StatelessWidget {
                 ),
               ),
             ),
-            SettingItem(
-              settingTitle: 'プライバシーポリシー',
-              settingItem: IconButton(
+            SettingsItemComponent(
+              title: 'プライバシーポリシー',
+              item: IconButton(
                 onPressed: () {
                   // TODO: プライバシーポリシーへ遷移
                 },
@@ -45,9 +44,9 @@ class SettingPage extends StatelessWidget {
                 ),
               ),
             ),
-            SettingItem(
-              settingTitle: '利用規約',
-              settingItem: IconButton(
+            SettingsItemComponent(
+              title: '利用規約',
+              item: IconButton(
                 onPressed: () {
                   // TODO: 利用規約へ遷移
                 },
@@ -57,9 +56,9 @@ class SettingPage extends StatelessWidget {
                 ),
               ),
             ),
-            SettingItem(
-              settingTitle: 'アプリバージョン',
-              settingItem: Container(
+            SettingsItemComponent(
+              title: 'アプリバージョン',
+              item: Container(
                 margin: const EdgeInsets.only(right: 16.0),
                 child: Text(
                   'v1.0.0',
@@ -83,12 +82,9 @@ class SettingPage extends StatelessWidget {
               onTap: () {
                 // TODO: ログアウト機能
               },
-              child: SettingItemContainer(
-                child: Container(
-                  height: 48,
-                  alignment: Alignment.centerLeft,
-                  child: Text('ログアウトする'),
-                ),
+              child: SettingsItemComponent(
+                title: 'ログアウトする',
+                item: Container(),
               ),
             )
           ],
