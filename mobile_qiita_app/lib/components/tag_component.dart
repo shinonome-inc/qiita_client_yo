@@ -1,12 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
 
-class WidgetFormats {
-  // 取得したタグを基にアイコン、タグ名、記事件数、フォロワー数を表示
-  static Widget tagFormat(BuildContext context, Tag tag) {
+class TagComponent extends StatelessWidget {
+  const TagComponent({required this.tag, Key? key}) : super(key: key);
+
+  final Tag tag;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),

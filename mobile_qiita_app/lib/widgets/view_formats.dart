@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/components/article_component.dart';
+import 'package:mobile_qiita_app/components/tag_component.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
-import 'package:mobile_qiita_app/widgets/widget_formats.dart';
 
 class ViewFormats {
   // 記事一覧をListViewで表示
@@ -90,17 +90,17 @@ class ViewFormats {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: tagContainerLength,
-            mainAxisSpacing: 16.0,
-            crossAxisSpacing: 16.0,
-          ),
-          controller: scrollController,
-          itemCount: fetchedTags.length,
-          shrinkWrap: true,
-          itemBuilder: (context, index) =>
-              WidgetFormats.tagFormat(context, fetchedTags[index]),
-        ),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: tagContainerLength,
+              mainAxisSpacing: 16.0,
+              crossAxisSpacing: 16.0,
+            ),
+            controller: scrollController,
+            itemCount: fetchedTags.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return TagComponent(tag: fetchedTags[index]);
+            }),
       ),
       onRefresh: onTapReload,
     );
