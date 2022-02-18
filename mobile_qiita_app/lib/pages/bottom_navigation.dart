@@ -17,6 +17,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         activeColor: const Color(0xFF74C13A),
+        inactiveColor: const Color(0xFF828282),
+        border: Border(
+          top: BorderSide(
+            color: const Color(0xFFC6C6C6),
+            width: 1.0,
+          ),
+        ),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.format_list_bulleted_outlined),
