@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
-import 'package:mobile_qiita_app/components/list_components/posted_article_list_view.dart';
-import 'package:mobile_qiita_app/components/user_component_of_user_page.dart';
 import 'package:mobile_qiita_app/extension/connection_state_done.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
+import 'package:mobile_qiita_app/views/user_page_view.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({required this.user, required this.appBarTitle, Key? key})
@@ -30,27 +29,6 @@ class _UserPageState extends State<UserPage> {
   final String _tagId = '';
   bool _isNetworkError = false;
   bool _isLoading = false;
-  final bool _isUserPage = true;
-
-  // ユーザーのプロフィールと投稿記事一覧を表示
-  Widget _userPageComponent() {
-    return RefreshIndicator(
-      onRefresh: _reload,
-      child: Column(
-        children: <Widget>[
-          UserComponentOfUserPage(user: widget.user),
-          Flexible(
-            child: PostedArticleListView(
-              onTapReload: _reload,
-              articles: _fetchedArticles,
-              scrollController: _scrollController,
-              isUserPage: _isUserPage,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   // 再読み込み
   Future<void> _reload() async {
@@ -107,7 +85,12 @@ class _UserPageState extends State<UserPage> {
                     _isNetworkError = true;
                     child = ErrorView.networkErrorView(_reload);
                   } else if (_currentPageNumber != 1) {
-                    child = _userPageComponent();
+                    child = UserPageView(
+                      onTapReload: _reload,
+                      user: widget.user,
+                      articles: _fetchedArticles,
+                      scrollController: _scrollController,
+                    );
                   }
 
                   if (snapshot.connectionStateDone && snapshot.hasData) {
@@ -115,7 +98,12 @@ class _UserPageState extends State<UserPage> {
                     _isNetworkError = false;
                     if (_currentPageNumber == 1) {
                       _fetchedArticles = snapshot.data;
-                      child = _userPageComponent();
+                      child = UserPageView(
+                        onTapReload: _reload,
+                        user: widget.user,
+                        articles: _fetchedArticles,
+                        scrollController: _scrollController,
+                      );
                     } else {
                       _fetchedArticles.addAll(snapshot.data);
                     }
