@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
+import 'package:mobile_qiita_app/components/list_components/posted_article_list_view.dart';
 import 'package:mobile_qiita_app/extension/connection_state_done.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/widgets/view_formats.dart';
 
 class TagDetailListPage extends StatefulWidget {
   const TagDetailListPage({required this.tag, Key? key}) : super(key: key);
@@ -25,7 +25,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   final String _searchWord = '';
   String _tagId = '';
   final String _userId = '';
-  final bool _isUserPosts = false;
+  final bool _isUserPage = false;
   bool _isNetworkError = false;
   bool _isLoading = false;
 
@@ -81,8 +81,12 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
             _isNetworkError = true;
             child = ErrorView.networkErrorView(_reload);
           } else if (_currentPageNumber != 1) {
-            child = ViewFormats.postedArticleListView(
-                _reload, _fetchedArticles, _scrollController, _isUserPosts);
+            child = PostedArticleListView(
+              onTapReload: _reload,
+              articles: _fetchedArticles,
+              scrollController: _scrollController,
+              isUserPage: _isUserPage,
+            );
           }
 
           if (snapshot.connectionStateDone && snapshot.hasData) {
@@ -90,8 +94,12 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
             _isNetworkError = false;
             if (_currentPageNumber == 1) {
               _fetchedArticles = snapshot.data;
-              child = ViewFormats.postedArticleListView(
-                  _reload, _fetchedArticles, _scrollController, _isUserPosts);
+              child = PostedArticleListView(
+                onTapReload: _reload,
+                articles: _fetchedArticles,
+                scrollController: _scrollController,
+                isUserPage: _isUserPage,
+              );
             } else {
               _fetchedArticles.addAll(snapshot.data);
             }

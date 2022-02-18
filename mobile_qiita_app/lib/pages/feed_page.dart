@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/components/list_components/article_list_view.dart';
 import 'package:mobile_qiita_app/components/searchable_app_bar_component.dart';
 import 'package:mobile_qiita_app/extension/connection_state_done.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/widgets/view_formats.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -90,8 +90,11 @@ class _FeedPageState extends State<FeedPage> {
             _isNetworkError = true;
             child = ErrorView.networkErrorView(_reload);
           } else if (_currentPageNumber != 1) {
-            child = ViewFormats.articleListView(
-                _reload, _fetchedArticles, _scrollController);
+            child = ArticleListView(
+              onTapReload: _reload,
+              articles: _fetchedArticles,
+              scrollController: _scrollController,
+            );
           }
 
           if (snapshot.connectionStateDone && snapshot.hasData) {
@@ -101,8 +104,11 @@ class _FeedPageState extends State<FeedPage> {
               child = ErrorView.emptySearchResultView();
             } else if (_currentPageNumber == 1) {
               _fetchedArticles = snapshot.data;
-              child = ViewFormats.articleListView(
-                  _reload, _fetchedArticles, _scrollController);
+              child = ArticleListView(
+                onTapReload: _reload,
+                articles: _fetchedArticles,
+                scrollController: _scrollController,
+              );
             } else {
               _fetchedArticles.addAll(snapshot.data);
             }
