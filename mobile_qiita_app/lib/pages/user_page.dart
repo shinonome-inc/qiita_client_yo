@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
 import 'package:mobile_qiita_app/extension/connection_state_done.dart';
+import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
@@ -32,18 +33,41 @@ class _UserPageState extends State<UserPage> {
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureArticles = QiitaClient.fetchArticle(
-          _currentPageNumber, _searchWord, _tagId, widget.user.id);
+      _futureArticles =
+          QiitaClient.fetchArticle(_currentPageNumber, _searchWord, _tagId, '');
     });
+  }
+
+  // 記事を追加読み込み
+  Future<void> _additionalLoading() async {
+    if (!_isLoading) {
+      _isLoading = true;
+      _currentPageNumber++;
+      setState(() {
+        _futureArticles = QiitaClient.fetchArticle(
+            _currentPageNumber, _searchWord, _tagId, '');
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
     if (Variables.accessToken.isNotEmpty) {
-      _futureArticles = QiitaClient.fetchArticle(
-          _currentPageNumber, _searchWord, _tagId, widget.user.id);
+      _futureArticles =
+          QiitaClient.fetchArticle(_currentPageNumber, _searchWord, _tagId, '');
     }
+    _scrollController.addListener(() {
+      if (_scrollController.isBottom) {
+        _additionalLoading();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -60,13 +84,10 @@ class _UserPageState extends State<UserPage> {
                   if (snapshot.hasError) {
                     _isNetworkError = true;
                     child = ErrorView.networkErrorView(_reload);
+                  } else if (_currentPageNumber != 1) {
+                    child = WidgetFormats.userPageFormat(_reload, widget.user,
+                        _fetchedArticles, _scrollController, context);
                   }
-                  // TODO: ページネーション実装
-                  // else if (_currentPageNumber != 1) {
-                  //   _fetchedArticles = snapshot.data;
-                  //   child = WidgetFormats.userPageFormat(_reload, widget.user,
-                  //       _fetchedArticles, _scrollController, context);
-                  // }
 
                   if (snapshot.connectionStateDone && snapshot.hasData) {
                     _isLoading = false;
@@ -75,11 +96,9 @@ class _UserPageState extends State<UserPage> {
                       _fetchedArticles = snapshot.data;
                       child = WidgetFormats.userPageFormat(_reload, widget.user,
                           _fetchedArticles, _scrollController, context);
+                    } else {
+                      _fetchedArticles.addAll(snapshot.data);
                     }
-                    // TODO: ページネーション実装
-                    // else {
-                    //   _fetchedArticles.addAll(snapshot.data);
-                    // }
                   } else if (snapshot.hasError) {
                     _isNetworkError = true;
                     child = ErrorView.networkErrorView(_reload);
