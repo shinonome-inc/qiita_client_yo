@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/common/constants.dart';
-import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/models/user.dart';
@@ -11,55 +9,6 @@ import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
 import 'package:mobile_qiita_app/widgets/view_formats.dart';
 
 class WidgetFormats {
-  // 取得した記事を基にユーザーアイコン、記事タイトル、ユーザー名、投稿日、LGTM数を表示
-  static Widget articleFormat(
-      BuildContext context, Article article, bool isUserPage) {
-    final String headerTitle = 'article';
-    DateTime postedTime = DateTime.parse(article.createdAt);
-    String postedDate = Constants.postedDateFormat.format(postedTime);
-
-    Widget userIcon = CircleAvatar(
-      radius: 24,
-      backgroundImage: CachedNetworkImageProvider(article.user.iconUrl),
-    );
-    Widget articleTitle = Text(
-      article.title,
-      overflow: TextOverflow.ellipsis,
-      maxLines: 2,
-    );
-    Widget articleSubtitle = Container(
-      padding: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: const Color(0xEFEFF0FF),
-            width: 1.0,
-          ),
-        ),
-      ),
-      child: Text(
-        '@${article.user.id} 投稿日: $postedDate LGTM: ${article.likesCount}',
-      ),
-    );
-
-    return isUserPage
-        ? ListTile(
-            onTap: () {
-              Methods.showWebContent(context, headerTitle, article.url);
-            },
-            title: articleTitle,
-            subtitle: articleSubtitle,
-          )
-        : ListTile(
-            onTap: () {
-              Methods.showWebContent(context, headerTitle, article.url);
-            },
-            leading: userIcon,
-            title: articleTitle,
-            subtitle: articleSubtitle,
-          );
-  }
-
   // 取得したタグを基にアイコン、タグ名、記事件数、フォロワー数を表示
   static Widget tagFormat(BuildContext context, Tag tag) {
     return Container(

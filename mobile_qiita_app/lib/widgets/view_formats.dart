@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/components/article_component.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/widgets/widget_formats.dart';
@@ -15,8 +16,10 @@ class ViewFormats {
         itemCount: articles.length,
         controller: scrollController,
         itemBuilder: (context, index) {
-          return WidgetFormats.articleFormat(
-              context, articles[index], isUserPage);
+          return ArticleComponent(
+            article: articles[index],
+            isUserPage: isUserPage,
+          );
         },
       ),
     );
@@ -48,8 +51,10 @@ class ViewFormats {
                 itemCount: articles.length,
                 controller: scrollController,
                 itemBuilder: (context, index) {
-                  return WidgetFormats.articleFormat(
-                      context, articles[index], isUserPage);
+                  return ArticleComponent(
+                    article: articles[index],
+                    isUserPage: isUserPage,
+                  );
                 },
               ),
             )
@@ -61,8 +66,10 @@ class ViewFormats {
                   itemCount: articles.length,
                   controller: scrollController,
                   itemBuilder: (context, index) {
-                    return WidgetFormats.articleFormat(
-                        context, articles[index], isUserPage);
+                    return ArticleComponent(
+                      article: articles[index],
+                      isUserPage: isUserPage,
+                    );
                   },
                 ),
               ),
