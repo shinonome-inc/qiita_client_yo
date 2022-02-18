@@ -33,8 +33,8 @@ class _UserPageState extends State<UserPage> {
   // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureArticles =
-          QiitaClient.fetchArticle(_currentPageNumber, _searchWord, _tagId, '');
+      _futureArticles = QiitaClient.fetchArticle(
+          _currentPageNumber, _searchWord, _tagId, widget.user.id);
     });
   }
 
@@ -45,7 +45,7 @@ class _UserPageState extends State<UserPage> {
       _currentPageNumber++;
       setState(() {
         _futureArticles = QiitaClient.fetchArticle(
-            _currentPageNumber, _searchWord, _tagId, '');
+            _currentPageNumber, _searchWord, _tagId, widget.user.id);
       });
     }
   }
@@ -54,8 +54,8 @@ class _UserPageState extends State<UserPage> {
   void initState() {
     super.initState();
     if (Variables.accessToken.isNotEmpty) {
-      _futureArticles =
-          QiitaClient.fetchArticle(_currentPageNumber, _searchWord, _tagId, '');
+      _futureArticles = QiitaClient.fetchArticle(
+          _currentPageNumber, _searchWord, _tagId, widget.user.id);
     }
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
