@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/models/access_token.dart';
 import 'package:mobile_qiita_app/models/article.dart';
@@ -32,6 +34,9 @@ class QiitaClient {
     if (response.statusCode == 201) {
       final dynamic jsonResponse = json.decode(response.body);
       final AccessToken accessToken = AccessToken.fromJson(jsonResponse);
+      final storage = FlutterSecureStorage();
+      storage.write(
+          key: Constants.qiitaAccessTokenKey, value: accessToken.token);
       Variables.accessToken = accessToken.token;
     } else {
       throw Exception('Request failed with status: ${response.statusCode}');
@@ -51,7 +56,7 @@ class QiitaClient {
           'https://qiita.com/api/v2/tags/$tagId/items?page=$currentPageNumber';
     }
 
-    var response = Variables.accessToken.isNotEmpty
+    var response = Variables.accessToken != null
         ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
         : await http.get(Uri.parse(url));
 
@@ -68,7 +73,7 @@ class QiitaClient {
     var url =
         'https://qiita.com/api/v2/tags?page=$currentPageNumber&sort=count';
 
-    var response = Variables.accessToken.isNotEmpty
+    var response = Variables.accessToken != null
         ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
         : await http.get(Uri.parse(url));
 

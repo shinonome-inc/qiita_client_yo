@@ -36,7 +36,7 @@ class _WebViewInModalBottomSheetState extends State<WebViewInModalBottomSheet> {
   // Qiitaにログイン（oAuth認証）
   Future<void> _loginToQiita(String redirectUrl) async {
     await QiitaClient.fetchAccessToken(redirectUrl);
-    if (Variables.accessToken.isNotEmpty) {
+    if (Variables.accessToken != null) {
       Navigator.push(
         context,
         MaterialPageRoute(
