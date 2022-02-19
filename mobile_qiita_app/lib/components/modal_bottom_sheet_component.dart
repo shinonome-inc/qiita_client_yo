@@ -8,8 +8,8 @@ import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // showModalBottomSheet内で表示するWebViewのコンテンツ
-class WebViewContent extends StatefulWidget {
-  const WebViewContent({
+class ModalBottomSheetComponent extends StatefulWidget {
+  const ModalBottomSheetComponent({
     required this.headerTitle,
     required this.webViewUrl,
     Key? key,
@@ -19,10 +19,11 @@ class WebViewContent extends StatefulWidget {
   final String webViewUrl;
 
   @override
-  _WebViewContentState createState() => _WebViewContentState();
+  _ModalBottomSheetComponentState createState() =>
+      _ModalBottomSheetComponentState();
 }
 
-class _WebViewContentState extends State<WebViewContent> {
+class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
   double _webViewHeight = 0;
   late WebViewController _webViewController;
 

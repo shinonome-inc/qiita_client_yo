@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/widgets/web_view_screen.dart';
+import 'package:mobile_qiita_app/components/modal_bottom_sheet_component.dart';
 
 // 各クラス共通で利用するメソッドを格納するためのクラス
 class Methods {
@@ -15,7 +15,7 @@ class Methods {
         ),
       ),
       builder: (context) {
-        return WebViewContent(
+        return ModalBottomSheetComponent(
           headerTitle: headerTitle,
           webViewUrl: webViewUrl,
         );
