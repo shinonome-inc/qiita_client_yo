@@ -8,6 +8,7 @@ class Methods {
       BuildContext context, String headerTitle, String webViewUrl) {
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.vertical(
