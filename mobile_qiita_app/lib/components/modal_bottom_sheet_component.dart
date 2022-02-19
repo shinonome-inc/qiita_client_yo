@@ -1,11 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
-import 'package:mobile_qiita_app/common/variables.dart';
-import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
-import 'package:mobile_qiita_app/services/qiita_client.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:mobile_qiita_app/views/web_view_in_modal_bottom_sheet.dart';
 
 // showModalBottomSheet内で表示するWebViewのコンテンツ
 class ModalBottomSheetComponent extends StatefulWidget {
@@ -24,39 +19,24 @@ class ModalBottomSheetComponent extends StatefulWidget {
 }
 
 class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
-  double _webViewHeight = 0;
-  late WebViewController _webViewController;
+  late Widget _contentInModalBottomSheet;
 
-  // WebViewの高さを求めて_webViewHeightに代入
-  Future<void> _calculateWebViewHeight() async {
-    double newHeight = double.parse(
-      await _webViewController
-          .evaluateJavascript("document.documentElement.scrollHeight;"),
-    );
-    setState(() {
-      _webViewHeight = newHeight;
-    });
-  }
-
-  // Qiitaにログイン（oAuth認証）
-  Future<void> loginToQiita(String redirectUrl) async {
-    await QiitaClient.fetchAccessToken(redirectUrl);
-    if (Variables.accessToken.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BottomNavigation(),
-        ),
-      );
+  // ModalBottomSheetで表示するコンテンツを判定
+  void _initContentInModalBottomSheet() {
+    if (widget.headerTitle == 'プライバシーポリシー') {
+      _contentInModalBottomSheet = Text('プライバシーポリシー');
+    } else if (widget.headerTitle == '利用規約') {
+      _contentInModalBottomSheet = Text('利用規約');
+    } else {
+      _contentInModalBottomSheet =
+          WebViewInModalBottomSheet(initialUrl: widget.webViewUrl);
     }
   }
 
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) {
-      WebView.platform = SurfaceAndroidWebView();
-    }
+    _initContentInModalBottomSheet();
   }
 
   @override
@@ -90,27 +70,7 @@ class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  child: Container(
-                    height: _webViewHeight,
-                    child: WebView(
-                      initialUrl: widget.webViewUrl,
-                      javascriptMode: JavascriptMode.unrestricted,
-                      onPageFinished: (String url) async {
-                        _calculateWebViewHeight();
-                        bool _isLogin =
-                            url.contains(Constants.accessTokenEndPoint);
-                        if (_isLogin) {
-                          await loginToQiita(url);
-                        }
-                      },
-                      onWebViewCreated: (controller) async {
-                        _webViewController = controller;
-                      },
-                      onWebResourceError: (error) {
-                        print(error);
-                      },
-                    ),
-                  ),
+                  child: _contentInModalBottomSheet,
                 ),
               ),
             ],
