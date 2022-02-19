@@ -62,11 +62,18 @@ class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
                   ),
                   color: const Color(0xF7F7F7FF),
                 ),
-                height: 56.0,
-                child: Center(
+                height: 59.0,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 26.0),
                   child: Text(
                     widget.headerTitle,
-                    style: Constants.headerTextStyle,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: const Color(0xFF000000),
+                      fontSize: 17.0,
+                      fontFamily: Constants.pacifico,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
