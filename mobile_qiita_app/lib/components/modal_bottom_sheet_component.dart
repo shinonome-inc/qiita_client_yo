@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/pages/privacy_policy_page.dart';
+import 'package:mobile_qiita_app/pages/term_of_service_page.dart';
 import 'package:mobile_qiita_app/views/web_view_in_modal_bottom_sheet.dart';
 
 // showModalBottomSheet内で表示するWebViewのコンテンツ
@@ -24,9 +26,9 @@ class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
   // ModalBottomSheetで表示するコンテンツを判定
   void _initContentInModalBottomSheet() {
     if (widget.headerTitle == 'プライバシーポリシー') {
-      _contentInModalBottomSheet = Text('プライバシーポリシー');
+      _contentInModalBottomSheet = PrivacyPolicyPage();
     } else if (widget.headerTitle == '利用規約') {
-      _contentInModalBottomSheet = Text('利用規約');
+      _contentInModalBottomSheet = TermOfServicePage();
     } else {
       _contentInModalBottomSheet =
           WebViewInModalBottomSheet(initialUrl: widget.webViewUrl);

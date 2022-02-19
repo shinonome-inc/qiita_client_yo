@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/components/setting_item_component.dart';
 
 class SettingPage extends StatelessWidget {
   const SettingPage({Key? key}) : super(key: key);
+  final String _webViewUrl = '';
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class SettingPage extends StatelessWidget {
               title: 'プライバシーポリシー',
               item: IconButton(
                 onPressed: () {
-                  // TODO: プライバシーポリシーへ遷移
+                  Methods.showWebContent(context, 'プライバシーポリシー', _webViewUrl);
                 },
                 icon: Icon(
                   Icons.arrow_forward_ios_outlined,
@@ -48,7 +50,7 @@ class SettingPage extends StatelessWidget {
               title: '利用規約',
               item: IconButton(
                 onPressed: () {
-                  // TODO: 利用規約へ遷移
+                  Methods.showWebContent(context, '利用規約', _webViewUrl);
                 },
                 icon: Icon(
                   Icons.arrow_forward_ios_outlined,
