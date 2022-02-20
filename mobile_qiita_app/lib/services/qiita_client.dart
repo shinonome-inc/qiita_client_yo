@@ -43,6 +43,16 @@ class QiitaClient {
     }
   }
 
+  // アクセストークンを失効させる
+  static Future<void> disableAccessToken() async {
+    var url = 'https://qiita.com/api/v2/access_tokens/${Variables.accessToken}';
+    var response = await http.delete(Uri.parse(url));
+
+    if (response.statusCode != 204) {
+      throw Exception('Request failed with status: ${response.statusCode}');
+    }
+  }
+
   // QiitaAPIで記事を取得
   static Future<List<Article>> fetchArticle(
       int currentPageNumber, String searchWord, String tagId) async {

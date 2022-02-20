@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
+import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/components/setting_item_component.dart';
 import 'package:mobile_qiita_app/pages/top_page.dart';
+import 'package:mobile_qiita_app/services/qiita_client.dart';
 
 class SettingPage extends StatelessWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -12,7 +14,10 @@ class SettingPage extends StatelessWidget {
   // アクセストークンをストレージから削除
   Future<void> _removeAccessToken() async {
     final storage = FlutterSecureStorage();
+    await QiitaClient.disableAccessToken();
     await storage.delete(key: Constants.qiitaAccessTokenKey);
+    Variables.accessToken =
+        await storage.read(key: Constants.qiitaAccessTokenKey);
   }
 
   // Qiitaからログアウト
