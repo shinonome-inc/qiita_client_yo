@@ -1,11 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/components/setting_item_component.dart';
+import 'package:mobile_qiita_app/pages/top_page.dart';
 
 class SettingPage extends StatelessWidget {
   const SettingPage({Key? key}) : super(key: key);
   final String _webViewUrl = '';
+
+  // アクセストークンをストレージから削除
+  Future<void> _removeAccessToken() async {
+    final storage = FlutterSecureStorage();
+    await storage.delete(key: Constants.qiitaAccessTokenKey);
+  }
+
+  // Qiitaからログアウト
+  Future<void> _logout(BuildContext context) async {
+    await _removeAccessToken();
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(
+        builder: (context) => TopPage(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +100,7 @@ class SettingPage extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                // TODO: ログアウト機能
+                _logout(context);
               },
               child: SettingsItemComponent(
                 title: 'ログアウトする',

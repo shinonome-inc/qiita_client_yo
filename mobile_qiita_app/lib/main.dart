@@ -17,7 +17,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Widget _initialPage = Container();
+  Widget _initialPage = Scaffold();
   final _storage = FlutterSecureStorage();
 
   // ユーザーの情報を読み取る
@@ -30,9 +30,13 @@ class _MyAppState extends State<MyApp> {
   Future<void> _initInitialPage() async {
     await _readUserInfo();
     if (Variables.accessToken != null) {
-      _initialPage = BottomNavigation();
+      setState(() {
+        _initialPage = BottomNavigation();
+      });
     } else {
-      _initialPage = TopPage();
+      setState(() {
+        _initialPage = TopPage();
+      });
     }
   }
 
