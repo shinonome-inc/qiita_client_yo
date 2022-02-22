@@ -4,7 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
-import 'package:mobile_qiita_app/components/list_component.dart';
+import 'package:mobile_qiita_app/components/list_components/user_list.dart';
 import 'package:mobile_qiita_app/extension/connection_state_done.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
@@ -70,8 +70,11 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
               _isNetworkError = false;
               if (_currentPageNumber == 1) {
                 _fetchedUsers = snapshot.data;
-                child = ListComponent.userListView(
-                    _reload, _fetchedUsers, _scrollController);
+                child = UserList(
+                  onTapReload: _reload,
+                  users: _fetchedUsers,
+                  scrollController: _scrollController,
+                );
               }
               // TODO: ページネーション実装
               // else {

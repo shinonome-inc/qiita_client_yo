@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
+import 'package:mobile_qiita_app/components/list_components/tag_grid_view.dart';
 import 'package:mobile_qiita_app/extension/connection_state_done.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/error_views.dart';
-import 'package:mobile_qiita_app/widgets/view_formats.dart';
 
 class TagPage extends StatefulWidget {
   const TagPage({Key? key}) : super(key: key);
@@ -77,8 +77,12 @@ class _TagPageState extends State<TagPage> {
                 _isNetworkError = true;
                 child = ErrorView.networkErrorView(_reload);
               } else if (_currentPageNumber != 1) {
-                child = ViewFormats.tagGridView(_reload, _fetchedTags,
-                    _scrollController, _tagContainerLength);
+                child = TagGridView(
+                  onTapReload: _reload,
+                  tags: _fetchedTags,
+                  scrollController: _scrollController,
+                  tagContainerLength: _tagContainerLength,
+                );
               }
 
               if (snapshot.connectionStateDone && snapshot.hasData) {
@@ -86,8 +90,12 @@ class _TagPageState extends State<TagPage> {
                 _isNetworkError = false;
                 if (_currentPageNumber == 1) {
                   _fetchedTags = snapshot.data;
-                  child = ViewFormats.tagGridView(_reload, _fetchedTags,
-                      _scrollController, _tagContainerLength);
+                  child = TagGridView(
+                    onTapReload: _reload,
+                    tags: _fetchedTags,
+                    scrollController: _scrollController,
+                    tagContainerLength: _tagContainerLength,
+                  );
                 } else {
                   _fetchedTags.addAll(snapshot.data);
                 }
