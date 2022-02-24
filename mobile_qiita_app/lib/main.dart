@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Mobile Qiita App',
+      // TODO: ログイン済みの場合はFeedPageを表示（アクセストークン保存の実装完了後）
       home: TopPage(),
       debugShowCheckedModeBanner: false,
     );

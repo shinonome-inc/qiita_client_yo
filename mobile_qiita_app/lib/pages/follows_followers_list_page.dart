@@ -1,5 +1,3 @@
-// TODO: User Pageへ遷移
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
