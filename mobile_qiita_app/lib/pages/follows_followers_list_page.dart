@@ -111,7 +111,9 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
               child = CircularProgressIndicator();
             }
             return Container(
-              child: child,
+              child: Center(
+                child: child,
+              ),
             );
           },
         ),
