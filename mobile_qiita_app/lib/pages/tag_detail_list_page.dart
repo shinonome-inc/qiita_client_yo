@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
 import 'package:mobile_qiita_app/components/list_components/posted_article_list_view.dart';
-import 'package:mobile_qiita_app/extension/connection_state_done.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
@@ -38,7 +37,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   }
 
   // 記事を追加読み込み
-  Future<void> _moreLoad() async {
+  Future<void> _readAdditionally() async {
     if (!_isLoading) {
       _isLoading = true;
       _currentPageNumber++;
@@ -57,7 +56,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
         _currentPageNumber, _searchWord, _tagId, _userId);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
-        _moreLoad();
+        _readAdditionally();
       }
     });
   }
@@ -76,11 +75,14 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
         future: _futureArticles,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           Widget child = Container();
+          bool hasData = snapshot.hasData &&
+              snapshot.connectionState == ConnectionState.done;
+          bool hasError = snapshot.hasError &&
+              snapshot.connectionState == ConnectionState.done;
+          bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
+              snapshot.connectionState == ConnectionState.waiting;
 
-          if (snapshot.hasError) {
-            _isNetworkError = true;
-            child = ErrorView.networkErrorView(_reload);
-          } else if (_currentPageNumber != 1) {
+          if (_currentPageNumber != 1) {
             child = PostedArticleListView(
               onTapReload: _reload,
               articles: _fetchedArticles,
@@ -89,24 +91,24 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
             );
           }
 
-          if (snapshot.connectionStateDone && snapshot.hasData) {
+          if (hasData && _currentPageNumber == 1) {
             _isLoading = false;
             _isNetworkError = false;
-            if (_currentPageNumber == 1) {
-              _fetchedArticles = snapshot.data;
-              child = PostedArticleListView(
-                onTapReload: _reload,
-                articles: _fetchedArticles,
-                scrollController: _scrollController,
-                isUserPage: _isUserPage,
-              );
-            } else {
-              _fetchedArticles.addAll(snapshot.data);
-            }
-          } else if (snapshot.hasError) {
+            _fetchedArticles = snapshot.data;
+            child = PostedArticleListView(
+              onTapReload: _reload,
+              articles: _fetchedArticles,
+              scrollController: _scrollController,
+              isUserPage: _isUserPage,
+            );
+          } else if (hasData) {
+            _isLoading = false;
+            _isNetworkError = false;
+            _fetchedArticles.addAll(snapshot.data);
+          } else if (hasError) {
             _isNetworkError = true;
             child = ErrorView.networkErrorView(_reload);
-          } else if (_isNetworkError || _currentPageNumber == 1) {
+          } else if (isWaiting) {
             child = CircularProgressIndicator();
           }
 
