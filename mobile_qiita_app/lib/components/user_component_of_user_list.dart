@@ -42,7 +42,6 @@ class UserComponentOfUserList extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Container(
-                              height: 20.0,
                               child: Text(
                                 user.name,
                                 overflow: TextOverflow.ellipsis,
@@ -50,7 +49,6 @@ class UserComponentOfUserList extends StatelessWidget {
                               ),
                             ),
                             Container(
-                              height: 12.0,
                               child: Text(
                                 '@${user.id}',
                                 overflow: TextOverflow.ellipsis,
