@@ -9,11 +9,16 @@ import 'package:mobile_qiita_app/views/error_views.dart';
 import 'package:mobile_qiita_app/views/user_page_view.dart';
 
 class UserPage extends StatefulWidget {
-  const UserPage({required this.user, required this.appBarTitle, Key? key})
-      : super(key: key);
+  const UserPage({
+    required this.user,
+    required this.appBarTitle,
+    required this.useBackButton,
+    Key? key,
+  }) : super(key: key);
 
   final User user;
   final String appBarTitle;
+  final bool useBackButton;
 
   @override
   _UserPageState createState() => _UserPageState();
@@ -72,7 +77,8 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarComponent(title: widget.appBarTitle, useBackButton: false),
+      appBar: AppBarComponent(
+          title: widget.appBarTitle, useBackButton: widget.useBackButton),
       body: Variables.accessToken.isNotEmpty
           ? SafeArea(
               child: FutureBuilder(

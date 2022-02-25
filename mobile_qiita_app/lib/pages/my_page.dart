@@ -6,6 +6,8 @@ import 'package:mobile_qiita_app/views/error_views.dart';
 class MyPage extends StatelessWidget {
   const MyPage({Key? key}) : super(key: key);
 
+  final bool _useBackButton = false;
+
   @override
   Widget build(BuildContext context) {
     final String _myPageAppBarTitle = 'MyPage';
@@ -15,6 +17,7 @@ class MyPage extends StatelessWidget {
           ? UserPage(
               user: Variables.authenticatedUser,
               appBarTitle: _myPageAppBarTitle,
+              useBackButton: _useBackButton,
             )
           : ErrorView.notLoginView(context),
     );

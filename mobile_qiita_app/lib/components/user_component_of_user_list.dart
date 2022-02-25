@@ -1,18 +1,29 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/models/user.dart';
+import 'package:mobile_qiita_app/pages/user_page.dart';
 
 // ユーザーのアイコン、名前、ID、投稿数、紹介文を表示
 class UserComponentOfUserList extends StatelessWidget {
   const UserComponentOfUserList({required this.user, Key? key})
       : super(key: key);
   final User user;
+  final String _userPageAppBarTitle = 'Users';
+  final bool _useBackButtonInUserPage = true;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // TODO: UserPageへ遷移
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => UserPage(
+              user: user,
+              appBarTitle: _userPageAppBarTitle,
+              useBackButton: _useBackButtonInUserPage,
+            ),
+          ),
+        );
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
