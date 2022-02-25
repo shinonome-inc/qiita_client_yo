@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class ErrorView {
   // ネットワークエラー
+  // TODO: メソッドからstateless classに変更予定
   static Widget networkErrorView(Function onTapReload) {
     return SafeArea(
       child: Container(
@@ -65,6 +66,7 @@ class ErrorView {
   }
 
   // 検索結果が0件だった場合に表示
+  // TODO: メソッドからstateless classに変更予定
   static Widget emptySearchResultView() {
     return Expanded(
       child: Container(
@@ -88,6 +90,7 @@ class ErrorView {
   }
 
   // 未ログインの場合に表示
+  // TODO: メソッドからstateless classに変更予定
   static Widget notLoginView(BuildContext context) {
     return Scaffold(
       body: SafeArea(

@@ -17,7 +17,6 @@ class UserComponentOfUserList extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         decoration: BoxDecoration(
-          color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
           border: Border.all(
             color: const Color(0xFFE0E0E0),
@@ -29,43 +28,62 @@ class UserComponentOfUserList extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  CircleAvatar(
-                    radius: 16,
-                    backgroundImage: CachedNetworkImageProvider(user.iconUrl),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          user.name,
-                        ),
-                        Text(
-                          '@${user.id}',
-                          style: TextStyle(
-                              color: const Color(0xFF828282), fontSize: 12.0),
-                        ),
-                      ],
+              Container(
+                child: Row(
+                  children: <Widget>[
+                    CircleAvatar(
+                      radius: 16,
+                      backgroundImage: CachedNetworkImageProvider(user.iconUrl),
                     ),
-                  ),
-                ],
+                    Flexible(
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              child: Text(
+                                user.name,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                            Container(
+                              child: Text(
+                                '@${user.id}',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: TextStyle(
+                                  color: const Color(0xFF828282),
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Container(
+                height: 12.0,
                 margin: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
                   'Posts: ${user.posts}',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                   style: TextStyle(fontSize: 12.0),
                 ),
               ),
-              Text(
-                user.description,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 3,
-                style:
-                    TextStyle(color: const Color(0xFF828282), fontSize: 12.0),
+              Container(
+                child: Text(
+                  user.description,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
+                  style:
+                      TextStyle(color: const Color(0xFF828282), fontSize: 12.0),
+                ),
               ),
             ],
           ),

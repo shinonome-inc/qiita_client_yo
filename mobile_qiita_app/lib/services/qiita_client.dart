@@ -101,10 +101,11 @@ class QiitaClient {
   }
 
   // QiitaAPIでユーザー一覧を取得
-  static Future<List<User>> fetchUsers(String usersType, String userId) async {
+  static Future<List<User>> fetchUsers(
+      int currentPageNumber, String usersType, String userId) async {
     var url = usersType == 'Follows'
-        ? 'https://qiita.com/api/v2/users/$userId/followees'
-        : 'https://qiita.com/api/v2/users/$userId/followers';
+        ? 'https://qiita.com/api/v2/users/$userId/followees?page=$currentPageNumber'
+        : 'https://qiita.com/api/v2/users/$userId/followers?page=$currentPageNumber';
 
     var response = Variables.accessToken.isNotEmpty
         ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
