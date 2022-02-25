@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/components/article_component.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 
@@ -26,13 +27,16 @@ class _PostedArticleListViewState extends State<PostedArticleListView> {
   Widget build(BuildContext context) {
     List<Widget> children = [
       Container(
-        padding: const EdgeInsets.all(8.0),
-        color: const Color(0xFFF2F2F2),
+        color: Constants.gray6,
         alignment: Alignment.centerLeft,
-        child: const Text(
-          '投稿記事',
-          style: TextStyle(
-            color: const Color(0xFF828282),
+        child: Container(
+          margin: const EdgeInsets.only(left: 12.0, top: 8.0, bottom: 8.0),
+          child: const Text(
+            '投稿記事',
+            style: TextStyle(
+              fontSize: 12.0,
+              color: Constants.lightSecondaryGrey,
+            ),
           ),
         ),
       ),

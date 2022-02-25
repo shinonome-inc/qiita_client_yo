@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/components/follows_followers_button.dart';
 import 'package:mobile_qiita_app/models/user.dart';
-import 'package:mobile_qiita_app/pages/follows_followers_list_page.dart';
 
 // 取得したユーザー情報を基にユーザーアイコン、ユーザー名、ID、自己紹介、フォロー数、フォロワー数を表示
 class UserComponentOfUserPage extends StatelessWidget {
@@ -13,7 +14,8 @@ class UserComponentOfUserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+      padding: const EdgeInsets.only(
+          left: 24.0, top: 20.0, right: 24.0, bottom: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -21,15 +23,22 @@ class UserComponentOfUserPage extends StatelessWidget {
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.only(bottom: 16.0),
             child: CircleAvatar(
-              radius: 24.0,
+              radius: 40.0,
               backgroundImage: CachedNetworkImageProvider(user.iconUrl),
             ),
           ),
-          Text(user.name),
+          Text(
+            user.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: 4.0),
           Text(
             '@${user.id}',
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
             style: TextStyle(
-              color: Colors.grey,
+              color: Constants.lightSecondaryGrey,
             ),
           ),
           Container(
@@ -39,83 +48,15 @@ class UserComponentOfUserPage extends StatelessWidget {
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                color: Colors.grey,
+                color: Constants.lightSecondaryGrey,
               ),
             ),
           ),
           Row(
             children: <Widget>[
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FollowsFollowersListPage(
-                        usersType: 'Follows',
-                        userId: user.id,
-                      ),
-                    ),
-                  );
-                },
-                child: RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: '${user.followingsCount}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const TextSpan(
-                        text: 'フォロー中  ',
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 8.0,
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FollowsFollowersListPage(
-                        usersType: 'Followers',
-                        userId: user.id,
-                      ),
-                    ),
-                  );
-                },
-                child: RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: '${user.followersCount}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const TextSpan(
-                        text: 'フォロワー',
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              FollowsFollowersButton(user: user, usersType: 'Follows'),
+              SizedBox(width: 8.0),
+              FollowsFollowersButton(user: user, usersType: 'Followers'),
             ],
           ),
         ],

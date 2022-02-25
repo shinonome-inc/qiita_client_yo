@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 // 各クラス共通で利用する定数を格納するためのクラス
 class Constants {
   static const String pacifico = 'Pacifico';
+  static const Color lightSecondaryGrey = Color(0xFF828282);
+  static const Color gray6 = Color(0xFFF2F2F2);
   static const headerTextStyle = TextStyle(
     color: Color(0xFF000000),
     fontSize: 19.0,
