@@ -24,8 +24,6 @@ class UserPageView extends StatefulWidget {
 }
 
 class _UserPageViewState extends State<UserPageView> {
-  final _isUserPage = true;
-
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -38,7 +36,7 @@ class _UserPageViewState extends State<UserPageView> {
               onTapReload: widget.onTapReload,
               articles: widget.articles,
               scrollController: widget.scrollController,
-              isUserPage: _isUserPage,
+              isUserPage: true,
             ),
           ),
         ],
