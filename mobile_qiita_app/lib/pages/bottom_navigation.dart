@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/pages/feed_page.dart';
 import 'package:mobile_qiita_app/pages/follows_followers_list_page.dart';
+import 'package:mobile_qiita_app/pages/my_page.dart';
 import 'package:mobile_qiita_app/pages/tag_page.dart';
-import 'package:mobile_qiita_app/pages/user_page.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({Key? key}) : super(key: key);
@@ -50,16 +49,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
             );
           case 2:
             return CupertinoTabView(
-              builder: (context) => CupertinoPageScaffold(
-                child: UserPage(
-                  user: Variables.authenticatedUser,
-                  appBarTitle: 'MyPage',
-                ),
-              ),
+              builder: (context) => CupertinoPageScaffold(child: MyPage()),
             );
           case 3:
             // FollowsFollowersListPageのテスト用
-            // TODO: SettingPageに戻す
+            // TODO: SettingPageに戻す（SettingPageのUI実装時）
             return CupertinoTabView(
               builder: (context) => CupertinoPageScaffold(
                 child: FollowsFollowersListPage(

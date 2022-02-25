@@ -37,13 +37,15 @@ class ArticleComponent extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: const Color(0xEFEFF0FF),
-            width: 1.0,
+            color: const Color(0xFFB2B2B2),
+            width: 0.5,
           ),
         ),
       ),
       child: Text(
         '@${article.user.id} 投稿日: $postedDate LGTM: ${article.likesCount}',
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
       ),
     );
   }
