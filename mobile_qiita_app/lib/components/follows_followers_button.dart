@@ -26,7 +26,6 @@ class FollowsFollowersButton extends StatelessWidget {
 
     return Container(
       height: 24.0,
-      width: 88.0,
       child: InkWell(
         onTap: () {
           Navigator.push(
