@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/pages/feed_page.dart';
-import 'package:mobile_qiita_app/pages/follows_followers_list_page.dart';
 import 'package:mobile_qiita_app/pages/my_page.dart';
+import 'package:mobile_qiita_app/pages/setting_page.dart';
 import 'package:mobile_qiita_app/pages/tag_page.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -18,6 +18,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         activeColor: const Color(0xFF74C13A),
+        inactiveColor: const Color(0xFF828282),
+        border: Border(
+          top: BorderSide(
+            color: const Color(0xFFC6C6C6),
+            width: 1.0,
+          ),
+        ),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.format_list_bulleted_outlined),
@@ -52,15 +59,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
               builder: (context) => CupertinoPageScaffold(child: MyPage()),
             );
           case 3:
-            // FollowsFollowersListPageのテスト用
-            // TODO: SettingPageに戻す（SettingPageのUI実装時）
             return CupertinoTabView(
-              builder: (context) => CupertinoPageScaffold(
-                child: FollowsFollowersListPage(
-                  usersType: 'Followers',
-                  userId: 'Qiita',
-                ),
-              ),
+              builder: (context) => CupertinoPageScaffold(child: SettingPage()),
             );
           default:
             return Container();
