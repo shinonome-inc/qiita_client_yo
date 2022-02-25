@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/pages/feed_page.dart';
 import 'package:mobile_qiita_app/pages/my_page.dart';
 import 'package:mobile_qiita_app/pages/setting_page.dart';
@@ -17,8 +18,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
-        activeColor: const Color(0xFF74C13A),
-        inactiveColor: const Color(0xFF828282),
+        activeColor: Constants.lightSecondaryColor,
+        inactiveColor: Constants.lightSecondaryGrey,
         border: Border(
           top: BorderSide(
             color: const Color(0xFFC6C6C6),

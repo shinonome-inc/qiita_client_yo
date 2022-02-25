@@ -20,9 +20,9 @@ class AppBarComponent extends StatelessWidget with PreferredSizeWidget {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back_ios,
-                color: const Color(0xFF468300),
+                color: Constants.lightPrimaryColor,
               ),
             )
           : Container(),

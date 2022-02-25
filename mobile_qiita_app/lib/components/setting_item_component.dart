@@ -5,7 +5,7 @@ class SettingsItemComponent extends StatelessWidget {
       {required this.title, required this.item, Key? key})
       : super(key: key);
 
-  final String title;
+  final Text title;
   final Widget item;
 
   @override
@@ -26,7 +26,7 @@ class SettingsItemComponent extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(title),
+            title,
             item,
           ],
         ),
