@@ -2,9 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
 import 'package:mobile_qiita_app/components/setting_item_component.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class SettingPage extends StatelessWidget {
+class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
+
+  @override
+  _SettingPageState createState() => _SettingPageState();
+}
+
+class _SettingPageState extends State<SettingPage> {
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+  );
+
+  // package情報を初期化
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initPackageInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +79,8 @@ class SettingPage extends StatelessWidget {
               title: const Text('アプリバージョン'),
               item: Container(
                 margin: const EdgeInsets.only(right: 16.0),
-                child: const Text(
-                  'v1.0.0',
+                child: Text(
+                  'v${_packageInfo.version}',
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                   ),
