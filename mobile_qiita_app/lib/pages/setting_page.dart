@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
 import 'package:mobile_qiita_app/components/setting_item_component.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -87,25 +88,27 @@ class _SettingPageState extends State<SettingPage> {
                 ),
               ),
             ),
-            Container(
-              padding:
-                  const EdgeInsets.only(left: 16.0, top: 36.0, bottom: 8.0),
-              child: const Text(
-                'その他',
-                style: TextStyle(
-                  color: Constants.lightSecondaryGrey,
+            if (Variables.accessToken.isNotEmpty)
+              Container(
+                padding:
+                    const EdgeInsets.only(left: 16.0, top: 36.0, bottom: 8.0),
+                child: const Text(
+                  'その他',
+                  style: TextStyle(
+                    color: Constants.lightSecondaryGrey,
+                  ),
                 ),
               ),
-            ),
-            GestureDetector(
-              onTap: () {
-                // TODO: ログアウト機能
-              },
-              child: SettingsItemComponent(
-                title: const Text('ログアウトする'),
-                item: Container(),
-              ),
-            )
+            if (Variables.accessToken.isNotEmpty)
+              GestureDetector(
+                onTap: () {
+                  // TODO: ログアウト機能
+                },
+                child: SettingsItemComponent(
+                  title: const Text('ログアウトする'),
+                  item: Container(),
+                ),
+              )
           ],
         ),
       ),
