@@ -49,45 +49,35 @@ class _SettingPageState extends State<SettingPage> {
               margin: const EdgeInsets.only(left: 16.0, top: 31.5, bottom: 8.0),
               child: const Text(
                 'アプリ情報',
-                style: TextStyle(
-                  color: Constants.lightSecondaryGrey,
-                ),
+                style: TextStyle(color: Constants.lightSecondaryGrey),
               ),
             ),
             SettingsItemComponent(
+              onTap: () {
+                Methods.showWebContent(context, 'プライバシーポリシー', _webViewUrl);
+              },
               title: const Text('プライバシーポリシー'),
-              item: IconButton(
-                onPressed: () {
-                  Methods.showWebContent(context, 'プライバシーポリシー', _webViewUrl);
-                },
-                icon: const Icon(
-                  Icons.arrow_forward_ios_outlined,
-                  color: Constants.lightPrimaryBlack,
-                ),
+              item: const Icon(
+                Icons.arrow_forward_ios_outlined,
+                color: Constants.lightPrimaryBlack,
               ),
             ),
             SettingsItemComponent(
+              onTap: () {
+                Methods.showWebContent(context, '利用規約', _webViewUrl);
+              },
               title: const Text('利用規約'),
-              item: IconButton(
-                onPressed: () {
-                  Methods.showWebContent(context, '利用規約', _webViewUrl);
-                },
-                icon: const Icon(
-                  Icons.arrow_forward_ios_outlined,
-                  color: Constants.lightPrimaryBlack,
-                ),
+              item: const Icon(
+                Icons.arrow_forward_ios_outlined,
+                color: Constants.lightPrimaryBlack,
               ),
             ),
             SettingsItemComponent(
+              onTap: () {},
               title: const Text('アプリバージョン'),
-              item: Container(
-                margin: const EdgeInsets.only(right: 16.0),
-                child: Text(
-                  'v${_packageInfo.version}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+              item: Text(
+                'v${_packageInfo.version}',
+                style: TextStyle(fontWeight: FontWeight.w500),
               ),
             ),
             if (Variables.accessToken.isNotEmpty)
@@ -96,20 +86,16 @@ class _SettingPageState extends State<SettingPage> {
                     const EdgeInsets.only(left: 16.0, top: 36.0, bottom: 8.0),
                 child: const Text(
                   'その他',
-                  style: TextStyle(
-                    color: Constants.lightSecondaryGrey,
-                  ),
+                  style: TextStyle(color: Constants.lightSecondaryGrey),
                 ),
               ),
             if (Variables.accessToken.isNotEmpty)
-              GestureDetector(
+              SettingsItemComponent(
                 onTap: () {
                   // TODO: ログアウト機能
                 },
-                child: SettingsItemComponent(
-                  title: const Text('ログアウトする'),
-                  item: Container(),
-                ),
+                title: const Text('ログアウトする'),
+                item: Container(),
               )
           ],
         ),
