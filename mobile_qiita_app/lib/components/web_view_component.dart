@@ -7,18 +7,17 @@ import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class WebViewInModalBottomSheet extends StatefulWidget {
-  const WebViewInModalBottomSheet({required this.initialUrl, Key? key})
+class WebViewComponent extends StatefulWidget {
+  const WebViewComponent({required this.initialUrl, Key? key})
       : super(key: key);
 
   final String initialUrl;
 
   @override
-  _WebViewInModalBottomSheetState createState() =>
-      _WebViewInModalBottomSheetState();
+  _WebViewComponentState createState() => _WebViewComponentState();
 }
 
-class _WebViewInModalBottomSheetState extends State<WebViewInModalBottomSheet> {
+class _WebViewComponentState extends State<WebViewComponent> {
   late WebViewController _webViewController;
   double _webViewHeight = 0;
 

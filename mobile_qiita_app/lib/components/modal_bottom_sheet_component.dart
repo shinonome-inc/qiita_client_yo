@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
-import 'package:mobile_qiita_app/pages/privacy_policy_page.dart';
-import 'package:mobile_qiita_app/pages/term_of_service_page.dart';
-import 'package:mobile_qiita_app/views/web_view_in_modal_bottom_sheet.dart';
+import 'package:mobile_qiita_app/common/texts.dart';
+import 'package:mobile_qiita_app/components/app_info_component.dart';
+import 'package:mobile_qiita_app/components/web_view_component.dart';
 
-// showModalBottomSheet内で表示するWebViewのコンテンツ
+// スクロール可能なModalBottomSheet
 class ModalBottomSheetComponent extends StatefulWidget {
   const ModalBottomSheetComponent({
     required this.headerTitle,
@@ -21,17 +21,16 @@ class ModalBottomSheetComponent extends StatefulWidget {
 }
 
 class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
-  late Widget _contentInModalBottomSheet;
+  late Widget _displayedContent;
 
-  // ModalBottomSheetで表示するコンテンツを判定
+  // ModalBottomSheetで表示するコンテンツを初期化
   void _initContentInModalBottomSheet() {
     if (widget.headerTitle == 'プライバシーポリシー') {
-      _contentInModalBottomSheet = PrivacyPolicyPage();
+      _displayedContent = AppInfoComponent(text: Texts.privacyPolicyText);
     } else if (widget.headerTitle == '利用規約') {
-      _contentInModalBottomSheet = TermOfServicePage();
+      _displayedContent = AppInfoComponent(text: Texts.termOfServiceText);
     } else {
-      _contentInModalBottomSheet =
-          WebViewInModalBottomSheet(initialUrl: widget.webViewUrl);
+      _displayedContent = WebViewComponent(initialUrl: widget.webViewUrl);
     }
   }
 
@@ -79,7 +78,7 @@ class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  child: _contentInModalBottomSheet,
+                  child: _displayedContent,
                 ),
               ),
             ],

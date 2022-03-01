@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
-// 各クラス共通で利用する定数を格納するためのクラス
+// 定数
 class Constants {
+  // UIに関する定数
   static const String pacifico = 'Pacifico';
   static const Color lightPrimaryBlack = Color(0xFF333333);
   static const Color lightPrimaryColor = Color(0xFF468300);
@@ -21,15 +22,16 @@ class Constants {
     fontWeight: FontWeight.w400,
     fontFamily: pacifico,
   );
-
   static const String defaultUserIconUrl =
       'https://secure.gravatar.com/avatar/931b4bb04a18ab8874b2114493d0ea8e';
   static const String defaultTagIconUrl =
       'https://cdn.qiita.com/assets/icons/medium/missing-2e17009a0b32a6423572b0e6dc56727e.png';
 
-  static final postedDateFormat = DateFormat('yyyy-MM-dd');
-
+  // 認証に関する定数
   static const String scopeOfQiitaAuthorization = 'read_qiita';
   static const String accessTokenEndPoint =
       'https://qiita.com/settings/applications?code';
+
+  // その他の定数
+  static final postedDateFormat = DateFormat('yyyy-MM-dd');
 }
