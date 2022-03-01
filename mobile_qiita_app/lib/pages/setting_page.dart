@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
 import 'package:mobile_qiita_app/components/setting_item_component.dart';
@@ -13,6 +14,7 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  final String _webViewUrl = '';
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
     packageName: 'Unknown',
@@ -56,7 +58,7 @@ class _SettingPageState extends State<SettingPage> {
               title: const Text('プライバシーポリシー'),
               item: IconButton(
                 onPressed: () {
-                  // TODO: プライバシーポリシーへ遷移
+                  Methods.showWebContent(context, 'プライバシーポリシー', _webViewUrl);
                 },
                 icon: const Icon(
                   Icons.arrow_forward_ios_outlined,
@@ -68,7 +70,7 @@ class _SettingPageState extends State<SettingPage> {
               title: const Text('利用規約'),
               item: IconButton(
                 onPressed: () {
-                  // TODO: 利用規約へ遷移
+                  Methods.showWebContent(context, '利用規約', _webViewUrl);
                 },
                 icon: const Icon(
                   Icons.arrow_forward_ios_outlined,

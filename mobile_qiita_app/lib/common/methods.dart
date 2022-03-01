@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/components/modal_bottom_sheet_component.dart';
 import 'package:mobile_qiita_app/qiita_auth_key.dart';
-import 'package:mobile_qiita_app/widgets/web_view_screen.dart';
 
 // 各クラス共通で利用するメソッドを格納するためのクラス
 class Methods {
@@ -10,6 +10,7 @@ class Methods {
       BuildContext context, String headerTitle, String webViewUrl) {
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.vertical(
@@ -17,7 +18,7 @@ class Methods {
         ),
       ),
       builder: (context) {
-        return WebViewContent(
+        return ModalBottomSheetComponent(
           headerTitle: headerTitle,
           webViewUrl: webViewUrl,
         );
