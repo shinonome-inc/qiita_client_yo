@@ -59,7 +59,7 @@ class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(24.0),
                   ),
-                  color: const Color(0xFFF9F9F9),
+                  color: const Color(0xF0F9F9F9),
                 ),
                 height: 59.0,
                 child: Padding(
