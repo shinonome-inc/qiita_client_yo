@@ -44,12 +44,9 @@ class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       expand: false,
-      maxChildSize: 0.96,
-      minChildSize: 0.8,
       initialChildSize: 0.96,
       builder: (context, scrollController) {
         return Container(
-          height: MediaQuery.of(context).size.height * 0.96,
           color: Colors.transparent,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
