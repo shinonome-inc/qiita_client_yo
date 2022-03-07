@@ -32,6 +32,7 @@ dependencies:
   cached_network_image: ^3.2.0
   intl: ^0.17.0
   package_info_plus: ^1.4.0
+  flutter_secure_storage: ^5.0.2
 
 dev_dependencies:
   flutter_test:

@@ -57,7 +57,7 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     super.initState();
-    if (Variables.accessToken.isNotEmpty) {
+    if (Variables.accessToken != null) {
       _futureArticles = QiitaClient.fetchArticle(
           _currentPageNumber, _searchWord, _tagId, widget.user.id);
     }
@@ -79,7 +79,7 @@ class _UserPageState extends State<UserPage> {
     return Scaffold(
       appBar: AppBarComponent(
           title: widget.appBarTitle, useBackButton: widget.useBackButton),
-      body: Variables.accessToken.isNotEmpty
+      body: Variables.accessToken != null
           ? SafeArea(
               child: FutureBuilder(
                 future: _futureArticles,
