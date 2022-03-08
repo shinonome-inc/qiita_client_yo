@@ -11,5 +11,5 @@ class Variables {
     followersCount: 0,
     posts: 0,
   );
-  static String? accessToken;
+  static bool isAuthenticated = false;
 }

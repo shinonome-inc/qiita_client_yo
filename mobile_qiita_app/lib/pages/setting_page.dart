@@ -39,18 +39,15 @@ class _SettingPageState extends State<SettingPage> {
     _initPackageInfo();
   }
 
-  // アクセストークンをストレージから削除
-  Future<void> _removeAccessToken() async {
-    final storage = FlutterSecureStorage();
-    await QiitaClient.disableAccessToken();
-    await storage.delete(key: Constants.qiitaAccessTokenKey);
-    Variables.accessToken =
-        await storage.read(key: Constants.qiitaAccessTokenKey);
-  }
-
   // Qiitaからログアウト
   Future<void> _logout(BuildContext context) async {
-    await _removeAccessToken();
+    final storage = FlutterSecureStorage();
+    String? accessToken = await storage.read(key: Constants.accessTokenKey);
+    await storage.delete(key: Constants.accessTokenKey);
+
+    await QiitaClient.disableAccessToken(accessToken);
+    Variables.isAuthenticated = false;
+
     Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (context) => TopPage(),
@@ -102,7 +99,7 @@ class _SettingPageState extends State<SettingPage> {
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
             ),
-            if (Variables.accessToken != null)
+            if (Variables.isAuthenticated)
               Container(
                 padding:
                     const EdgeInsets.only(left: 16.0, top: 36.0, bottom: 8.0),
@@ -111,7 +108,7 @@ class _SettingPageState extends State<SettingPage> {
                   style: TextStyle(color: Constants.lightSecondaryGrey),
                 ),
               ),
-            if (Variables.accessToken != null)
+            if (Variables.isAuthenticated)
               SettingsItemComponent(
                 onTap: () {
                   _logout(context);

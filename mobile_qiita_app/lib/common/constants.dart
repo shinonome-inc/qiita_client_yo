@@ -31,7 +31,7 @@ class Constants {
   static const String scopeOfQiitaAuthorization = 'read_qiita';
   static const String accessTokenEndPoint =
       'https://qiita.com/settings/applications?code';
-  static const String qiitaAccessTokenKey = 'qiitaAccessToken';
+  static const String accessTokenKey = 'qiitaAccessToken';
 
   // その他の定数
   static final postedDateFormat = DateFormat('yyyy-MM-dd');

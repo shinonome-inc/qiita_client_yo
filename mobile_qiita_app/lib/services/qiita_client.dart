@@ -11,9 +11,7 @@ import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/qiita_auth_key.dart';
 
 class QiitaClient {
-  static final authorizationRequestHeader = {
-    'Authorization': 'Bearer ${Variables.accessToken}'
-  };
+  static late Map<String, String> _authorizationRequestHeader;
 
   // アクセストークン発行
   static Future<void> fetchAccessToken(String redirectUrl) async {
@@ -35,10 +33,14 @@ class QiitaClient {
     if (response.statusCode == 201) {
       final dynamic jsonResponse = json.decode(response.body);
       final AccessToken accessToken = AccessToken.fromJson(jsonResponse);
+
       final storage = FlutterSecureStorage();
-      storage.write(
-          key: Constants.qiitaAccessTokenKey, value: accessToken.token);
-      Variables.accessToken = accessToken.token;
+      storage.write(key: Constants.accessTokenKey, value: accessToken.token);
+
+      Variables.isAuthenticated = true;
+      _authorizationRequestHeader = {
+        'Authorization': 'Bearer ${accessToken.token}'
+      };
       await fetchUser();
     } else {
       throw Exception('Request failed with status: ${response.statusCode}');
@@ -46,8 +48,8 @@ class QiitaClient {
   }
 
   // アクセストークンを失効させる
-  static Future<void> disableAccessToken() async {
-    var url = 'https://qiita.com/api/v2/access_tokens/${Variables.accessToken}';
+  static Future<void> disableAccessToken(String? accessToken) async {
+    var url = 'https://qiita.com/api/v2/access_tokens/$accessToken';
     var response = await http.delete(Uri.parse(url));
 
     if (response.statusCode != 204) {
@@ -72,8 +74,8 @@ class QiitaClient {
       url = 'https://qiita.com/api/v2/items?page=$currentPageNumber';
     }
 
-    var response = Variables.accessToken != null
-        ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
+    var response = Variables.isAuthenticated
+        ? await http.get(Uri.parse(url), headers: _authorizationRequestHeader)
         : await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -89,8 +91,8 @@ class QiitaClient {
     var url =
         'https://qiita.com/api/v2/tags?page=$currentPageNumber&sort=count';
 
-    var response = Variables.accessToken != null
-        ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
+    var response = Variables.isAuthenticated
+        ? await http.get(Uri.parse(url), headers: _authorizationRequestHeader)
         : await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -105,7 +107,7 @@ class QiitaClient {
   static Future<void> fetchUser() async {
     var url = 'https://qiita.com/api/v2/authenticated_user';
     var response =
-        await http.get(Uri.parse(url), headers: authorizationRequestHeader);
+        await http.get(Uri.parse(url), headers: _authorizationRequestHeader);
 
     if (response.statusCode == 200) {
       final dynamic jsonResponse = json.decode(response.body);
@@ -122,8 +124,8 @@ class QiitaClient {
         ? 'https://qiita.com/api/v2/users/$userId/followees?page=$currentPageNumber'
         : 'https://qiita.com/api/v2/users/$userId/followers?page=$currentPageNumber';
 
-    var response = Variables.accessToken != null
-        ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
+    var response = Variables.isAuthenticated
+        ? await http.get(Uri.parse(url), headers: _authorizationRequestHeader)
         : await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

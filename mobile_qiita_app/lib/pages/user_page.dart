@@ -57,7 +57,7 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     super.initState();
-    if (Variables.accessToken != null) {
+    if (Variables.isAuthenticated) {
       _futureArticles = QiitaClient.fetchArticle(
           _currentPageNumber, _searchWord, _tagId, widget.user.id);
     }
@@ -79,59 +79,56 @@ class _UserPageState extends State<UserPage> {
     return Scaffold(
       appBar: AppBarComponent(
           title: widget.appBarTitle, useBackButton: widget.useBackButton),
-      body: Variables.accessToken != null
-          ? SafeArea(
-              child: FutureBuilder(
-                future: _futureArticles,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  Widget child = Container();
-                  bool hasData = snapshot.hasData &&
-                      snapshot.connectionState == ConnectionState.done;
-                  bool hasError = snapshot.hasError &&
-                      snapshot.connectionState == ConnectionState.done;
-                  bool isWaiting =
-                      (_isNetworkError || _currentPageNumber == 1) &&
-                          snapshot.connectionState == ConnectionState.waiting;
+      body: SafeArea(
+        child: FutureBuilder(
+          future: _futureArticles,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            Widget child = Container();
+            bool hasData = snapshot.hasData &&
+                snapshot.connectionState == ConnectionState.done;
+            bool hasError = snapshot.hasError &&
+                snapshot.connectionState == ConnectionState.done;
+            bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
+                snapshot.connectionState == ConnectionState.waiting;
 
-                  if (_currentPageNumber != 1) {
-                    child = UserPageView(
-                      onTapReload: _reload,
-                      user: widget.user,
-                      articles: _fetchedArticles,
-                      scrollController: _scrollController,
-                    );
-                  }
+            if (_currentPageNumber != 1) {
+              child = UserPageView(
+                onTapReload: _reload,
+                user: widget.user,
+                articles: _fetchedArticles,
+                scrollController: _scrollController,
+              );
+            }
 
-                  if (hasData && _currentPageNumber == 1) {
-                    _isLoading = false;
-                    _isNetworkError = false;
-                    _fetchedArticles = snapshot.data;
-                    child = UserPageView(
-                      onTapReload: _reload,
-                      user: widget.user,
-                      articles: _fetchedArticles,
-                      scrollController: _scrollController,
-                    );
-                  } else if (hasData) {
-                    _isLoading = false;
-                    _isNetworkError = false;
-                    _fetchedArticles.addAll(snapshot.data);
-                  } else if (hasError) {
-                    _isNetworkError = true;
-                    child = ErrorView.networkErrorView(_reload);
-                  } else if (isWaiting) {
-                    child = CircularProgressIndicator();
-                  }
+            if (hasData && _currentPageNumber == 1) {
+              _isLoading = false;
+              _isNetworkError = false;
+              _fetchedArticles = snapshot.data;
+              child = UserPageView(
+                onTapReload: _reload,
+                user: widget.user,
+                articles: _fetchedArticles,
+                scrollController: _scrollController,
+              );
+            } else if (hasData) {
+              _isLoading = false;
+              _isNetworkError = false;
+              _fetchedArticles.addAll(snapshot.data);
+            } else if (hasError) {
+              _isNetworkError = true;
+              child = ErrorView.networkErrorView(_reload);
+            } else if (isWaiting) {
+              child = CircularProgressIndicator();
+            }
 
-                  return Container(
-                    child: Center(
-                      child: child,
-                    ),
-                  );
-                },
+            return Container(
+              child: Center(
+                child: child,
               ),
-            )
-          : ErrorView.notLoginView(context),
+            );
+          },
+        ),
+      ),
     );
   }
 }

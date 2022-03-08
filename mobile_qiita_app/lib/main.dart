@@ -18,18 +18,21 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   Widget _initialPage = Scaffold();
-  final _storage = FlutterSecureStorage();
 
   // ユーザーの情報を読み取る
   Future<void> _readUserInfo() async {
-    Variables.accessToken =
-        await _storage.read(key: Constants.qiitaAccessTokenKey);
+    final storage = FlutterSecureStorage();
+    String? accessToken = await storage.read(key: Constants.accessTokenKey);
+
+    if (accessToken != null) {
+      Variables.isAuthenticated = true;
+    }
   }
 
   // ログイン済みならFeedPageを表示、未ログインならTopPageを表示
   Future<void> _initInitialPage() async {
     await _readUserInfo();
-    if (Variables.accessToken != null) {
+    if (Variables.isAuthenticated) {
       setState(() {
         _initialPage = BottomNavigation();
       });
