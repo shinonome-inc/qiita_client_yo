@@ -2,15 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/common/keys.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/models/access_token.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/qiita_auth_key.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QiitaClient {
+  static final _storage = FlutterSecureStorage();
   static late Map<String, String> _authorizationRequestHeader;
 
   // アクセストークン発行
@@ -34,21 +36,20 @@ class QiitaClient {
       final dynamic jsonResponse = json.decode(response.body);
       final AccessToken accessToken = AccessToken.fromJson(jsonResponse);
 
-      final storage = FlutterSecureStorage();
-      storage.write(key: Constants.accessTokenKey, value: accessToken.token);
-
-      Variables.isAuthenticated = true;
+      _storage.write(key: Keys.accessToken, value: accessToken.token);
       _authorizationRequestHeader = {
         'Authorization': 'Bearer ${accessToken.token}'
       };
-      await fetchUser();
+      await fetchAuthenticatedUser();
+      Variables.isAuthenticated = true;
     } else {
       throw Exception('Request failed with status: ${response.statusCode}');
     }
   }
 
   // アクセストークンを失効させる
-  static Future<void> disableAccessToken(String? accessToken) async {
+  static Future<void> disableAccessToken() async {
+    String? accessToken = await _storage.read(key: Keys.accessToken);
     var url = 'https://qiita.com/api/v2/access_tokens/$accessToken';
     var response = await http.delete(Uri.parse(url));
 
@@ -104,14 +105,24 @@ class QiitaClient {
   }
 
   // QiitaAPIで認証中ユーザーの情報を取得
-  static Future<void> fetchUser() async {
-    var url = 'https://qiita.com/api/v2/authenticated_user';
+  static Future<void> fetchAuthenticatedUser() async {
+    final url = 'https://qiita.com/api/v2/authenticated_user';
     var response =
         await http.get(Uri.parse(url), headers: _authorizationRequestHeader);
 
     if (response.statusCode == 200) {
       final dynamic jsonResponse = json.decode(response.body);
-      Variables.authenticatedUser = User.fromJson(jsonResponse);
+      User user = User.fromJson(jsonResponse);
+      Variables.authenticatedUser = user;
+
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(Keys.userId, user.id);
+      prefs.setString(Keys.userName, user.name);
+      prefs.setString(Keys.userIconUrl, user.iconUrl);
+      prefs.setString(Keys.userDescription, user.description);
+      prefs.setInt(Keys.userFollowingsCount, user.followingsCount);
+      prefs.setInt(Keys.userFollowersCount, user.followersCount);
+      prefs.setInt(Keys.userPosts, user.posts);
     } else {
       throw Exception('Request failed with status: ${response.statusCode}');
     }
