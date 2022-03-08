@@ -53,7 +53,8 @@ class QiitaClient {
     var url = 'https://qiita.com/api/v2/access_tokens/$accessToken';
     var response = await http.delete(Uri.parse(url));
 
-    if (response.statusCode != 204) {
+    if (response.statusCode == 204) {
+    } else {
       throw Exception('Request failed with status: ${response.statusCode}');
     }
   }

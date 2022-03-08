@@ -27,18 +27,30 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   final ScrollController _scrollController = ScrollController();
   late Future<List<Article>> _futureArticles;
+  late User _user;
   late List<Article> _fetchedArticles;
   int _currentPageNumber = 1;
   final String _searchWord = '';
   final String _tagId = '';
   bool _isNetworkError = false;
   bool _isLoading = false;
+  late final bool _isMyPage;
 
   // 再読み込み
   Future<void> _reload() async {
+    if (_isMyPage) {
+      _updateAuthenticatedUser();
+    }
     setState(() {
       _futureArticles = QiitaClient.fetchArticle(
-          _currentPageNumber, _searchWord, _tagId, widget.user.id);
+          _currentPageNumber, _searchWord, _tagId, _user.id);
+    });
+  }
+
+  Future<void> _updateAuthenticatedUser() async {
+    await QiitaClient.fetchAuthenticatedUser();
+    setState(() {
+      _user = Variables.authenticatedUser;
     });
   }
 
@@ -49,7 +61,7 @@ class _UserPageState extends State<UserPage> {
       _currentPageNumber++;
       setState(() {
         _futureArticles = QiitaClient.fetchArticle(
-            _currentPageNumber, _searchWord, _tagId, widget.user.id);
+            _currentPageNumber, _searchWord, _tagId, _user.id);
       });
     }
   }
@@ -57,10 +69,17 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     super.initState();
+    _user = widget.user;
+    _isMyPage = (widget.appBarTitle == 'MyPage');
+
+    if (_isMyPage) {
+      _updateAuthenticatedUser();
+    }
     if (Variables.isAuthenticated) {
       _futureArticles = QiitaClient.fetchArticle(
-          _currentPageNumber, _searchWord, _tagId, widget.user.id);
+          _currentPageNumber, _searchWord, _tagId, _user.id);
     }
+
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
         _readAdditionally();
@@ -94,7 +113,7 @@ class _UserPageState extends State<UserPage> {
             if (_currentPageNumber != 1) {
               child = UserPageView(
                 onTapReload: _reload,
-                user: widget.user,
+                user: _user,
                 articles: _fetchedArticles,
                 scrollController: _scrollController,
               );
@@ -106,7 +125,7 @@ class _UserPageState extends State<UserPage> {
               _fetchedArticles = snapshot.data;
               child = UserPageView(
                 onTapReload: _reload,
-                user: widget.user,
+                user: _user,
                 articles: _fetchedArticles,
                 scrollController: _scrollController,
               );
