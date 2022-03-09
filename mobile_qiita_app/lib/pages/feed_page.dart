@@ -94,7 +94,7 @@ class _FeedPageState extends State<FeedPage> {
               snapshot.connectionState == ConnectionState.done;
           bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
               snapshot.connectionState == ConnectionState.waiting;
-          bool isEmptySearchResult = hasData && snapshot.data == 0;
+          bool isEmptySearchResult = hasData && snapshot.data.length == 0;
 
           if (isInitialized) {
             child = ArticleListView(
