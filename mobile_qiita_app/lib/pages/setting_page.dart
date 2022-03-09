@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/common/keys.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
 import 'package:mobile_qiita_app/components/setting_item_component.dart';
+import 'package:mobile_qiita_app/pages/top_page.dart';
+import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -14,6 +19,7 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  final _storage = FlutterSecureStorage();
   final String _webViewUrl = '';
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -34,6 +40,32 @@ class _SettingPageState extends State<SettingPage> {
   void initState() {
     super.initState();
     _initPackageInfo();
+  }
+
+  Future<void> _deleteUserInfoFromStorage() async {
+    await _storage.delete(key: Keys.accessToken);
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(Keys.userId, '');
+    prefs.setString(Keys.userName, '');
+    prefs.setString(Keys.userIconUrl, Constants.defaultUserIconUrl);
+    prefs.setString(Keys.userDescription, '');
+    prefs.setInt(Keys.userFollowingsCount, 0);
+    prefs.setInt(Keys.userFollowersCount, 0);
+    prefs.setInt(Keys.userPosts, 0);
+  }
+
+  // Qiitaからログアウト
+  Future<void> _logout(BuildContext context) async {
+    await QiitaClient.disableAccessToken();
+    await _deleteUserInfoFromStorage();
+    Variables.isAuthenticated = false;
+
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(
+        builder: (context) => TopPage(),
+      ),
+    );
   }
 
   @override
@@ -80,7 +112,7 @@ class _SettingPageState extends State<SettingPage> {
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
             ),
-            if (Variables.accessToken.isNotEmpty)
+            if (Variables.isAuthenticated)
               Container(
                 padding:
                     const EdgeInsets.only(left: 16.0, top: 36.0, bottom: 8.0),
@@ -89,14 +121,14 @@ class _SettingPageState extends State<SettingPage> {
                   style: TextStyle(color: Constants.lightSecondaryGrey),
                 ),
               ),
-            if (Variables.accessToken.isNotEmpty)
+            if (Variables.isAuthenticated)
               SettingsItemComponent(
                 onTap: () {
-                  // TODO: ログアウト機能
+                  _logout(context);
                 },
                 title: const Text('ログアウトする'),
                 item: Container(),
-              )
+              ),
           ],
         ),
       ),

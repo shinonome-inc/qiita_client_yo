@@ -13,7 +13,7 @@ class MyPage extends StatelessWidget {
     final String _myPageAppBarTitle = 'MyPage';
 
     return Scaffold(
-      body: Variables.accessToken.isNotEmpty
+      body: Variables.isAuthenticated
           ? UserPage(
               user: Variables.authenticatedUser,
               appBarTitle: _myPageAppBarTitle,

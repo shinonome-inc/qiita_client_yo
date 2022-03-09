@@ -27,18 +27,30 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   final ScrollController _scrollController = ScrollController();
   late Future<List<Article>> _futureArticles;
+  late User _user;
   late List<Article> _fetchedArticles;
   int _currentPageNumber = 1;
   final String _searchWord = '';
   final String _tagId = '';
   bool _isNetworkError = false;
   bool _isLoading = false;
+  late final bool _isMyPage;
 
   // 再読み込み
   Future<void> _reload() async {
+    if (_isMyPage) {
+      _updateAuthenticatedUser();
+    }
     setState(() {
       _futureArticles = QiitaClient.fetchArticle(
-          _currentPageNumber, _searchWord, _tagId, widget.user.id);
+          _currentPageNumber, _searchWord, _tagId, _user.id);
+    });
+  }
+
+  Future<void> _updateAuthenticatedUser() async {
+    await QiitaClient.fetchAuthenticatedUser();
+    setState(() {
+      _user = Variables.authenticatedUser;
     });
   }
 
@@ -49,7 +61,7 @@ class _UserPageState extends State<UserPage> {
       _currentPageNumber++;
       setState(() {
         _futureArticles = QiitaClient.fetchArticle(
-            _currentPageNumber, _searchWord, _tagId, widget.user.id);
+            _currentPageNumber, _searchWord, _tagId, _user.id);
       });
     }
   }
@@ -57,10 +69,17 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     super.initState();
-    if (Variables.accessToken.isNotEmpty) {
-      _futureArticles = QiitaClient.fetchArticle(
-          _currentPageNumber, _searchWord, _tagId, widget.user.id);
+    _user = widget.user;
+    _isMyPage = (widget.appBarTitle == 'MyPage');
+
+    if (_isMyPage) {
+      _updateAuthenticatedUser();
     }
+    if (Variables.isAuthenticated) {
+      _futureArticles = QiitaClient.fetchArticle(
+          _currentPageNumber, _searchWord, _tagId, _user.id);
+    }
+
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
         _readAdditionally();
@@ -79,59 +98,59 @@ class _UserPageState extends State<UserPage> {
     return Scaffold(
       appBar: AppBarComponent(
           title: widget.appBarTitle, useBackButton: widget.useBackButton),
-      body: Variables.accessToken.isNotEmpty
-          ? SafeArea(
-              child: FutureBuilder(
-                future: _futureArticles,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  Widget child = Container();
-                  bool hasData = snapshot.hasData &&
-                      snapshot.connectionState == ConnectionState.done;
-                  bool hasError = snapshot.hasError &&
-                      snapshot.connectionState == ConnectionState.done;
-                  bool isWaiting =
-                      (_isNetworkError || _currentPageNumber == 1) &&
-                          snapshot.connectionState == ConnectionState.waiting;
+      body: SafeArea(
+        child: FutureBuilder(
+          future: _futureArticles,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            Widget child = Container();
 
-                  if (_currentPageNumber != 1) {
-                    child = UserPageView(
-                      onTapReload: _reload,
-                      user: widget.user,
-                      articles: _fetchedArticles,
-                      scrollController: _scrollController,
-                    );
-                  }
+            bool isInitialized = _currentPageNumber != 1;
+            bool hasData = snapshot.hasData &&
+                snapshot.connectionState == ConnectionState.done;
+            bool hasAdditionalData = hasData && isInitialized;
+            bool hasError = snapshot.hasError &&
+                snapshot.connectionState == ConnectionState.done;
+            bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
+                snapshot.connectionState == ConnectionState.waiting;
 
-                  if (hasData && _currentPageNumber == 1) {
-                    _isLoading = false;
-                    _isNetworkError = false;
-                    _fetchedArticles = snapshot.data;
-                    child = UserPageView(
-                      onTapReload: _reload,
-                      user: widget.user,
-                      articles: _fetchedArticles,
-                      scrollController: _scrollController,
-                    );
-                  } else if (hasData) {
-                    _isLoading = false;
-                    _isNetworkError = false;
-                    _fetchedArticles.addAll(snapshot.data);
-                  } else if (hasError) {
-                    _isNetworkError = true;
-                    child = ErrorView.networkErrorView(_reload);
-                  } else if (isWaiting) {
-                    child = CircularProgressIndicator();
-                  }
+            if (isInitialized) {
+              child = UserPageView(
+                onTapReload: _reload,
+                user: _user,
+                articles: _fetchedArticles,
+                scrollController: _scrollController,
+              );
+            }
 
-                  return Container(
-                    child: Center(
-                      child: child,
-                    ),
-                  );
-                },
+            if (hasAdditionalData) {
+              _isLoading = false;
+              _isNetworkError = false;
+              _fetchedArticles.addAll(snapshot.data);
+            } else if (hasData) {
+              _isLoading = false;
+              _isNetworkError = false;
+              _fetchedArticles = snapshot.data;
+              child = UserPageView(
+                onTapReload: _reload,
+                user: _user,
+                articles: _fetchedArticles,
+                scrollController: _scrollController,
+              );
+            } else if (hasError) {
+              _isNetworkError = true;
+              child = ErrorView.networkErrorView(_reload);
+            } else if (isWaiting) {
+              child = CircularProgressIndicator();
+            }
+
+            return Container(
+              child: Center(
+                child: child,
               ),
-            )
-          : ErrorView.notLoginView(context),
+            );
+          },
+        ),
+      ),
     );
   }
 }

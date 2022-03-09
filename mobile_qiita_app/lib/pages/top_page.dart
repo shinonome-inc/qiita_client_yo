@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
+import 'package:mobile_qiita_app/services/qiita_client.dart';
 
 class TopPage extends StatefulWidget {
-  const TopPage({Key? key}) : super(key: key);
+  const TopPage({this.redirectUrl, Key? key}) : super(key: key);
+  final String? redirectUrl;
 
   @override
   _TopPageState createState() => _TopPageState();
@@ -15,6 +17,26 @@ class TopPage extends StatefulWidget {
 
 class _TopPageState extends State<TopPage> {
   bool _isLoading = false;
+
+  Future<void> _loginToQiita() async {
+    _isLoading = true;
+    await QiitaClient.fetchAccessToken(widget.redirectUrl.toString());
+    _isLoading = false;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BottomNavigation(),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.redirectUrl != null) {
+      _loginToQiita();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,17 +141,17 @@ class _TopPageState extends State<TopPage> {
               ),
             ),
           ),
-          _isLoading
-              ? BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: _isLoading ? 3 : 0,
-                    sigmaY: _isLoading ? 3 : 0,
-                  ),
-                  child: Container(
-                    color: Color(0).withOpacity(0),
-                  ),
-                )
-              : Container(),
+          if (_isLoading)
+            BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: _isLoading ? 3 : 0,
+                sigmaY: _isLoading ? 3 : 0,
+              ),
+              child: Container(
+                color: Color(0).withOpacity(0),
+              ),
+            ),
+          if (_isLoading) Center(child: CircularProgressIndicator()),
         ],
       ),
     );

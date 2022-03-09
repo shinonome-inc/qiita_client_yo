@@ -2,9 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
-import 'package:mobile_qiita_app/common/variables.dart';
-import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
-import 'package:mobile_qiita_app/services/qiita_client.dart';
+import 'package:mobile_qiita_app/pages/top_page.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewComponent extends StatefulWidget {
@@ -32,19 +30,6 @@ class _WebViewComponentState extends State<WebViewComponent> {
     });
   }
 
-  // Qiitaにログイン（oAuth認証）
-  Future<void> _loginToQiita(String redirectUrl) async {
-    await QiitaClient.fetchAccessToken(redirectUrl);
-    if (Variables.accessToken.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BottomNavigation(),
-        ),
-      );
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -64,7 +49,11 @@ class _WebViewComponentState extends State<WebViewComponent> {
           _calculateWebViewHeight();
           bool _isLogin = url.contains(Constants.accessTokenEndPoint);
           if (_isLogin) {
-            await _loginToQiita(url);
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => TopPage(redirectUrl: url),
+              ),
+            );
           }
         },
         onWebViewCreated: (controller) async {
