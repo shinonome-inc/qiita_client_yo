@@ -84,14 +84,16 @@ class _FeedPageState extends State<FeedPage> {
         future: _futureArticles,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           Widget child = Container();
+
+          bool isInitialized = _currentPageNumber != 1;
           bool hasData = snapshot.hasData &&
               snapshot.connectionState == ConnectionState.done;
+          bool hasAdditionalData = hasData && isInitialized;
           bool hasError = snapshot.hasError &&
               snapshot.connectionState == ConnectionState.done;
           bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
               snapshot.connectionState == ConnectionState.waiting;
-          bool isInitialized = _currentPageNumber != 1;
-          bool isEmptySearchResult = snapshot.data == 0;
+          bool isEmptySearchResult = hasData && snapshot.data == 0;
 
           if (isInitialized) {
             child = ArticleListView(
@@ -101,11 +103,11 @@ class _FeedPageState extends State<FeedPage> {
             );
           }
 
-          if (hasData && isEmptySearchResult) {
+          if (isEmptySearchResult) {
             _isLoading = false;
             _isNetworkError = false;
             child = ErrorView.emptySearchResultView();
-          } else if (hasData && isInitialized) {
+          } else if (hasAdditionalData) {
             _isLoading = false;
             _isNetworkError = false;
             _fetchedArticles.addAll(snapshot.data);

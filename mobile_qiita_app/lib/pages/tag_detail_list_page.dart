@@ -75,13 +75,15 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
         future: _futureArticles,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           Widget child = Container();
+
+          bool isInitialized = _currentPageNumber != 1;
           bool hasData = snapshot.hasData &&
               snapshot.connectionState == ConnectionState.done;
+          bool hasAdditionalData = hasData && isInitialized;
           bool hasError = snapshot.hasError &&
               snapshot.connectionState == ConnectionState.done;
           bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
               snapshot.connectionState == ConnectionState.waiting;
-          bool isInitialized = _currentPageNumber != 1;
 
           if (isInitialized) {
             child = PostedArticleListView(
@@ -92,7 +94,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
             );
           }
 
-          if (hasData && isInitialized) {
+          if (hasAdditionalData) {
             _isLoading = false;
             _isNetworkError = false;
             _fetchedArticles.addAll(snapshot.data);

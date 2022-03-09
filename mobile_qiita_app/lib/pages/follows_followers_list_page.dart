@@ -76,13 +76,15 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
           future: _futureUsers,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             Widget child = Container();
+
+            bool isInitialized = _currentPageNumber != 1;
             bool hasData = snapshot.hasData &&
                 snapshot.connectionState == ConnectionState.done;
+            bool hasAdditionalData = hasData && isInitialized;
             bool hasError = snapshot.hasError &&
                 snapshot.connectionState == ConnectionState.done;
             bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
                 snapshot.connectionState == ConnectionState.waiting;
-            bool isInitialized = _currentPageNumber != 1;
 
             if (isInitialized) {
               child = UserList(
@@ -92,7 +94,7 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
               );
             }
 
-            if (hasData && isInitialized) {
+            if (hasAdditionalData) {
               _isLoading = false;
               _isNetworkError = false;
               _fetchedUsers.addAll(snapshot.data);
