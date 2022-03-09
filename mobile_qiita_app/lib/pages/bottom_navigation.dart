@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/pages/feed_page.dart';
-import 'package:mobile_qiita_app/pages/my_page.dart';
 import 'package:mobile_qiita_app/pages/setting_page.dart';
 import 'package:mobile_qiita_app/pages/tag_page.dart';
+import 'package:mobile_qiita_app/pages/user_page.dart';
+import 'package:mobile_qiita_app/views/not_login_view.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({Key? key}) : super(key: key);
@@ -14,6 +16,20 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
+  Widget _myPage = NotLoginView();
+
+  @override
+  void initState() {
+    super.initState();
+    if (Variables.isAuthenticated) {
+      _myPage = UserPage(
+        user: Variables.authenticatedUser,
+        appBarTitle: 'MyApp',
+        useBackButton: false,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
@@ -57,7 +73,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             );
           case 2:
             return CupertinoTabView(
-              builder: (context) => CupertinoPageScaffold(child: MyPage()),
+              builder: (context) => CupertinoPageScaffold(child: _myPage),
             );
           case 3:
             return CupertinoTabView(

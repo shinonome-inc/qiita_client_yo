@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/components/app_bar_component.dart';
 import 'package:mobile_qiita_app/components/rounded_text_button.dart';
 
 // MyPageで未ログインの場合に表示される画面
@@ -9,6 +10,7 @@ class NotLoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBarComponent(title: 'MyPage', useBackButton: false),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 24.0),
