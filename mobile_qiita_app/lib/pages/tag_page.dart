@@ -77,8 +77,9 @@ class _TagPageState extends State<TagPage> {
                   snapshot.connectionState == ConnectionState.done;
               bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
                   snapshot.connectionState == ConnectionState.waiting;
+              bool isInitialized = _currentPageNumber != 1;
 
-              if (_currentPageNumber != 1) {
+              if (isInitialized) {
                 child = TagGridView(
                   onTapReload: _reload,
                   tags: _fetchedTags,
@@ -87,7 +88,11 @@ class _TagPageState extends State<TagPage> {
                 );
               }
 
-              if (hasData && _currentPageNumber == 1) {
+              if (hasData && isInitialized) {
+                _isLoading = false;
+                _isNetworkError = false;
+                _fetchedTags.addAll(snapshot.data);
+              } else if (hasData) {
                 _isLoading = false;
                 _isNetworkError = false;
                 _fetchedTags = snapshot.data;
@@ -97,10 +102,6 @@ class _TagPageState extends State<TagPage> {
                   scrollController: _scrollController,
                   tagContainerLength: _tagContainerLength,
                 );
-              } else if (hasData) {
-                _isLoading = false;
-                _isNetworkError = false;
-                _fetchedTags.addAll(snapshot.data);
               } else if (hasError) {
                 _isNetworkError = true;
                 child = ErrorView.networkErrorView(_reload);

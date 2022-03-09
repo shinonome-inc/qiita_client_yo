@@ -82,8 +82,9 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
                 snapshot.connectionState == ConnectionState.done;
             bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
                 snapshot.connectionState == ConnectionState.waiting;
+            bool isInitialized = _currentPageNumber != 1;
 
-            if (_currentPageNumber != 1) {
+            if (isInitialized) {
               child = UserList(
                 onTapReload: _reload,
                 users: _fetchedUsers,
@@ -91,7 +92,11 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
               );
             }
 
-            if (hasData && _currentPageNumber == 1) {
+            if (hasData && isInitialized) {
+              _isLoading = false;
+              _isNetworkError = false;
+              _fetchedUsers.addAll(snapshot.data);
+            } else if (hasData) {
               _isLoading = false;
               _isNetworkError = false;
               _fetchedUsers = snapshot.data;
@@ -100,10 +105,6 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
                 users: _fetchedUsers,
                 scrollController: _scrollController,
               );
-            } else if (hasData) {
-              _isLoading = false;
-              _isNetworkError = false;
-              _fetchedUsers.addAll(snapshot.data);
             } else if (hasError) {
               _isNetworkError = true;
               child = ErrorView.networkErrorView(_reload);

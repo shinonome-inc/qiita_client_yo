@@ -90,8 +90,10 @@ class _FeedPageState extends State<FeedPage> {
               snapshot.connectionState == ConnectionState.done;
           bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
               snapshot.connectionState == ConnectionState.waiting;
+          bool isInitialized = _currentPageNumber != 1;
+          bool isEmptySearchResult = snapshot.data == 0;
 
-          if (_currentPageNumber != 1) {
+          if (isInitialized) {
             child = ArticleListView(
               onTapReload: _reload,
               articles: _fetchedArticles,
@@ -99,11 +101,15 @@ class _FeedPageState extends State<FeedPage> {
             );
           }
 
-          if (hasData && snapshot.data.length == 0) {
+          if (hasData && isEmptySearchResult) {
             _isLoading = false;
             _isNetworkError = false;
             child = ErrorView.emptySearchResultView();
-          } else if (hasData && _currentPageNumber == 1) {
+          } else if (hasData && isInitialized) {
+            _isLoading = false;
+            _isNetworkError = false;
+            _fetchedArticles.addAll(snapshot.data);
+          } else if (hasData) {
             _isLoading = false;
             _isNetworkError = false;
             _fetchedArticles = snapshot.data;
@@ -112,10 +118,6 @@ class _FeedPageState extends State<FeedPage> {
               articles: _fetchedArticles,
               scrollController: _scrollController,
             );
-          } else if (hasData) {
-            _isLoading = false;
-            _isNetworkError = false;
-            _fetchedArticles.addAll(snapshot.data);
           } else if (hasError) {
             _isNetworkError = true;
             child = ErrorView.networkErrorView(_reload);

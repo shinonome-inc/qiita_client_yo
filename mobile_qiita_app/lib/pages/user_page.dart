@@ -109,8 +109,9 @@ class _UserPageState extends State<UserPage> {
                 snapshot.connectionState == ConnectionState.done;
             bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
                 snapshot.connectionState == ConnectionState.waiting;
+            bool isInitialized = _currentPageNumber != 1;
 
-            if (_currentPageNumber != 1) {
+            if (isInitialized) {
               child = UserPageView(
                 onTapReload: _reload,
                 user: _user,
@@ -119,7 +120,11 @@ class _UserPageState extends State<UserPage> {
               );
             }
 
-            if (hasData && _currentPageNumber == 1) {
+            if (hasData && isInitialized) {
+              _isLoading = false;
+              _isNetworkError = false;
+              _fetchedArticles.addAll(snapshot.data);
+            } else if (hasData) {
               _isLoading = false;
               _isNetworkError = false;
               _fetchedArticles = snapshot.data;
@@ -129,10 +134,6 @@ class _UserPageState extends State<UserPage> {
                 articles: _fetchedArticles,
                 scrollController: _scrollController,
               );
-            } else if (hasData) {
-              _isLoading = false;
-              _isNetworkError = false;
-              _fetchedArticles.addAll(snapshot.data);
             } else if (hasError) {
               _isNetworkError = true;
               child = ErrorView.networkErrorView(_reload);

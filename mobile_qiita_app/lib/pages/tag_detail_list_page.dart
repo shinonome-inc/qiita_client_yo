@@ -81,8 +81,9 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
               snapshot.connectionState == ConnectionState.done;
           bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
               snapshot.connectionState == ConnectionState.waiting;
+          bool isInitialized = _currentPageNumber != 1;
 
-          if (_currentPageNumber != 1) {
+          if (isInitialized) {
             child = PostedArticleListView(
               onTapReload: _reload,
               articles: _fetchedArticles,
@@ -91,7 +92,11 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
             );
           }
 
-          if (hasData && _currentPageNumber == 1) {
+          if (hasData && isInitialized) {
+            _isLoading = false;
+            _isNetworkError = false;
+            _fetchedArticles.addAll(snapshot.data);
+          } else if (hasData) {
             _isLoading = false;
             _isNetworkError = false;
             _fetchedArticles = snapshot.data;
@@ -101,10 +106,6 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
               scrollController: _scrollController,
               isUserPage: _isUserPage,
             );
-          } else if (hasData) {
-            _isLoading = false;
-            _isNetworkError = false;
-            _fetchedArticles.addAll(snapshot.data);
           } else if (hasError) {
             _isNetworkError = true;
             child = ErrorView.networkErrorView(_reload);
