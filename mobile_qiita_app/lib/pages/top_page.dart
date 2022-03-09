@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
+import 'package:mobile_qiita_app/components/rounded_text_button.dart';
 import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 
@@ -92,29 +93,17 @@ class _TopPageState extends State<TopPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          FlatButton(
-                            height: 48.0,
-                            color: const Color(0xFF468300),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(24.0),
-                              ),
-                            ),
+                          RoundedTextButton(
                             onPressed: () {
                               Methods.transitionToLoginScreen(context);
                             },
-                            child: const Text(
-                              'ログイン',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
+                            buttonText: 'ログイン',
+                            backgroundColor: Constants.lightPrimaryColor,
                           ),
                           const SizedBox(
                             height: 16.0,
                           ),
-                          FlatButton(
-                            height: 48.0,
+                          RoundedTextButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -123,12 +112,8 @@ class _TopPageState extends State<TopPage> {
                                 ),
                               );
                             },
-                            child: const Text(
-                              'ログインせずに利用する',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
+                            buttonText: 'ログインせずに利用する',
+                            backgroundColor: Colors.transparent,
                           ),
                           const SizedBox(
                             height: 32.0,

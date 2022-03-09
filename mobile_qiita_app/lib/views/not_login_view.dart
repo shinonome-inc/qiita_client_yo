@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/components/rounded_text_button.dart';
 
-// 未ログインの場合に表示
+// MyPageで未ログインの場合に表示される画面
 class NotLoginView extends StatelessWidget {
   const NotLoginView({Key? key}) : super(key: key);
 
@@ -9,21 +11,16 @@ class NotLoginView extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 24.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Container(),
-              Container(
+              Expanded(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(top: 40.0, bottom: 8.0),
-                      child: const Text(
-                        'ログインが必要です',
-                      ),
-                    ),
+                    const Text('ログインが必要です'),
+                    const SizedBox(height: 6.0),
                     const Text(
                       'マイページの機能を利用するには\nログインを行っていただく必要があります。',
                       style: TextStyle(
@@ -35,23 +32,12 @@ class NotLoginView extends StatelessWidget {
                   ],
                 ),
               ),
-              FlatButton(
+              RoundedTextButton(
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                 },
-                height: 48.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(24.0),
-                  ),
-                ),
-                child: const Text(
-                  'ログインする',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                color: Colors.green,
+                buttonText: 'ログインする',
+                backgroundColor: Constants.lightSecondaryColor,
               ),
             ],
           ),
