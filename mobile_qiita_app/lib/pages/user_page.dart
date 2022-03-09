@@ -5,7 +5,7 @@ import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
-import 'package:mobile_qiita_app/views/error_views.dart';
+import 'package:mobile_qiita_app/views/network_error_view.dart';
 import 'package:mobile_qiita_app/views/user_page_view.dart';
 
 class UserPage extends StatefulWidget {
@@ -138,7 +138,7 @@ class _UserPageState extends State<UserPage> {
               );
             } else if (hasError) {
               _isNetworkError = true;
-              child = ErrorView.networkErrorView(_reload);
+              child = NetworkErrorView(onTapReload: _reload);
             } else if (isWaiting) {
               child = CircularProgressIndicator();
             }

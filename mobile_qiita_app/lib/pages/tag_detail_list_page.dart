@@ -5,7 +5,7 @@ import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
-import 'package:mobile_qiita_app/views/error_views.dart';
+import 'package:mobile_qiita_app/views/network_error_view.dart';
 
 class TagDetailListPage extends StatefulWidget {
   const TagDetailListPage({required this.tag, Key? key}) : super(key: key);
@@ -110,7 +110,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
             );
           } else if (hasError) {
             _isNetworkError = true;
-            child = ErrorView.networkErrorView(_reload);
+            child = NetworkErrorView(onTapReload: _reload);
           } else if (isWaiting) {
             child = CircularProgressIndicator();
           }

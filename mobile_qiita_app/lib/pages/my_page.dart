@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/pages/user_page.dart';
-import 'package:mobile_qiita_app/views/error_views.dart';
+import 'package:mobile_qiita_app/views/not_login_view.dart';
 
 class MyPage extends StatelessWidget {
   const MyPage({Key? key}) : super(key: key);
@@ -19,7 +19,7 @@ class MyPage extends StatelessWidget {
               appBarTitle: _myPageAppBarTitle,
               useBackButton: _useBackButton,
             )
-          : ErrorView.notLoginView(context),
+          : NotLoginView(),
     );
   }
 }
