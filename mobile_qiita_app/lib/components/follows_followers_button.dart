@@ -40,21 +40,15 @@ class FollowsFollowersButton extends StatelessWidget {
         },
         child: RichText(
           text: TextSpan(
-            style: TextStyle(
-              color: Colors.black,
-            ),
+            style: TextStyle(color: Colors.black),
             children: [
               TextSpan(
                 text: buttonLabelNumber[usersType],
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               TextSpan(
                 text: buttonLabelText[usersType],
-                style: TextStyle(
-                  color: Constants.lightSecondaryGrey,
-                ),
+                style: TextStyle(color: Constants.lightSecondaryGrey),
               ),
             ],
           ),

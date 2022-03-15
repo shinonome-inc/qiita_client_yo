@@ -11,9 +11,7 @@ class Methods {
       useRootNavigator: true,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(24.0),
-        ),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
       ),
       builder: (context) {
         return ModalBottomSheetComponent(

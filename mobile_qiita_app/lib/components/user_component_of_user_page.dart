@@ -37,9 +37,7 @@ class UserComponentOfUserPage extends StatelessWidget {
             '@${user.id}',
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
-            style: TextStyle(
-              color: Constants.lightSecondaryGrey,
-            ),
+            style: TextStyle(color: Constants.lightSecondaryGrey),
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -47,9 +45,7 @@ class UserComponentOfUserPage extends StatelessWidget {
               user.description,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Constants.lightSecondaryGrey,
-              ),
+              style: TextStyle(color: Constants.lightSecondaryGrey),
             ),
           ),
           Row(

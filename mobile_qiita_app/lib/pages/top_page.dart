@@ -61,9 +61,7 @@ class _TopPageState extends State<TopPage> {
                     Container(
                       child: Column(
                         children: <Widget>[
-                          const SizedBox(
-                            height: 144.0,
-                          ),
+                          const SizedBox(height: 144.0),
                           Container(
                             child: const Text(
                               'Qiita Feed App',
@@ -74,9 +72,7 @@ class _TopPageState extends State<TopPage> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 8.0,
-                          ),
+                          const SizedBox(height: 8.0),
                           Container(
                             child: const Text(
                               '-PlayGround-',
@@ -100,9 +96,7 @@ class _TopPageState extends State<TopPage> {
                             buttonText: 'ログイン',
                             backgroundColor: Constants.lightPrimaryColor,
                           ),
-                          const SizedBox(
-                            height: 16.0,
-                          ),
+                          const SizedBox(height: 16.0),
                           RoundedTextButton(
                             onPressed: () {
                               Navigator.push(
@@ -115,9 +109,7 @@ class _TopPageState extends State<TopPage> {
                             buttonText: 'ログインせずに利用する',
                             backgroundColor: Colors.transparent,
                           ),
-                          const SizedBox(
-                            height: 32.0,
-                          ),
+                          const SizedBox(height: 32.0),
                         ],
                       ),
                     ),
@@ -132,9 +124,7 @@ class _TopPageState extends State<TopPage> {
                 sigmaX: _isLoading ? 3 : 0,
                 sigmaY: _isLoading ? 3 : 0,
               ),
-              child: Container(
-                color: Color(0).withOpacity(0),
-              ),
+              child: Container(color: Color(0).withOpacity(0)),
             ),
           if (_isLoading) Center(child: CircularProgressIndicator()),
         ],
