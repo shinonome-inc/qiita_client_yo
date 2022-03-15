@@ -38,8 +38,9 @@ class _WebViewComponentState extends State<WebViewComponent> {
 
   @override
   Widget build(BuildContext context) {
+    double deviceKeyBordHeight = MediaQuery.of(context).viewInsets.bottom;
     return Container(
-      height: _webViewHeight,
+      height: _webViewHeight + deviceKeyBordHeight,
       child: WebView(
         initialUrl: widget.initialUrl,
         javascriptMode: JavascriptMode.unrestricted,
