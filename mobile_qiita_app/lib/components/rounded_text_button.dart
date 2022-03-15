@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
 
 class RoundedTextButton extends StatelessWidget {
   const RoundedTextButton({
@@ -26,7 +27,7 @@ class RoundedTextButton extends StatelessWidget {
           /* height */ 50,
         ),
         backgroundColor: backgroundColor,
-        primary: const Color(0xFFF9FCFF),
+        primary: Constants.roundedTextButtonPrimary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25),
         ),
