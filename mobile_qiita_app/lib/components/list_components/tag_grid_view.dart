@@ -8,14 +8,14 @@ class TagGridView extends StatefulWidget {
     required this.onTapReload,
     required this.tags,
     required this.scrollController,
-    required this.tagContainerLength,
+    required this.numOfTagsPerLine,
     Key? key,
   }) : super(key: key);
 
   final Future<void> Function() onTapReload;
   final List<Tag> tags;
   final ScrollController scrollController;
-  final int tagContainerLength;
+  final int numOfTagsPerLine;
 
   @override
   _TagGridViewState createState() => _TagGridViewState();
@@ -29,7 +29,7 @@ class _TagGridViewState extends State<TagGridView> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: widget.tagContainerLength,
+              crossAxisCount: widget.numOfTagsPerLine,
               mainAxisSpacing: 16.0,
               crossAxisSpacing: 16.0,
             ),

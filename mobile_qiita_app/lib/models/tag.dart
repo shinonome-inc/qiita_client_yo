@@ -1,5 +1,3 @@
-import 'package:mobile_qiita_app/common/constants.dart';
-
 class Tag {
   final int followersCount;
   final String iconUrl;
@@ -18,7 +16,7 @@ class Tag {
       followersCount: json['followers_count'],
       iconUrl: json['icon_url'] != null
           ? json['icon_url']
-          : Constants.defaultTagIconUrl,
+          : 'https://cdn.qiita.com/assets/icons/medium/missing-2e17009a0b32a6423572b0e6dc56727e.png',
       id: json['id'],
       itemsCount: json['items_count'],
     );

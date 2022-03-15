@@ -8,8 +8,6 @@ class UserComponentOfUserList extends StatelessWidget {
   const UserComponentOfUserList({required this.user, Key? key})
       : super(key: key);
   final User user;
-  final String _userPageAppBarTitle = 'Users';
-  final bool _useBackButtonInUserPage = true;
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +17,8 @@ class UserComponentOfUserList extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => UserPage(
               user: user,
-              appBarTitle: _userPageAppBarTitle,
-              useBackButton: _useBackButtonInUserPage,
+              appBarTitle: 'Users',
+              useBackButton: true,
             ),
           ),
         );

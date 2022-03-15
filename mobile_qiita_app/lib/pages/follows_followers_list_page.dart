@@ -24,11 +24,11 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
   ScrollController _scrollController = ScrollController();
   late Future<List<User>> _futureUsers;
   List<User> _fetchedUsers = [];
+
   int _currentPageNumber = 1;
   bool _isNetworkError = false;
   bool _isLoading = false;
 
-  // 再読み込み
   Future<void> _reload() async {
     setState(() {
       _futureUsers = QiitaClient.fetchUsers(
@@ -36,8 +36,7 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
     });
   }
 
-  // ユーザーを追加読み込み
-  Future<void> _readAdditionally() async {
+  Future<void> _loadAdditionalUsers() async {
     if (!_isLoading) {
       _isLoading = true;
       _currentPageNumber++;
@@ -55,7 +54,7 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
         _currentPageNumber, widget.usersType, widget.userId);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
-        _readAdditionally();
+        _loadAdditionalUsers();
       }
     });
   }

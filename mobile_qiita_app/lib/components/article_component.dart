@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 
@@ -31,7 +31,8 @@ class ArticleComponent extends StatelessWidget {
 
   Widget _articleSubtitle() {
     final DateTime postedTime = DateTime.parse(article.createdAt);
-    final String postedDate = Constants.postedDateFormat.format(postedTime);
+    final DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+    final String postedDate = dateFormat.format(postedTime);
     return Container(
       padding: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
@@ -55,14 +56,16 @@ class ArticleComponent extends StatelessWidget {
     return isUserPage
         ? ListTile(
             onTap: () {
-              Methods.showWebContent(context, _headerTitle, article.url);
+              Methods.showScrollableModalBottomSheet(
+                  context, _headerTitle, article.url);
             },
             title: _articleTitle(),
             subtitle: _articleSubtitle(),
           )
         : ListTile(
             onTap: () {
-              Methods.showWebContent(context, _headerTitle, article.url);
+              Methods.showScrollableModalBottomSheet(
+                  context, _headerTitle, article.url);
             },
             leading: _userIcon(),
             title: _articleTitle(),

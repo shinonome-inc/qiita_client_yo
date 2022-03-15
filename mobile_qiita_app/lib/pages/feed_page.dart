@@ -19,38 +19,36 @@ class _FeedPageState extends State<FeedPage> {
   final ScrollController _scrollController = ScrollController();
   late Future<List<Article>> _futureArticles;
   List<Article> _fetchedArticles = [];
+
   int _currentPageNumber = 1;
   String _searchWord = '';
   final String _tagId = '';
   final String _userId = '';
+
   bool _isNetworkError = false;
   bool _isLoading = false;
-  final String _appBarTitle = 'Feed';
 
-  // Search Barに任意のテキストを入力して記事を検索
-  void _searchArticles(String inputText) {
+  void _searchForArticlesFromInputText(String inputText) {
     _searchWord = inputText;
     setState(() {
-      _futureArticles = QiitaClient.fetchArticle(
+      _futureArticles = QiitaClient.fetchArticles(
           _currentPageNumber, _searchWord, _tagId, _userId);
     });
   }
 
-  // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureArticles = QiitaClient.fetchArticle(
+      _futureArticles = QiitaClient.fetchArticles(
           _currentPageNumber, _searchWord, _tagId, _userId);
     });
   }
 
-  // 記事を追加読み込み
-  Future<void> _readAdditionally() async {
+  Future<void> _loadAdditionalArticles() async {
     if (!_isLoading) {
       _isLoading = true;
       _currentPageNumber++;
       setState(() {
-        _futureArticles = QiitaClient.fetchArticle(
+        _futureArticles = QiitaClient.fetchArticles(
             _currentPageNumber, _searchWord, _tagId, _userId);
       });
     }
@@ -59,11 +57,11 @@ class _FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
-    _futureArticles = QiitaClient.fetchArticle(
+    _futureArticles = QiitaClient.fetchArticles(
         _currentPageNumber, _searchWord, _tagId, _userId);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
-        _readAdditionally();
+        _loadAdditionalArticles();
       }
     });
   }
@@ -78,8 +76,8 @@ class _FeedPageState extends State<FeedPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SearchableAppBarComponent(
-        title: _appBarTitle,
-        searchArticles: _searchArticles,
+        title: 'Feed',
+        searchArticles: _searchForArticlesFromInputText,
       ),
       body: FutureBuilder(
         future: _futureArticles,

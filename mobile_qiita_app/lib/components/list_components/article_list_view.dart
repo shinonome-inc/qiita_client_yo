@@ -20,8 +20,6 @@ class ArticleListView extends StatefulWidget {
 }
 
 class _ArticleListViewState extends State<ArticleListView> {
-  final bool _isUserPage = false;
-
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -33,7 +31,7 @@ class _ArticleListViewState extends State<ArticleListView> {
         itemBuilder: (context, index) {
           return ArticleComponent(
             article: widget.articles[index],
-            isUserPage: _isUserPage,
+            isUserPage: false,
           );
         },
       ),

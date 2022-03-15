@@ -20,29 +20,28 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   final ScrollController _scrollController = ScrollController();
   late Future<List<Article>> _futureArticles;
   List<Article> _fetchedArticles = [];
+
   int _currentPageNumber = 1;
   final String _searchWord = '';
   String _tagId = '';
   final String _userId = '';
-  final bool _isUserPage = false;
+
   bool _isNetworkError = false;
   bool _isLoading = false;
 
-  // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureArticles = QiitaClient.fetchArticle(
+      _futureArticles = QiitaClient.fetchArticles(
           _currentPageNumber, _searchWord, _tagId, _userId);
     });
   }
 
-  // 記事を追加読み込み
-  Future<void> _readAdditionally() async {
+  Future<void> _loadAdditionalArticles() async {
     if (!_isLoading) {
       _isLoading = true;
       _currentPageNumber++;
       setState(() {
-        _futureArticles = QiitaClient.fetchArticle(
+        _futureArticles = QiitaClient.fetchArticles(
             _currentPageNumber, _searchWord, _tagId, _userId);
       });
     }
@@ -52,11 +51,11 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   void initState() {
     super.initState();
     _tagId = widget.tag.id;
-    _futureArticles = QiitaClient.fetchArticle(
+    _futureArticles = QiitaClient.fetchArticles(
         _currentPageNumber, _searchWord, _tagId, _userId);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
-        _readAdditionally();
+        _loadAdditionalArticles();
       }
     });
   }
@@ -90,7 +89,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
               onTapReload: _reload,
               articles: _fetchedArticles,
               scrollController: _scrollController,
-              isUserPage: _isUserPage,
+              isUserPage: false,
             );
           }
 
@@ -106,7 +105,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
               onTapReload: _reload,
               articles: _fetchedArticles,
               scrollController: _scrollController,
-              isUserPage: _isUserPage,
+              isUserPage: false,
             );
           } else if (hasError) {
             _isNetworkError = true;

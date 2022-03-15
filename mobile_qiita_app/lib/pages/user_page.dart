@@ -29,9 +29,11 @@ class _UserPageState extends State<UserPage> {
   late Future<List<Article>> _futureArticles;
   late User _user;
   late List<Article> _fetchedArticles;
+
   int _currentPageNumber = 1;
   final String _searchWord = '';
   final String _tagId = '';
+
   bool _isNetworkError = false;
   bool _isLoading = false;
   late final bool _isMyPage;
@@ -42,7 +44,7 @@ class _UserPageState extends State<UserPage> {
       _updateAuthenticatedUser();
     }
     setState(() {
-      _futureArticles = QiitaClient.fetchArticle(
+      _futureArticles = QiitaClient.fetchArticles(
           _currentPageNumber, _searchWord, _tagId, _user.id);
     });
   }
@@ -60,7 +62,7 @@ class _UserPageState extends State<UserPage> {
       _isLoading = true;
       _currentPageNumber++;
       setState(() {
-        _futureArticles = QiitaClient.fetchArticle(
+        _futureArticles = QiitaClient.fetchArticles(
             _currentPageNumber, _searchWord, _tagId, _user.id);
       });
     }
@@ -76,7 +78,7 @@ class _UserPageState extends State<UserPage> {
       _updateAuthenticatedUser();
     }
     if (Variables.isAuthenticated) {
-      _futureArticles = QiitaClient.fetchArticle(
+      _futureArticles = QiitaClient.fetchArticles(
           _currentPageNumber, _searchWord, _tagId, _user.id);
     }
 

@@ -18,26 +18,24 @@ class _TagPageState extends State<TagPage> {
   final ScrollController _scrollController = ScrollController();
   late Future<List<Tag>> _futureTags;
   List<Tag> _fetchedTags = [];
-  late int _tagContainerLength;
+
   int _currentPageNumber = 1;
+
   bool _isNetworkError = false;
   bool _isLoading = false;
-  final String _appBarTitle = 'Tag';
 
-  // 再読み込み
   Future<void> _reload() async {
     setState(() {
-      _futureTags = QiitaClient.fetchTag(_currentPageNumber);
+      _futureTags = QiitaClient.fetchTags(_currentPageNumber);
     });
   }
 
-  // タグを追加読み込み
-  Future<void> _readAdditionally() async {
+  Future<void> _loadAdditionalTags() async {
     if (!_isLoading) {
       _isLoading = true;
       _currentPageNumber++;
       setState(() {
-        _futureTags = QiitaClient.fetchTag(_currentPageNumber);
+        _futureTags = QiitaClient.fetchTags(_currentPageNumber);
       });
     }
   }
@@ -45,10 +43,10 @@ class _TagPageState extends State<TagPage> {
   @override
   void initState() {
     super.initState();
-    _futureTags = QiitaClient.fetchTag(_currentPageNumber);
+    _futureTags = QiitaClient.fetchTags(_currentPageNumber);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
-        _readAdditionally();
+        _loadAdditionalTags();
       }
     });
   }
@@ -61,9 +59,8 @@ class _TagPageState extends State<TagPage> {
 
   @override
   Widget build(BuildContext context) {
-    _tagContainerLength = (MediaQuery.of(context).size.width ~/ 192).toInt();
     return Scaffold(
-      appBar: AppBarComponent(title: _appBarTitle, useBackButton: false),
+      appBar: AppBarComponent(title: 'Tag', useBackButton: false),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.only(top: 16.0),
@@ -71,6 +68,8 @@ class _TagPageState extends State<TagPage> {
             future: _futureTags,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               Widget child = Container();
+              int numOfTagsPerLine =
+                  (MediaQuery.of(context).size.width ~/ 192).toInt();
 
               bool isInitialized = _currentPageNumber != 1;
               bool hasData = snapshot.hasData &&
@@ -86,7 +85,7 @@ class _TagPageState extends State<TagPage> {
                   onTapReload: _reload,
                   tags: _fetchedTags,
                   scrollController: _scrollController,
-                  tagContainerLength: _tagContainerLength,
+                  numOfTagsPerLine: numOfTagsPerLine,
                 );
               }
 
@@ -102,7 +101,7 @@ class _TagPageState extends State<TagPage> {
                   onTapReload: _reload,
                   tags: _fetchedTags,
                   scrollController: _scrollController,
-                  tagContainerLength: _tagContainerLength,
+                  numOfTagsPerLine: numOfTagsPerLine,
                 );
               } else if (hasError) {
                 _isNetworkError = true;

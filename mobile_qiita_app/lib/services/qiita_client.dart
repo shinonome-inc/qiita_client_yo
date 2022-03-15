@@ -60,20 +60,17 @@ class QiitaClient {
   }
 
   // QiitaAPIで記事を取得
-  static Future<List<Article>> fetchArticle(int currentPageNumber,
-      String searchWord, String tagId, String userId) async {
+  static Future<List<Article>> fetchArticles(
+      int page, String query, String tagId, String userId) async {
     var url;
-    if (searchWord.isNotEmpty) {
-      url =
-          'https://qiita.com/api/v2/items?page=$currentPageNumber&query=$searchWord';
+    if (query.isNotEmpty) {
+      url = 'https://qiita.com/api/v2/items?page=$page&query=$query';
     } else if (tagId.isNotEmpty) {
-      url =
-          'https://qiita.com/api/v2/tags/$tagId/items?page=$currentPageNumber';
+      url = 'https://qiita.com/api/v2/tags/$tagId/items?page=$page';
     } else if (userId.isNotEmpty) {
-      url =
-          'https://qiita.com/api/v2/users/$userId/items?page=$currentPageNumber';
+      url = 'https://qiita.com/api/v2/users/$userId/items?page=$page';
     } else {
-      url = 'https://qiita.com/api/v2/items?page=$currentPageNumber';
+      url = 'https://qiita.com/api/v2/items?page=$page';
     }
 
     var response = Variables.isAuthenticated
@@ -89,9 +86,8 @@ class QiitaClient {
   }
 
   // QiitaAPIでタグを取得
-  static Future<List<Tag>> fetchTag(int currentPageNumber) async {
-    var url =
-        'https://qiita.com/api/v2/tags?page=$currentPageNumber&sort=count';
+  static Future<List<Tag>> fetchTags(int page) async {
+    var url = 'https://qiita.com/api/v2/tags?page=$page&sort=count';
 
     var response = Variables.isAuthenticated
         ? await http.get(Uri.parse(url), headers: _authorizationRequestHeader)
@@ -131,10 +127,10 @@ class QiitaClient {
 
   // QiitaAPIでユーザー一覧を取得
   static Future<List<User>> fetchUsers(
-      int currentPageNumber, String usersType, String userId) async {
+      int page, String usersType, String userId) async {
     var url = usersType == 'Follows'
-        ? 'https://qiita.com/api/v2/users/$userId/followees?page=$currentPageNumber'
-        : 'https://qiita.com/api/v2/users/$userId/followers?page=$currentPageNumber';
+        ? 'https://qiita.com/api/v2/users/$userId/followees?page=$page'
+        : 'https://qiita.com/api/v2/users/$userId/followers?page=$page';
 
     var response = Variables.isAuthenticated
         ? await http.get(Uri.parse(url), headers: _authorizationRequestHeader)
