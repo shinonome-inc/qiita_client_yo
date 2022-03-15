@@ -10,6 +10,7 @@ class Constants {
   static const Color lightSecondaryColor = Color(0xFF74C13A);
   static const Color lightSecondaryGrey = Color(0xFF828282);
   static const Color gray6 = Color(0xFFF2F2F2);
+  static const Color roundedTextButtonPrimary = Color(0xFFF9FCFF);
   static const headerTextStyle = TextStyle(
     color: Color(0xFF000000),
     fontSize: 19.0,

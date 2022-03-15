@@ -5,7 +5,8 @@ import 'package:mobile_qiita_app/components/searchable_app_bar_component.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
-import 'package:mobile_qiita_app/views/error_views.dart';
+import 'package:mobile_qiita_app/views/empty_serch_result_view.dart';
+import 'package:mobile_qiita_app/views/network_error_view.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -93,7 +94,7 @@ class _FeedPageState extends State<FeedPage> {
               snapshot.connectionState == ConnectionState.done;
           bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
               snapshot.connectionState == ConnectionState.waiting;
-          bool isEmptySearchResult = hasData && snapshot.data == 0;
+          bool isEmptySearchResult = hasData && snapshot.data.length == 0;
 
           if (isInitialized) {
             child = ArticleListView(
@@ -106,7 +107,7 @@ class _FeedPageState extends State<FeedPage> {
           if (isEmptySearchResult) {
             _isLoading = false;
             _isNetworkError = false;
-            child = ErrorView.emptySearchResultView();
+            child = EmptySearchResultView();
           } else if (hasAdditionalData) {
             _isLoading = false;
             _isNetworkError = false;
@@ -122,7 +123,7 @@ class _FeedPageState extends State<FeedPage> {
             );
           } else if (hasError) {
             _isNetworkError = true;
-            child = ErrorView.networkErrorView(_reload);
+            child = NetworkErrorView(onTapReload: _reload);
           } else if (isWaiting) {
             child = CircularProgressIndicator();
           }
