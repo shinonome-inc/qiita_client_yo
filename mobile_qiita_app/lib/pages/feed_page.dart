@@ -76,64 +76,69 @@ class _FeedPageState extends State<FeedPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: SearchableAppBarComponent(
-        title: 'Feed',
-        searchArticles: _searchForArticlesFromInputText,
-      ),
-      body: FutureBuilder(
-        future: _futureArticles,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          Widget child = Container();
+    return GestureDetector(
+      onPanDown: (details) {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: SearchableAppBarComponent(
+          title: 'Feed',
+          searchArticles: _searchForArticlesFromInputText,
+        ),
+        body: FutureBuilder(
+          future: _futureArticles,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            Widget child = Container();
 
-          bool isInitialized = _currentPageNumber != 1;
-          bool hasData = snapshot.hasData &&
-              snapshot.connectionState == ConnectionState.done;
-          bool hasAdditionalData = hasData && isInitialized;
-          bool hasError = snapshot.hasError &&
-              snapshot.connectionState == ConnectionState.done;
-          bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
-              snapshot.connectionState == ConnectionState.waiting;
-          bool isEmptySearchResult = hasData && snapshot.data.length == 0;
+            bool isInitialized = _currentPageNumber != 1;
+            bool hasData = snapshot.hasData &&
+                snapshot.connectionState == ConnectionState.done;
+            bool hasAdditionalData = hasData && isInitialized;
+            bool hasError = snapshot.hasError &&
+                snapshot.connectionState == ConnectionState.done;
+            bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
+                snapshot.connectionState == ConnectionState.waiting;
+            bool isEmptySearchResult = hasData && snapshot.data.length == 0;
 
-          if (isInitialized) {
-            child = ArticleListView(
-              onTapReload: _reload,
-              articles: _fetchedArticles,
-              scrollController: _scrollController,
+            if (isInitialized) {
+              child = ArticleListView(
+                onTapReload: _reload,
+                articles: _fetchedArticles,
+                scrollController: _scrollController,
+              );
+            }
+
+            if (isEmptySearchResult) {
+              _isLoading = false;
+              _isNetworkError = false;
+              child = EmptySearchResultView();
+            } else if (hasAdditionalData) {
+              _isLoading = false;
+              _isNetworkError = false;
+              _fetchedArticles.addAll(snapshot.data);
+            } else if (hasData) {
+              _isLoading = false;
+              _isNetworkError = false;
+              _fetchedArticles = snapshot.data;
+              child = ArticleListView(
+                onTapReload: _reload,
+                articles: _fetchedArticles,
+                scrollController: _scrollController,
+              );
+            } else if (hasError) {
+              _isNetworkError = true;
+              child = NetworkErrorView(onTapReload: _reload);
+            } else if (isWaiting) {
+              child = CircularProgressIndicator();
+            }
+
+            return Container(
+              child: Center(
+                child: child,
+              ),
             );
-          }
-
-          if (isEmptySearchResult) {
-            _isLoading = false;
-            _isNetworkError = false;
-            child = EmptySearchResultView();
-          } else if (hasAdditionalData) {
-            _isLoading = false;
-            _isNetworkError = false;
-            _fetchedArticles.addAll(snapshot.data);
-          } else if (hasData) {
-            _isLoading = false;
-            _isNetworkError = false;
-            _fetchedArticles = snapshot.data;
-            child = ArticleListView(
-              onTapReload: _reload,
-              articles: _fetchedArticles,
-              scrollController: _scrollController,
-            );
-          } else if (hasError) {
-            _isNetworkError = true;
-            child = NetworkErrorView(onTapReload: _reload);
-          } else if (isWaiting) {
-            child = CircularProgressIndicator();
-          }
-
-          return Container(
-            child: Center(
-              child: child,
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }
