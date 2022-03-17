@@ -30,6 +30,8 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
   bool _isLoading = false;
 
   Future<void> _reload() async {
+    _currentPageNumber = 1;
+    _fetchedUsers.clear();
     setState(() {
       _futureUsers = QiitaClient.fetchUsers(
           _currentPageNumber, widget.usersType, widget.userId);

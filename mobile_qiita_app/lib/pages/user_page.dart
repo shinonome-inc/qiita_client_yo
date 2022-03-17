@@ -43,6 +43,8 @@ class _UserPageState extends State<UserPage> {
     if (_isMyPage) {
       _updateAuthenticatedUser();
     }
+    _currentPageNumber = 1;
+    _fetchedArticles.clear();
     setState(() {
       _futureArticles = QiitaClient.fetchArticles(
           _currentPageNumber, _searchWord, _tagId, _user.id);

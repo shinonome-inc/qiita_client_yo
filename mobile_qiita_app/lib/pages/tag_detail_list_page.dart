@@ -30,6 +30,8 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
   bool _isLoading = false;
 
   Future<void> _reload() async {
+    _currentPageNumber = 1;
+    _fetchedArticles.clear();
     setState(() {
       _futureArticles = QiitaClient.fetchArticles(
           _currentPageNumber, _searchWord, _tagId, _userId);

@@ -25,6 +25,8 @@ class _TagPageState extends State<TagPage> {
   bool _isLoading = false;
 
   Future<void> _reload() async {
+    _currentPageNumber = 1;
+    _fetchedTags.clear();
     setState(() {
       _futureTags = QiitaClient.fetchTags(_currentPageNumber);
     });
