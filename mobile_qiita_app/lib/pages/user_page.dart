@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
+import 'package:mobile_qiita_app/components/list_components/article_list_view.dart';
+import 'package:mobile_qiita_app/components/user_component_of_user_page.dart';
 import 'package:mobile_qiita_app/extension/pagination_scroll.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/network_error_view.dart';
-import 'package:mobile_qiita_app/views/user_page_view.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({
@@ -38,7 +39,22 @@ class _UserPageState extends State<UserPage> {
   bool _isLoading = false;
   late final bool _isMyPage;
 
-  // 再読み込み
+  Widget _userPageView() {
+    return Column(
+      children: <Widget>[
+        UserComponentOfUserPage(user: _user),
+        Flexible(
+          child: ArticleListView(
+            articles: _fetchedArticles,
+            scrollController: _scrollController,
+            isUserPage: true,
+            showPostedArticlesLabel: true,
+          ),
+        ),
+      ],
+    );
+  }
+
   Future<void> _reload() async {
     if (_isMyPage) {
       _updateAuthenticatedUser();
@@ -58,7 +74,6 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
-  // 記事を追加読み込み
   Future<void> _readAdditionally() async {
     if (!_isLoading) {
       _isLoading = true;
@@ -102,7 +117,8 @@ class _UserPageState extends State<UserPage> {
     return Scaffold(
       appBar: AppBarComponent(
           title: widget.appBarTitle, useBackButton: widget.useBackButton),
-      body: SafeArea(
+      body: RefreshIndicator(
+        onRefresh: _reload,
         child: FutureBuilder(
           future: _futureArticles,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -118,12 +134,7 @@ class _UserPageState extends State<UserPage> {
                 snapshot.connectionState == ConnectionState.waiting;
 
             if (isInitialized) {
-              child = UserPageView(
-                onTapReload: _reload,
-                user: _user,
-                articles: _fetchedArticles,
-                scrollController: _scrollController,
-              );
+              child = _userPageView();
             }
 
             if (hasAdditionalData) {
@@ -134,23 +145,16 @@ class _UserPageState extends State<UserPage> {
               _isLoading = false;
               _isNetworkError = false;
               _fetchedArticles = snapshot.data;
-              child = UserPageView(
-                onTapReload: _reload,
-                user: _user,
-                articles: _fetchedArticles,
-                scrollController: _scrollController,
-              );
+              child = _userPageView();
             } else if (hasError) {
               _isNetworkError = true;
               child = NetworkErrorView(onTapReload: _reload);
             } else if (isWaiting) {
-              child = CircularProgressIndicator();
+              child = Center(child: CircularProgressIndicator());
             }
 
             return Container(
-              child: Center(
-                child: child,
-              ),
+              child: child,
             );
           },
         ),

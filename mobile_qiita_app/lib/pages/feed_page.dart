@@ -169,7 +169,6 @@ class _FeedPageState extends State<FeedPage> {
 
               if (isInitialized) {
                 child = ArticleListView(
-                  onTapReload: _reload,
                   articles: _fetchedArticles,
                   scrollController: _scrollController,
                 );
@@ -188,7 +187,6 @@ class _FeedPageState extends State<FeedPage> {
                 _isNetworkError = false;
                 _fetchedArticles = snapshot.data;
                 child = ArticleListView(
-                  onTapReload: _reload,
                   articles: _fetchedArticles,
                   scrollController: _scrollController,
                 );

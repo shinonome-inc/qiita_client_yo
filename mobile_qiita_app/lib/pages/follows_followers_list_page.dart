@@ -72,7 +72,8 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarComponent(title: widget.usersType, useBackButton: true),
-      body: SafeArea(
+      body: RefreshIndicator(
+        onRefresh: _reload,
         child: FutureBuilder(
           future: _futureUsers,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -89,7 +90,6 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
 
             if (isInitialized) {
               child = UserList(
-                onTapReload: _reload,
                 users: _fetchedUsers,
                 scrollController: _scrollController,
               );
@@ -104,7 +104,6 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
               _isNetworkError = false;
               _fetchedUsers = snapshot.data;
               child = UserList(
-                onTapReload: _reload,
                 users: _fetchedUsers,
                 scrollController: _scrollController,
               );
@@ -112,12 +111,10 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
               _isNetworkError = true;
               child = NetworkErrorView(onTapReload: _reload);
             } else if (isWaiting) {
-              child = CircularProgressIndicator();
+              child = Center(child: CircularProgressIndicator());
             }
             return Container(
-              child: Center(
-                child: child,
-              ),
+              child: child,
             );
           },
         ),

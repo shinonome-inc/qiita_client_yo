@@ -63,62 +63,56 @@ class _TagPageState extends State<TagPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarComponent(title: 'Tag', useBackButton: false),
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.only(top: 16.0),
-          child: FutureBuilder(
-            future: _futureTags,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              Widget child = Container();
-              int numOfTagsPerLine =
-                  (MediaQuery.of(context).size.width ~/ 192).toInt();
+      body: RefreshIndicator(
+        onRefresh: _reload,
+        child: FutureBuilder(
+          future: _futureTags,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            Widget child = Container();
+            int numOfTagsPerLine =
+                (MediaQuery.of(context).size.width ~/ 192).toInt();
 
-              bool isInitialized = _currentPageNumber != 1;
-              bool hasData = snapshot.hasData &&
-                  snapshot.connectionState == ConnectionState.done;
-              bool hasAdditionalData = hasData && isInitialized;
-              bool hasError = snapshot.hasError &&
-                  snapshot.connectionState == ConnectionState.done;
-              bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
-                  snapshot.connectionState == ConnectionState.waiting;
+            bool isInitialized = _currentPageNumber != 1;
+            bool hasData = snapshot.hasData &&
+                snapshot.connectionState == ConnectionState.done;
+            bool hasAdditionalData = hasData && isInitialized;
+            bool hasError = snapshot.hasError &&
+                snapshot.connectionState == ConnectionState.done;
+            bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
+                snapshot.connectionState == ConnectionState.waiting;
 
-              if (isInitialized) {
-                child = TagGridView(
-                  onTapReload: _reload,
-                  tags: _fetchedTags,
-                  scrollController: _scrollController,
-                  numOfTagsPerLine: numOfTagsPerLine,
-                );
-              }
-
-              if (hasAdditionalData) {
-                _isLoading = false;
-                _isNetworkError = false;
-                _fetchedTags.addAll(snapshot.data);
-              } else if (hasData) {
-                _isLoading = false;
-                _isNetworkError = false;
-                _fetchedTags = snapshot.data;
-                child = TagGridView(
-                  onTapReload: _reload,
-                  tags: _fetchedTags,
-                  scrollController: _scrollController,
-                  numOfTagsPerLine: numOfTagsPerLine,
-                );
-              } else if (hasError) {
-                _isNetworkError = true;
-                child = NetworkErrorView(onTapReload: _reload);
-              } else if (isWaiting) {
-                child = CircularProgressIndicator();
-              }
-
-              return Container(
-                child: Center(
-                  child: child,
-                ),
+            if (isInitialized) {
+              child = TagGridView(
+                tags: _fetchedTags,
+                scrollController: _scrollController,
+                numOfTagsPerLine: numOfTagsPerLine,
               );
-            },
-          ),
+            }
+
+            if (hasAdditionalData) {
+              _isLoading = false;
+              _isNetworkError = false;
+              _fetchedTags.addAll(snapshot.data);
+            } else if (hasData) {
+              _isLoading = false;
+              _isNetworkError = false;
+              _fetchedTags = snapshot.data;
+              child = TagGridView(
+                tags: _fetchedTags,
+                scrollController: _scrollController,
+                numOfTagsPerLine: numOfTagsPerLine,
+              );
+            } else if (hasError) {
+              _isNetworkError = true;
+              child = NetworkErrorView(onTapReload: _reload);
+            } else if (isWaiting) {
+              child = Center(child: CircularProgressIndicator());
+            }
+
+            return Container(
+              child: child,
+            );
+          },
         ),
       ),
     );
