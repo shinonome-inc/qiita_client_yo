@@ -58,7 +58,10 @@ class _UserPageState extends State<UserPage> {
   Future<void> _reload() async {
     if (_isMyPage) {
       _updateAuthenticatedUser();
+    } else {
+      _user = await QiitaClient.fetchUser(_user.id);
     }
+
     _currentPageNumber = 1;
     _fetchedArticles.clear();
     setState(() {

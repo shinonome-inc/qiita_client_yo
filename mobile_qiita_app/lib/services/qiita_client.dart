@@ -143,4 +143,19 @@ class QiitaClient {
       throw Exception('Request failed with status: ${response.statusCode}');
     }
   }
+
+  static Future<User> fetchUser(String userId) async {
+    final url = 'https://qiita.com/api/v2/users/$userId';
+
+    var response = Variables.isAuthenticated
+        ? await http.get(Uri.parse(url), headers: _authorizationRequestHeader)
+        : await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final dynamic jsonResponse = json.decode(response.body);
+      return User.fromJson(jsonResponse);
+    } else {
+      throw Exception('Request failed with status: ${response.statusCode}');
+    }
+  }
 }
