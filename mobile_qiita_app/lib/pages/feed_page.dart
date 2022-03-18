@@ -89,12 +89,18 @@ class _FeedPageState extends State<FeedPage> {
     );
   }
 
-  void _searchForArticlesFromInputText(String inputText) {
-    _searchWord = inputText;
+  void _resetFetchArticles() {
+    _currentPageNumber = 1;
+    _fetchedArticles.clear();
     setState(() {
       _futureArticles = QiitaClient.fetchArticles(
           _currentPageNumber, _searchWord, _tagId, _userId);
     });
+  }
+
+  void _searchForArticlesFromInputText(String inputText) {
+    _searchWord = inputText;
+    _resetFetchArticles();
   }
 
   Future<void> _reload() async {
@@ -105,12 +111,7 @@ class _FeedPageState extends State<FeedPage> {
         _textEditingController.text = '';
       });
     }
-    _currentPageNumber = 1;
-    _fetchedArticles.clear();
-    setState(() {
-      _futureArticles = QiitaClient.fetchArticles(
-          _currentPageNumber, _searchWord, _tagId, _userId);
-    });
+    _resetFetchArticles();
   }
 
   Future<void> _loadAdditionalArticles() async {
