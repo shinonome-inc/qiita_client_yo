@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
 
@@ -14,8 +15,8 @@ class TagComponent extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         border: Border.all(
-          color: const Color(0xFFE0E0E0),
-          width: 1.6,
+          color: Constants.gray5,
+          width: 1.0,
         ),
       ),
       child: ListTile(
@@ -29,24 +30,22 @@ class TagComponent extends StatelessWidget {
         },
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              height: 48.0,
-              width: 48.0,
+              height: 38.0,
+              width: 38.0,
               child: CachedNetworkImage(imageUrl: tag.iconUrl),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              margin: const EdgeInsets.symmetric(vertical: 8.0),
+              width: 130.0,
+              height: 20.0,
               child: Text(
                 tag.id,
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-                style: TextStyle(
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontWeight: FontWeight.w500),
               ),
             ),
             Text(
@@ -54,17 +53,18 @@ class TagComponent extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               style: TextStyle(
-                color: const Color(0xFF828282),
-                fontSize: 14.5,
+                color: Constants.lightSecondaryGrey,
+                fontSize: 12.0,
               ),
             ),
+            const SizedBox(height: 8.0),
             Text(
               'フォロワー数: ${tag.followersCount}',
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               style: TextStyle(
-                color: const Color(0xFF828282),
-                fontSize: 14.5,
+                color: Constants.lightSecondaryGrey,
+                fontSize: 12.0,
               ),
             ),
           ],

@@ -8,6 +8,7 @@ class Constants {
   static const Color lightPrimaryColor = Color(0xFF468300);
   static const Color lightSecondaryColor = Color(0xFF74C13A);
   static const Color lightSecondaryGrey = Color(0xFF828282);
+  static const Color gray5 = Color(0xFFE0E0E0);
   static const Color gray6 = Color(0xFFF2F2F2);
   static const Color roundedTextButtonPrimary = Color(0xFFF9FCFF);
 
