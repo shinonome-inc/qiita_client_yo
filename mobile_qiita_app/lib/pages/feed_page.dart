@@ -69,9 +69,15 @@ class _FeedPageState extends State<FeedPage> {
                 enabled: true,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  icon: const Icon(
-                    Icons.search,
-                    color: Color(0xFF8E8E93),
+                  icon: GestureDetector(
+                    onTap: () {
+                      _searchForArticlesFromInputText(
+                          _textEditingController.text);
+                    },
+                    child: const Icon(
+                      Icons.search,
+                      color: Color(0xFF8E8E93),
+                    ),
                   ),
                   hintText: 'Search',
                   hintStyle: TextStyle(
