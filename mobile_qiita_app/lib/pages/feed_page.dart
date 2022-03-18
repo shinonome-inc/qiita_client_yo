@@ -18,7 +18,6 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _textEditingController = TextEditingController();
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + 46.0);
   late Future<List<Article>> _futureArticles;
   List<Article> _fetchedArticles = [];
 
@@ -31,10 +30,40 @@ class _FeedPageState extends State<FeedPage> {
   bool _isLoading = false;
   bool _isEmptySearchResult = false;
 
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 48.0);
+
+  Widget _textFieldIcon() {
+    return GestureDetector(
+      onTap: () {
+        _searchForArticlesFromInputText(_textEditingController.text);
+      },
+      child: const Icon(
+        Icons.search,
+        color: Color(0xFF8E8E93),
+      ),
+    );
+  }
+
+  Widget _textFieldSuffixIcon() {
+    if (_textEditingController.text.isEmpty) {
+      return SizedBox.shrink();
+    }
+    return GestureDetector(
+      onTap: () {
+        _textEditingController.text = '';
+      },
+      child: const Icon(
+        Icons.close,
+        color: Color(0xFF8E8E93),
+      ),
+    );
+  }
+
   PreferredSize? _searchableAppBar() {
     return PreferredSize(
       preferredSize: preferredSize,
       child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -44,22 +73,18 @@ class _FeedPageState extends State<FeedPage> {
           ),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Flexible(
-              child: Container(
-                child: Center(
-                  child: Text(
-                    'Feed',
-                    style: Constants.appBarTextStyle,
-                  ),
-                ),
+            Container(
+              margin: const EdgeInsets.only(top: 27.0),
+              child: const Text(
+                'Feed',
+                style: Constants.appBarTextStyle,
               ),
             ),
             Container(
               height: 36.0,
-              margin:
-                  const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+              margin: const EdgeInsets.only(bottom: 8.0),
               padding: const EdgeInsets.only(left: 8.0),
               decoration: BoxDecoration(
                 color: const Color(0xEFEFF0FF),
@@ -69,27 +94,8 @@ class _FeedPageState extends State<FeedPage> {
                 enabled: true,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  icon: GestureDetector(
-                    onTap: () {
-                      _searchForArticlesFromInputText(
-                          _textEditingController.text);
-                    },
-                    child: const Icon(
-                      Icons.search,
-                      color: Color(0xFF8E8E93),
-                    ),
-                  ),
-                  suffixIcon: _textEditingController.text.isEmpty
-                      ? const SizedBox.shrink()
-                      : GestureDetector(
-                          onTap: () {
-                            _textEditingController.text = '';
-                          },
-                          child: const Icon(
-                            Icons.close,
-                            color: Color(0xFF8E8E93),
-                          ),
-                        ),
+                  icon: _textFieldIcon(),
+                  suffixIcon: _textFieldSuffixIcon(),
                   hintText: 'Search',
                   hintStyle: TextStyle(
                     color: const Color(0xFF8E8E93),
@@ -162,63 +168,65 @@ class _FeedPageState extends State<FeedPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onPanDown: (details) {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        appBar: _searchableAppBar(),
-        body: RefreshIndicator(
-          onRefresh: _reload,
-          child: FutureBuilder(
-            future: _futureArticles,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              Widget child = Container();
+    return SafeArea(
+      child: GestureDetector(
+        onPanDown: (details) {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+          appBar: _searchableAppBar(),
+          body: RefreshIndicator(
+            onRefresh: _reload,
+            child: FutureBuilder(
+              future: _futureArticles,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                Widget child = Container();
 
-              bool isInitialized = _currentPageNumber != 1;
-              bool hasData = snapshot.hasData &&
-                  snapshot.connectionState == ConnectionState.done;
-              bool hasAdditionalData = hasData && isInitialized;
-              bool hasError = snapshot.hasError &&
-                  snapshot.connectionState == ConnectionState.done;
-              bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
-                  snapshot.connectionState == ConnectionState.waiting;
-              _isEmptySearchResult = hasData && snapshot.data.length == 0;
+                bool isInitialized = _currentPageNumber != 1;
+                bool hasData = snapshot.hasData &&
+                    snapshot.connectionState == ConnectionState.done;
+                bool hasAdditionalData = hasData && isInitialized;
+                bool hasError = snapshot.hasError &&
+                    snapshot.connectionState == ConnectionState.done;
+                bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
+                    snapshot.connectionState == ConnectionState.waiting;
+                _isEmptySearchResult = hasData && snapshot.data.length == 0;
 
-              if (isInitialized) {
-                child = ArticleListView(
-                  articles: _fetchedArticles,
-                  scrollController: _scrollController,
+                if (isInitialized) {
+                  child = ArticleListView(
+                    articles: _fetchedArticles,
+                    scrollController: _scrollController,
+                  );
+                }
+
+                if (_isEmptySearchResult) {
+                  _isLoading = false;
+                  _isNetworkError = false;
+                  child = EmptySearchResultView();
+                } else if (hasAdditionalData) {
+                  _isLoading = false;
+                  _isNetworkError = false;
+                  _fetchedArticles.addAll(snapshot.data);
+                } else if (hasData) {
+                  _isLoading = false;
+                  _isNetworkError = false;
+                  _fetchedArticles = snapshot.data;
+                  child = ArticleListView(
+                    articles: _fetchedArticles,
+                    scrollController: _scrollController,
+                  );
+                } else if (hasError) {
+                  _isNetworkError = true;
+                  child = NetworkErrorView(onTapReload: _reload);
+                } else if (isWaiting) {
+                  child = Center(child: CircularProgressIndicator());
+                }
+
+                return Container(
+                  child: child,
                 );
-              }
-
-              if (_isEmptySearchResult) {
-                _isLoading = false;
-                _isNetworkError = false;
-                child = EmptySearchResultView();
-              } else if (hasAdditionalData) {
-                _isLoading = false;
-                _isNetworkError = false;
-                _fetchedArticles.addAll(snapshot.data);
-              } else if (hasData) {
-                _isLoading = false;
-                _isNetworkError = false;
-                _fetchedArticles = snapshot.data;
-                child = ArticleListView(
-                  articles: _fetchedArticles,
-                  scrollController: _scrollController,
-                );
-              } else if (hasError) {
-                _isNetworkError = true;
-                child = NetworkErrorView(onTapReload: _reload);
-              } else if (isWaiting) {
-                child = Center(child: CircularProgressIndicator());
-              }
-
-              return Container(
-                child: child,
-              );
-            },
+              },
+            ),
           ),
         ),
       ),
