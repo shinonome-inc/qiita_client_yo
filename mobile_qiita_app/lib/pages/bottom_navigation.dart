@@ -24,7 +24,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     if (Variables.isAuthenticated) {
       _myPage = UserPage(
         user: Variables.authenticatedUser,
-        appBarTitle: 'MyApp',
+        appBarTitle: 'MyPage',
         useBackButton: false,
       );
     }
