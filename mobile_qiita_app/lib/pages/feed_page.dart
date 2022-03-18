@@ -79,6 +79,17 @@ class _FeedPageState extends State<FeedPage> {
                       color: Color(0xFF8E8E93),
                     ),
                   ),
+                  suffixIcon: _textEditingController.text.isEmpty
+                      ? const SizedBox.shrink()
+                      : GestureDetector(
+                          onTap: () {
+                            _textEditingController.text = '';
+                          },
+                          child: const Icon(
+                            Icons.close,
+                            color: Color(0xFF8E8E93),
+                          ),
+                        ),
                   hintText: 'Search',
                   hintStyle: TextStyle(
                     color: const Color(0xFF8E8E93),
