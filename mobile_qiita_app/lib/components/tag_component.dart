@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/components/cached_network_image_icon.dart';
 import 'package:mobile_qiita_app/models/tag.dart';
 import 'package:mobile_qiita_app/pages/tag_detail_list_page.dart';
 
@@ -31,10 +31,10 @@ class TagComponent extends StatelessWidget {
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              height: 38.0,
-              width: 38.0,
-              child: CachedNetworkImage(imageUrl: tag.iconUrl),
+            CachedNetworkImageIcon(
+              imageUrl: tag.iconUrl,
+              iconLength: 38.0,
+              isTagIcon: true,
             ),
             Container(
               margin: const EdgeInsets.symmetric(vertical: 8.0),

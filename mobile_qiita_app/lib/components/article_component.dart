@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
+import 'package:mobile_qiita_app/components/cached_network_image_icon.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 
 // 取得した記事を基にユーザーアイコン、記事タイトル、ユーザー名、投稿日、LGTM数を表示
@@ -13,13 +13,6 @@ class ArticleComponent extends StatelessWidget {
   final Article article;
   final bool isUserPage;
   final String _headerTitle = 'article';
-
-  Widget _userIcon() {
-    return CircleAvatar(
-      radius: 24,
-      backgroundImage: CachedNetworkImageProvider(article.user.iconUrl),
-    );
-  }
 
   Widget _articleTitle() {
     return Text(
@@ -67,7 +60,7 @@ class ArticleComponent extends StatelessWidget {
               Methods.showScrollableModalBottomSheet(
                   context, _headerTitle, article.url);
             },
-            leading: _userIcon(),
+            leading: CachedNetworkImageIcon(imageUrl: article.user.iconUrl),
             title: _articleTitle(),
             subtitle: _articleSubtitle(),
           );
