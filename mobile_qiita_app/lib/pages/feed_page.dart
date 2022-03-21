@@ -62,51 +62,53 @@ class _FeedPageState extends State<FeedPage> {
   PreferredSize? _searchableAppBar() {
     return PreferredSize(
       preferredSize: preferredSize,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: const Color(0xFFCFCFCF),
-              width: 0.2,
+      child: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: const Color(0xFFCFCFCF),
+                width: 0.2,
+              ),
             ),
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Container(
-              margin: const EdgeInsets.only(top: 27.0),
-              child: const Text(
-                'Feed',
-                style: Constants.appBarTextStyle,
-              ),
-            ),
-            Container(
-              height: 36.0,
-              margin: const EdgeInsets.only(bottom: 8.0),
-              padding: const EdgeInsets.only(left: 8.0),
-              decoration: BoxDecoration(
-                color: const Color(0xEFEFF0FF),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: TextField(
-                enabled: true,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  icon: _textFieldIcon(),
-                  suffixIcon: _textFieldSuffixIcon(),
-                  hintText: 'Search',
-                  hintStyle: TextStyle(
-                    color: const Color(0xFF8E8E93),
-                    fontSize: 17.0,
-                  ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                margin: const EdgeInsets.only(top: 27.0),
+                child: const Text(
+                  'Feed',
+                  style: Constants.appBarTextStyle,
                 ),
-                controller: _textEditingController,
-                onSubmitted: _searchForArticlesFromInputText,
               ),
-            ),
-          ],
+              Container(
+                height: 36.0,
+                margin: const EdgeInsets.only(bottom: 8.0),
+                padding: const EdgeInsets.only(left: 8.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xEFEFF0FF),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: TextField(
+                  enabled: true,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    icon: _textFieldIcon(),
+                    suffixIcon: _textFieldSuffixIcon(),
+                    hintText: 'Search',
+                    hintStyle: TextStyle(
+                      color: const Color(0xFF8E8E93),
+                      fontSize: 17.0,
+                    ),
+                  ),
+                  controller: _textEditingController,
+                  onSubmitted: _searchForArticlesFromInputText,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

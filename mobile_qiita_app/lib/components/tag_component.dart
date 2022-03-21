@@ -28,6 +28,7 @@ class TagComponent extends StatelessWidget {
             ),
           );
         },
+        contentPadding: EdgeInsets.all(8.0),
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -38,8 +39,6 @@ class TagComponent extends StatelessWidget {
             ),
             Container(
               margin: const EdgeInsets.symmetric(vertical: 8.0),
-              width: 130.0,
-              height: 20.0,
               child: Text(
                 tag.id,
                 textAlign: TextAlign.center,
@@ -67,6 +66,7 @@ class TagComponent extends StatelessWidget {
                 fontSize: 12.0,
               ),
             ),
+            const SizedBox(height: 8.0),
           ],
         ),
       ),

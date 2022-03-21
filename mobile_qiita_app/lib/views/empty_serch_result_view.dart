@@ -12,7 +12,7 @@ class EmptySearchResultView extends StatelessWidget {
       physics: AlwaysScrollableScrollPhysics(),
       child: Container(
         width: double.infinity,
-        margin: EdgeInsets.only(top: deviceHeight * 0.5 - 190.0), // 画面比を調整
+        margin: EdgeInsets.only(top: deviceHeight * 0.5 - 160.0), // 画面比を調整
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[

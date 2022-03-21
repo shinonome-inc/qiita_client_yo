@@ -70,7 +70,7 @@ class _TagPageState extends State<TagPage> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             Widget child = Container();
             int numOfTagsPerLine =
-                (MediaQuery.of(context).size.width ~/ 192).toInt();
+                (MediaQuery.of(context).size.width ~/ 160).toInt();
 
             bool isInitialized = _currentPageNumber != 1;
             bool hasData = snapshot.hasData &&
