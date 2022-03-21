@@ -54,14 +54,14 @@ class _TopPageState extends State<TopPage> {
             ),
             child: SafeArea(
               child: Container(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(
+                    Expanded(
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          const SizedBox(height: 144.0),
                           Container(
                             child: const Text(
                               'Qiita Feed App',
@@ -109,7 +109,7 @@ class _TopPageState extends State<TopPage> {
                             buttonText: 'ログインせずに利用する',
                             backgroundColor: Colors.transparent,
                           ),
-                          const SizedBox(height: 32.0),
+                          const SizedBox(height: 64.0),
                         ],
                       ),
                     ),
