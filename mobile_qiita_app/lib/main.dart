@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/keys.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
 import 'package:mobile_qiita_app/pages/top_page.dart';
+import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -26,8 +26,11 @@ class _MyAppState extends State<MyApp> {
     final storage = FlutterSecureStorage();
     String? accessToken = await storage.read(key: Keys.accessToken);
     if (accessToken != null) {
-      await _initUserInfoFromStorage();
       Variables.isAuthenticated = true;
+      QiitaClient.authorizationRequestHeader = {
+        'Authorization': 'Bearer $accessToken'
+      };
+      await _initUserInfoFromStorage();
     }
   }
 
@@ -36,8 +39,7 @@ class _MyAppState extends State<MyApp> {
     Variables.authenticatedUser = User(
       id: prefs.getString(Keys.userId) ?? '',
       name: prefs.getString(Keys.userName) ?? '',
-      iconUrl:
-          prefs.getString(Keys.userIconUrl) ?? Constants.defaultUserIconUrl,
+      iconUrl: prefs.getString(Keys.userIconUrl) ?? '',
       description: prefs.getString(Keys.userDescription) ?? '',
       followingsCount: prefs.getInt(Keys.userFollowingsCount) ?? 0,
       followersCount: prefs.getInt(Keys.userFollowersCount) ?? 0,
@@ -47,6 +49,7 @@ class _MyAppState extends State<MyApp> {
 
   // ログイン済みならFeedPageを表示、未ログインならTopPageを表示
   Future<void> _initInitialPage() async {
+    await _checkUserInfoFromStorage();
     if (Variables.isAuthenticated) {
       setState(() {
         _initialPage = BottomNavigation();
@@ -61,7 +64,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _checkUserInfoFromStorage();
     _initInitialPage();
   }
 

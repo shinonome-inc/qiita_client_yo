@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class QiitaClient {
   static final _storage = FlutterSecureStorage();
-  static late Map<String, String> _authorizationRequestHeader;
+  static late Map<String, String> authorizationRequestHeader;
 
   // アクセストークン発行
   static Future<void> fetchAccessToken(String redirectUrl) async {
@@ -37,7 +37,7 @@ class QiitaClient {
       final AccessToken accessToken = AccessToken.fromJson(jsonResponse);
 
       _storage.write(key: Keys.accessToken, value: accessToken.token);
-      _authorizationRequestHeader = {
+      authorizationRequestHeader = {
         'Authorization': 'Bearer ${accessToken.token}'
       };
       await fetchAuthenticatedUser();
@@ -74,7 +74,7 @@ class QiitaClient {
     }
 
     var response = Variables.isAuthenticated
-        ? await http.get(Uri.parse(url), headers: _authorizationRequestHeader)
+        ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
         : await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -90,7 +90,7 @@ class QiitaClient {
     var url = 'https://qiita.com/api/v2/tags?page=$page&sort=count';
 
     var response = Variables.isAuthenticated
-        ? await http.get(Uri.parse(url), headers: _authorizationRequestHeader)
+        ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
         : await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -105,7 +105,7 @@ class QiitaClient {
   static Future<void> fetchAuthenticatedUser() async {
     final url = 'https://qiita.com/api/v2/authenticated_user';
     var response =
-        await http.get(Uri.parse(url), headers: _authorizationRequestHeader);
+        await http.get(Uri.parse(url), headers: authorizationRequestHeader);
 
     if (response.statusCode == 200) {
       final dynamic jsonResponse = json.decode(response.body);
@@ -133,7 +133,7 @@ class QiitaClient {
         : 'https://qiita.com/api/v2/users/$userId/followers?page=$page';
 
     var response = Variables.isAuthenticated
-        ? await http.get(Uri.parse(url), headers: _authorizationRequestHeader)
+        ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
         : await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -148,7 +148,7 @@ class QiitaClient {
     final url = 'https://qiita.com/api/v2/users/$userId';
 
     var response = Variables.isAuthenticated
-        ? await http.get(Uri.parse(url), headers: _authorizationRequestHeader)
+        ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
         : await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
