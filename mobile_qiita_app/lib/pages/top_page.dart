@@ -23,11 +23,11 @@ class _TopPageState extends State<TopPage> {
     _isLoading = true;
     await QiitaClient.fetchAccessToken(widget.redirectUrl.toString());
     _isLoading = false;
-    Navigator.push(
-      context,
+    Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (context) => BottomNavigation(),
       ),
+      (_) => false,
     );
   }
 
