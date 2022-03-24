@@ -58,10 +58,11 @@ class _SettingPageState extends State<SettingPage> {
     await _deleteUserInfoFromStorage();
     Variables.isAuthenticated = false;
 
-    Navigator.of(context, rootNavigator: true).push(
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (context) => TopPage(),
       ),
+      (_) => false,
     );
   }
 
