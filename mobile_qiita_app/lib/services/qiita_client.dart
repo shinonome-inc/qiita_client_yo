@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class QiitaClient {
   static final _storage = FlutterSecureStorage();
-  static late Map<String, String> _authorizationRequestHeader;
+  static late Map<String, String> authorizationRequestHeader;
 
   // アクセストークン発行
   static Future<void> fetchAccessToken(String redirectUrl) async {
@@ -37,7 +37,7 @@ class QiitaClient {
       final AccessToken accessToken = AccessToken.fromJson(jsonResponse);
 
       _storage.write(key: Keys.accessToken, value: accessToken.token);
-      _authorizationRequestHeader = {
+      authorizationRequestHeader = {
         'Authorization': 'Bearer ${accessToken.token}'
       };
       await fetchAuthenticatedUser();
@@ -60,24 +60,21 @@ class QiitaClient {
   }
 
   // QiitaAPIで記事を取得
-  static Future<List<Article>> fetchArticle(int currentPageNumber,
-      String searchWord, String tagId, String userId) async {
+  static Future<List<Article>> fetchArticles(
+      int page, String query, String tagId, String userId) async {
     var url;
-    if (searchWord.isNotEmpty) {
-      url =
-          'https://qiita.com/api/v2/items?page=$currentPageNumber&query=$searchWord';
+    if (query.isNotEmpty) {
+      url = 'https://qiita.com/api/v2/items?page=$page&query=$query';
     } else if (tagId.isNotEmpty) {
-      url =
-          'https://qiita.com/api/v2/tags/$tagId/items?page=$currentPageNumber';
+      url = 'https://qiita.com/api/v2/tags/$tagId/items?page=$page';
     } else if (userId.isNotEmpty) {
-      url =
-          'https://qiita.com/api/v2/users/$userId/items?page=$currentPageNumber';
+      url = 'https://qiita.com/api/v2/users/$userId/items?page=$page';
     } else {
-      url = 'https://qiita.com/api/v2/items?page=$currentPageNumber';
+      url = 'https://qiita.com/api/v2/items?page=$page';
     }
 
     var response = Variables.isAuthenticated
-        ? await http.get(Uri.parse(url), headers: _authorizationRequestHeader)
+        ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
         : await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -89,12 +86,11 @@ class QiitaClient {
   }
 
   // QiitaAPIでタグを取得
-  static Future<List<Tag>> fetchTag(int currentPageNumber) async {
-    var url =
-        'https://qiita.com/api/v2/tags?page=$currentPageNumber&sort=count';
+  static Future<List<Tag>> fetchTags(int page) async {
+    var url = 'https://qiita.com/api/v2/tags?page=$page&sort=count';
 
     var response = Variables.isAuthenticated
-        ? await http.get(Uri.parse(url), headers: _authorizationRequestHeader)
+        ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
         : await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -109,7 +105,7 @@ class QiitaClient {
   static Future<void> fetchAuthenticatedUser() async {
     final url = 'https://qiita.com/api/v2/authenticated_user';
     var response =
-        await http.get(Uri.parse(url), headers: _authorizationRequestHeader);
+        await http.get(Uri.parse(url), headers: authorizationRequestHeader);
 
     if (response.statusCode == 200) {
       final dynamic jsonResponse = json.decode(response.body);
@@ -131,18 +127,33 @@ class QiitaClient {
 
   // QiitaAPIでユーザー一覧を取得
   static Future<List<User>> fetchUsers(
-      int currentPageNumber, String usersType, String userId) async {
+      int page, String usersType, String userId) async {
     var url = usersType == 'Follows'
-        ? 'https://qiita.com/api/v2/users/$userId/followees?page=$currentPageNumber'
-        : 'https://qiita.com/api/v2/users/$userId/followers?page=$currentPageNumber';
+        ? 'https://qiita.com/api/v2/users/$userId/followees?page=$page'
+        : 'https://qiita.com/api/v2/users/$userId/followers?page=$page';
 
     var response = Variables.isAuthenticated
-        ? await http.get(Uri.parse(url), headers: _authorizationRequestHeader)
+        ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
         : await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = json.decode(response.body);
       return jsonResponse.map((json) => User.fromJson(json)).toList();
+    } else {
+      throw Exception('Request failed with status: ${response.statusCode}');
+    }
+  }
+
+  static Future<User> fetchUser(String userId) async {
+    final url = 'https://qiita.com/api/v2/users/$userId';
+
+    var response = Variables.isAuthenticated
+        ? await http.get(Uri.parse(url), headers: authorizationRequestHeader)
+        : await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final dynamic jsonResponse = json.decode(response.body);
+      return User.fromJson(jsonResponse);
     } else {
       throw Exception('Request failed with status: ${response.statusCode}');
     }

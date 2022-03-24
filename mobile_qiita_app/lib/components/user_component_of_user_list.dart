@@ -1,5 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/components/cached_network_image_icon.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 import 'package:mobile_qiita_app/pages/user_page.dart';
 
@@ -8,8 +8,6 @@ class UserComponentOfUserList extends StatelessWidget {
   const UserComponentOfUserList({required this.user, Key? key})
       : super(key: key);
   final User user;
-  final String _userPageAppBarTitle = 'Users';
-  final bool _useBackButtonInUserPage = true;
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +17,8 @@ class UserComponentOfUserList extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => UserPage(
               user: user,
-              appBarTitle: _userPageAppBarTitle,
-              useBackButton: _useBackButtonInUserPage,
+              appBarTitle: 'Users',
+              useBackButton: true,
             ),
           ),
         );
@@ -42,9 +40,9 @@ class UserComponentOfUserList extends StatelessWidget {
               Container(
                 child: Row(
                   children: <Widget>[
-                    CircleAvatar(
-                      radius: 16,
-                      backgroundImage: CachedNetworkImageProvider(user.iconUrl),
+                    CachedNetworkImageIcon(
+                      imageUrl: user.iconUrl,
+                      iconLength: 32.0,
                     ),
                     Flexible(
                       child: Container(

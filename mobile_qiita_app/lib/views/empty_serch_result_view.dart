@@ -7,10 +7,14 @@ class EmptySearchResultView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    double deviceHeight = MediaQuery.of(context).size.height;
+    return SingleChildScrollView(
+      physics: AlwaysScrollableScrollPhysics(),
       child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.only(top: deviceHeight * 0.5 - 160.0), // 画面比を調整
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             const Text('検索にマッチする記事はありませんでした'),
             const SizedBox(height: 20.0),
@@ -21,7 +25,6 @@ class EmptySearchResultView extends StatelessWidget {
                 fontSize: 12.0,
               ),
             ),
-            const SizedBox(height: 78.0), // 画面比率の調整
           ],
         ),
       ),

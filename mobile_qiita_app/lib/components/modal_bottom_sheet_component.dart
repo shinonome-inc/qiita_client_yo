@@ -21,23 +21,25 @@ class ModalBottomSheetComponent extends StatefulWidget {
 }
 
 class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
-  late Widget _displayedContent;
+  late Widget _modalBottomSheetContent;
 
-  // ModalBottomSheetで表示するコンテンツを初期化
-  void _initContentInModalBottomSheet() {
+  void _initModalBottomSheetContent() {
     if (widget.headerTitle == 'プライバシーポリシー') {
-      _displayedContent = AppInfoComponent(text: Texts.privacyPolicyText);
+      _modalBottomSheetContent =
+          AppInfoComponent(text: Texts.privacyPolicyText);
     } else if (widget.headerTitle == '利用規約') {
-      _displayedContent = AppInfoComponent(text: Texts.termOfServiceText);
+      _modalBottomSheetContent =
+          AppInfoComponent(text: Texts.termOfServiceText);
     } else {
-      _displayedContent = WebViewComponent(initialUrl: widget.webViewUrl);
+      _modalBottomSheetContent =
+          WebViewComponent(initialUrl: widget.webViewUrl);
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _initContentInModalBottomSheet();
+    _initModalBottomSheetContent();
   }
 
   @override
@@ -75,7 +77,7 @@ class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  child: _displayedContent,
+                  child: _modalBottomSheetContent,
                 ),
               ),
             ],

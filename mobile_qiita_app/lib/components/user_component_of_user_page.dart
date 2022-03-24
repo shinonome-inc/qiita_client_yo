@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:mobile_qiita_app/components/cached_network_image_icon.dart';
 import 'package:mobile_qiita_app/components/follows_followers_button.dart';
 import 'package:mobile_qiita_app/models/user.dart';
 
@@ -22,9 +22,9 @@ class UserComponentOfUserPage extends StatelessWidget {
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.only(bottom: 16.0),
-            child: CircleAvatar(
-              radius: 40.0,
-              backgroundImage: CachedNetworkImageProvider(user.iconUrl),
+            child: CachedNetworkImageIcon(
+              imageUrl: user.iconUrl,
+              iconLength: 80.0,
             ),
           ),
           Text(
@@ -37,9 +37,7 @@ class UserComponentOfUserPage extends StatelessWidget {
             '@${user.id}',
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
-            style: TextStyle(
-              color: Constants.lightSecondaryGrey,
-            ),
+            style: TextStyle(color: Constants.lightSecondaryGrey),
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -47,9 +45,7 @@ class UserComponentOfUserPage extends StatelessWidget {
               user.description,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Constants.lightSecondaryGrey,
-              ),
+              style: TextStyle(color: Constants.lightSecondaryGrey),
             ),
           ),
           Row(

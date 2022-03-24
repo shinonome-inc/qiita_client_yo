@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/pages/top_page.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -19,7 +18,6 @@ class _WebViewComponentState extends State<WebViewComponent> {
   late WebViewController _webViewController;
   double _webViewHeight = 0;
 
-  // WebViewの高さを求めて_webViewHeightに代入
   Future<void> _calculateWebViewHeight() async {
     double newHeight = double.parse(
       await _webViewController
@@ -40,15 +38,17 @@ class _WebViewComponentState extends State<WebViewComponent> {
 
   @override
   Widget build(BuildContext context) {
+    double deviceKeyBordHeight = MediaQuery.of(context).viewInsets.bottom;
     return Container(
-      height: _webViewHeight,
+      height: _webViewHeight + deviceKeyBordHeight,
       child: WebView(
         initialUrl: widget.initialUrl,
         javascriptMode: JavascriptMode.unrestricted,
         onPageFinished: (String url) async {
           _calculateWebViewHeight();
-          bool _isLogin = url.contains(Constants.accessTokenEndPoint);
-          if (_isLogin) {
+          bool hasCode =
+              url.contains('https://qiita.com/settings/applications?code');
+          if (hasCode) {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => TopPage(redirectUrl: url),

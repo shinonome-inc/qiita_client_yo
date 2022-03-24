@@ -28,9 +28,7 @@ class RoundedTextButton extends StatelessWidget {
         ),
         backgroundColor: backgroundColor,
         primary: Constants.roundedTextButtonPrimary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       ),
     );
   }

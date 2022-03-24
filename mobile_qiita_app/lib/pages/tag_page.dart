@@ -18,26 +18,26 @@ class _TagPageState extends State<TagPage> {
   final ScrollController _scrollController = ScrollController();
   late Future<List<Tag>> _futureTags;
   List<Tag> _fetchedTags = [];
-  late int _tagContainerLength;
+
   int _currentPageNumber = 1;
+
   bool _isNetworkError = false;
   bool _isLoading = false;
-  final String _appBarTitle = 'Tag';
 
-  // 再読み込み
   Future<void> _reload() async {
+    _currentPageNumber = 1;
+    _fetchedTags.clear();
     setState(() {
-      _futureTags = QiitaClient.fetchTag(_currentPageNumber);
+      _futureTags = QiitaClient.fetchTags(_currentPageNumber);
     });
   }
 
-  // タグを追加読み込み
-  Future<void> _readAdditionally() async {
+  Future<void> _loadAdditionalTags() async {
     if (!_isLoading) {
       _isLoading = true;
       _currentPageNumber++;
       setState(() {
-        _futureTags = QiitaClient.fetchTag(_currentPageNumber);
+        _futureTags = QiitaClient.fetchTags(_currentPageNumber);
       });
     }
   }
@@ -45,10 +45,10 @@ class _TagPageState extends State<TagPage> {
   @override
   void initState() {
     super.initState();
-    _futureTags = QiitaClient.fetchTag(_currentPageNumber);
+    _futureTags = QiitaClient.fetchTags(_currentPageNumber);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
-        _readAdditionally();
+        _loadAdditionalTags();
       }
     });
   }
@@ -61,63 +61,58 @@ class _TagPageState extends State<TagPage> {
 
   @override
   Widget build(BuildContext context) {
-    _tagContainerLength = (MediaQuery.of(context).size.width ~/ 192).toInt();
     return Scaffold(
-      appBar: AppBarComponent(title: _appBarTitle, useBackButton: false),
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.only(top: 16.0),
-          child: FutureBuilder(
-            future: _futureTags,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              Widget child = Container();
+      appBar: AppBarComponent(title: 'Tag', useBackButton: false),
+      body: RefreshIndicator(
+        onRefresh: _reload,
+        child: FutureBuilder(
+          future: _futureTags,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            Widget child = Container();
+            int numOfTagsPerLine =
+                (MediaQuery.of(context).size.width ~/ 160).toInt();
 
-              bool isInitialized = _currentPageNumber != 1;
-              bool hasData = snapshot.hasData &&
-                  snapshot.connectionState == ConnectionState.done;
-              bool hasAdditionalData = hasData && isInitialized;
-              bool hasError = snapshot.hasError &&
-                  snapshot.connectionState == ConnectionState.done;
-              bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
-                  snapshot.connectionState == ConnectionState.waiting;
+            bool isInitialized = _currentPageNumber != 1;
+            bool hasData = snapshot.hasData &&
+                snapshot.connectionState == ConnectionState.done;
+            bool hasAdditionalData = hasData && isInitialized;
+            bool hasError = snapshot.hasError &&
+                snapshot.connectionState == ConnectionState.done;
+            bool isWaiting = (_isNetworkError || _currentPageNumber == 1) &&
+                snapshot.connectionState == ConnectionState.waiting;
 
-              if (isInitialized) {
-                child = TagGridView(
-                  onTapReload: _reload,
-                  tags: _fetchedTags,
-                  scrollController: _scrollController,
-                  tagContainerLength: _tagContainerLength,
-                );
-              }
-
-              if (hasAdditionalData) {
-                _isLoading = false;
-                _isNetworkError = false;
-                _fetchedTags.addAll(snapshot.data);
-              } else if (hasData) {
-                _isLoading = false;
-                _isNetworkError = false;
-                _fetchedTags = snapshot.data;
-                child = TagGridView(
-                  onTapReload: _reload,
-                  tags: _fetchedTags,
-                  scrollController: _scrollController,
-                  tagContainerLength: _tagContainerLength,
-                );
-              } else if (hasError) {
-                _isNetworkError = true;
-                child = NetworkErrorView(onTapReload: _reload);
-              } else if (isWaiting) {
-                child = CircularProgressIndicator();
-              }
-
-              return Container(
-                child: Center(
-                  child: child,
-                ),
+            if (isInitialized) {
+              child = TagGridView(
+                tags: _fetchedTags,
+                scrollController: _scrollController,
+                numOfTagsPerLine: numOfTagsPerLine,
               );
-            },
-          ),
+            }
+
+            if (hasAdditionalData) {
+              _isLoading = false;
+              _isNetworkError = false;
+              _fetchedTags.addAll(snapshot.data);
+            } else if (hasData) {
+              _isLoading = false;
+              _isNetworkError = false;
+              _fetchedTags = snapshot.data;
+              child = TagGridView(
+                tags: _fetchedTags,
+                scrollController: _scrollController,
+                numOfTagsPerLine: numOfTagsPerLine,
+              );
+            } else if (hasError) {
+              _isNetworkError = true;
+              child = NetworkErrorView(onTapReload: _reload);
+            } else if (isWaiting) {
+              child = Center(child: CircularProgressIndicator());
+            }
+
+            return Container(
+              child: child,
+            );
+          },
         ),
       ),
     );

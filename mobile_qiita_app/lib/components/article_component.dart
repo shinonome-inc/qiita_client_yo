@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/common/constants.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
+import 'package:mobile_qiita_app/components/cached_network_image_icon.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 
 // 取得した記事を基にユーザーアイコン、記事タイトル、ユーザー名、投稿日、LGTM数を表示
@@ -14,13 +14,6 @@ class ArticleComponent extends StatelessWidget {
   final bool isUserPage;
   final String _headerTitle = 'article';
 
-  Widget _userIcon() {
-    return CircleAvatar(
-      radius: 24,
-      backgroundImage: CachedNetworkImageProvider(article.user.iconUrl),
-    );
-  }
-
   Widget _articleTitle() {
     return Text(
       article.title,
@@ -31,7 +24,8 @@ class ArticleComponent extends StatelessWidget {
 
   Widget _articleSubtitle() {
     final DateTime postedTime = DateTime.parse(article.createdAt);
-    final String postedDate = Constants.postedDateFormat.format(postedTime);
+    final DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+    final String postedDate = dateFormat.format(postedTime);
     return Container(
       padding: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
@@ -55,16 +49,18 @@ class ArticleComponent extends StatelessWidget {
     return isUserPage
         ? ListTile(
             onTap: () {
-              Methods.showWebContent(context, _headerTitle, article.url);
+              Methods.showScrollableModalBottomSheet(
+                  context, _headerTitle, article.url);
             },
             title: _articleTitle(),
             subtitle: _articleSubtitle(),
           )
         : ListTile(
             onTap: () {
-              Methods.showWebContent(context, _headerTitle, article.url);
+              Methods.showScrollableModalBottomSheet(
+                  context, _headerTitle, article.url);
             },
-            leading: _userIcon(),
+            leading: CachedNetworkImageIcon(imageUrl: article.user.iconUrl),
             title: _articleTitle(),
             subtitle: _articleSubtitle(),
           );

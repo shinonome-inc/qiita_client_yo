@@ -13,48 +13,54 @@ class FollowsFollowersButton extends StatelessWidget {
   final User user;
   final String usersType;
 
+  void _transitionToUserList(BuildContext context, int numOfUsers) {
+    if (numOfUsers == 0) {
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FollowsFollowersListPage(
+          usersType: usersType,
+          userId: user.id,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Map<String, String> buttonLabelNumber = {
-      'Follows': user.followingsCount.toString(),
-      'Followers': user.followersCount.toString(),
-    };
-    final Map<String, String> buttonLabelText = {
-      'Follows': 'フォロー中',
-      'Followers': 'フォロワー',
-    };
+    int numOfUsers = 0;
+    String buttonText = '';
+    bool isFollows = (usersType == 'Follows');
+    bool isFollowers = (usersType == 'Followers');
+
+    if (isFollows) {
+      numOfUsers = user.followingsCount;
+      buttonText = 'フォロー中';
+    } else if (isFollowers) {
+      numOfUsers = user.followersCount;
+      buttonText = 'フォロワー';
+    }
 
     return Container(
       height: 24.0,
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FollowsFollowersListPage(
-                usersType: usersType,
-                userId: user.id,
-              ),
-            ),
-          );
+          _transitionToUserList(context, numOfUsers);
         },
         child: RichText(
           text: TextSpan(
-            style: TextStyle(
-              color: Colors.black,
-            ),
+            style: TextStyle(color: Colors.black),
             children: [
               TextSpan(
-                text: buttonLabelNumber[usersType],
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                text: numOfUsers.toString(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               TextSpan(
-                text: buttonLabelText[usersType],
-                style: TextStyle(
-                  color: Constants.lightSecondaryGrey,
-                ),
+                text: buttonText,
+                style: TextStyle(color: Constants.lightSecondaryGrey),
               ),
             ],
           ),

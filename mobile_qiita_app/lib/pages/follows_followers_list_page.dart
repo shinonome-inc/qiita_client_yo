@@ -24,20 +24,21 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
   ScrollController _scrollController = ScrollController();
   late Future<List<User>> _futureUsers;
   List<User> _fetchedUsers = [];
+
   int _currentPageNumber = 1;
   bool _isNetworkError = false;
   bool _isLoading = false;
 
-  // 再読み込み
   Future<void> _reload() async {
+    _currentPageNumber = 1;
+    _fetchedUsers.clear();
     setState(() {
       _futureUsers = QiitaClient.fetchUsers(
           _currentPageNumber, widget.usersType, widget.userId);
     });
   }
 
-  // ユーザーを追加読み込み
-  Future<void> _readAdditionally() async {
+  Future<void> _loadAdditionalUsers() async {
     if (!_isLoading) {
       _isLoading = true;
       _currentPageNumber++;
@@ -55,7 +56,7 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
         _currentPageNumber, widget.usersType, widget.userId);
     _scrollController.addListener(() {
       if (_scrollController.isBottom) {
-        _readAdditionally();
+        _loadAdditionalUsers();
       }
     });
   }
@@ -71,7 +72,8 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarComponent(title: widget.usersType, useBackButton: true),
-      body: SafeArea(
+      body: RefreshIndicator(
+        onRefresh: _reload,
         child: FutureBuilder(
           future: _futureUsers,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -88,7 +90,6 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
 
             if (isInitialized) {
               child = UserList(
-                onTapReload: _reload,
                 users: _fetchedUsers,
                 scrollController: _scrollController,
               );
@@ -103,7 +104,6 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
               _isNetworkError = false;
               _fetchedUsers = snapshot.data;
               child = UserList(
-                onTapReload: _reload,
                 users: _fetchedUsers,
                 scrollController: _scrollController,
               );
@@ -111,12 +111,10 @@ class _FollowsFollowersListPageState extends State<FollowsFollowersListPage> {
               _isNetworkError = true;
               child = NetworkErrorView(onTapReload: _reload);
             } else if (isWaiting) {
-              child = CircularProgressIndicator();
+              child = Center(child: CircularProgressIndicator());
             }
             return Container(
-              child: Center(
-                child: child,
-              ),
+              child: child,
             );
           },
         ),

@@ -20,15 +20,13 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
   final _storage = FlutterSecureStorage();
-  final String _webViewUrl = '';
   PackageInfo _packageInfo = PackageInfo(
-    appName: 'Unknown',
-    packageName: 'Unknown',
-    version: 'Unknown',
-    buildNumber: 'Unknown',
+    appName: '',
+    packageName: '',
+    version: '',
+    buildNumber: '',
   );
 
-  // package情報を初期化
   Future<void> _initPackageInfo() async {
     final info = await PackageInfo.fromPlatform();
     setState(() {
@@ -55,8 +53,7 @@ class _SettingPageState extends State<SettingPage> {
     prefs.setInt(Keys.userPosts, 0);
   }
 
-  // Qiitaからログアウト
-  Future<void> _logout(BuildContext context) async {
+  Future<void> _logoutFromQiita(BuildContext context) async {
     await QiitaClient.disableAccessToken();
     await _deleteUserInfoFromStorage();
     Variables.isAuthenticated = false;
@@ -86,7 +83,8 @@ class _SettingPageState extends State<SettingPage> {
             ),
             SettingsItemComponent(
               onTap: () {
-                Methods.showWebContent(context, 'プライバシーポリシー', _webViewUrl);
+                Methods.showScrollableModalBottomSheet(
+                    context, 'プライバシーポリシー', '');
               },
               title: const Text('プライバシーポリシー'),
               item: const Icon(
@@ -96,7 +94,7 @@ class _SettingPageState extends State<SettingPage> {
             ),
             SettingsItemComponent(
               onTap: () {
-                Methods.showWebContent(context, '利用規約', _webViewUrl);
+                Methods.showScrollableModalBottomSheet(context, '利用規約', '');
               },
               title: const Text('利用規約'),
               item: const Icon(
@@ -124,7 +122,7 @@ class _SettingPageState extends State<SettingPage> {
             if (Variables.isAuthenticated)
               SettingsItemComponent(
                 onTap: () {
-                  _logout(context);
+                  _logoutFromQiita(context);
                 },
                 title: const Text('ログアウトする'),
                 item: Container(),
