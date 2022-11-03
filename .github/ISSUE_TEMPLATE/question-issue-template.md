@@ -1,6 +1,6 @@
 ---
-name: Issue template
-about: This is issue template about Flutter question.
+name: Question Issue template
+about: 質問用のissue template
 title: ''
 labels: ''
 assignees: ''
