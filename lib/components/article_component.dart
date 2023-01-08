@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/components/cached_network_image_icon.dart';
+import 'package:mobile_qiita_app/components/web_view_component.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 
 // 取得した記事を基にユーザーアイコン、記事タイトル、ユーザー名、投稿日、LGTM数を表示
@@ -50,7 +51,10 @@ class ArticleComponent extends StatelessWidget {
         ? ListTile(
             onTap: () {
               Methods.showScrollableModalBottomSheet(
-                  context, _headerTitle, article.url);
+                context,
+                _headerTitle,
+                WebViewComponent(initialUrl: article.url),
+              );
             },
             title: _articleTitle(),
             subtitle: _articleSubtitle(),
@@ -58,7 +62,10 @@ class ArticleComponent extends StatelessWidget {
         : ListTile(
             onTap: () {
               Methods.showScrollableModalBottomSheet(
-                  context, _headerTitle, article.url);
+                context,
+                _headerTitle,
+                WebViewComponent(initialUrl: article.url),
+              );
             },
             leading: CachedNetworkImageIcon(imageUrl: article.user.iconUrl),
             title: _articleTitle(),

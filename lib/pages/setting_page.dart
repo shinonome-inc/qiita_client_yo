@@ -3,8 +3,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/keys.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
+import 'package:mobile_qiita_app/common/texts.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/components/app_bar_component.dart';
+import 'package:mobile_qiita_app/components/app_info_component.dart';
 import 'package:mobile_qiita_app/components/setting_item_component.dart';
 import 'package:mobile_qiita_app/pages/top_page.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
@@ -85,7 +87,10 @@ class _SettingPageState extends State<SettingPage> {
             SettingsItemComponent(
               onTap: () {
                 Methods.showScrollableModalBottomSheet(
-                    context, 'プライバシーポリシー', '');
+                  context,
+                  'プライバシーポリシー',
+                  AppInfoComponent(text: Texts.privacyPolicyText),
+                );
               },
               title: const Text('プライバシーポリシー'),
               item: const Icon(
@@ -95,7 +100,11 @@ class _SettingPageState extends State<SettingPage> {
             ),
             SettingsItemComponent(
               onTap: () {
-                Methods.showScrollableModalBottomSheet(context, '利用規約', '');
+                Methods.showScrollableModalBottomSheet(
+                  context,
+                  '利用規約',
+                  AppInfoComponent(text: Texts.termOfServiceText),
+                );
               },
               title: const Text('利用規約'),
               item: const Icon(

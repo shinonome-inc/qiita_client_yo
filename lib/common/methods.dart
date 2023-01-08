@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/components/modal_bottom_sheet_component.dart';
+import 'package:mobile_qiita_app/components/web_view_component.dart';
 import 'package:mobile_qiita_app/qiita_auth_key.dart';
 
 // 各クラス共通で利用するメソッドを格納するためのクラス
 class Methods {
   static void showScrollableModalBottomSheet(
-      BuildContext context, String headerTitle, String webViewUrl) {
+    BuildContext context,
+    String headerTitle,
+    Widget child,
+  ) {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
@@ -16,7 +20,7 @@ class Methods {
       builder: (context) {
         return ModalBottomSheetComponent(
           headerTitle: headerTitle,
-          webViewUrl: webViewUrl,
+          child: child,
         );
       },
     );
@@ -29,7 +33,7 @@ class Methods {
     Methods.showScrollableModalBottomSheet(
       context,
       appBarText,
-      loginUrl,
+      WebViewComponent(initialUrl: loginUrl),
     );
   }
 }

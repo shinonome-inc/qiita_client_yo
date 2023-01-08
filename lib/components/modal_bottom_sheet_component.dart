@@ -1,46 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
-import 'package:mobile_qiita_app/common/texts.dart';
-import 'package:mobile_qiita_app/components/app_info_component.dart';
-import 'package:mobile_qiita_app/components/web_view_component.dart';
 
 // スクロール可能なModalBottomSheet
-class ModalBottomSheetComponent extends StatefulWidget {
+class ModalBottomSheetComponent extends StatelessWidget {
   const ModalBottomSheetComponent({
-    required this.headerTitle,
-    required this.webViewUrl,
     Key? key,
+    required this.headerTitle,
+    required this.child,
   }) : super(key: key);
 
   final String headerTitle;
-  final String webViewUrl;
-
-  @override
-  _ModalBottomSheetComponentState createState() =>
-      _ModalBottomSheetComponentState();
-}
-
-class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
-  late Widget _modalBottomSheetContent;
-
-  void _initModalBottomSheetContent() {
-    if (widget.headerTitle == 'プライバシーポリシー') {
-      _modalBottomSheetContent =
-          AppInfoComponent(text: Texts.privacyPolicyText);
-    } else if (widget.headerTitle == '利用規約') {
-      _modalBottomSheetContent =
-          AppInfoComponent(text: Texts.termOfServiceText);
-    } else {
-      _modalBottomSheetContent =
-          WebViewComponent(initialUrl: widget.webViewUrl);
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _initModalBottomSheetContent();
-  }
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +34,7 @@ class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 26.0),
                   child: Text(
-                    widget.headerTitle,
+                    headerTitle,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: const Color(0xFF000000),
@@ -77,7 +47,7 @@ class _ModalBottomSheetComponentState extends State<ModalBottomSheetComponent> {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  child: _modalBottomSheetContent,
+                  child: child,
                 ),
               ),
             ],
