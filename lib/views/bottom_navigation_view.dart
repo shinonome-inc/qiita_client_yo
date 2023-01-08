@@ -8,8 +8,8 @@ import 'package:mobile_qiita_app/pages/tag_page.dart';
 import 'package:mobile_qiita_app/pages/user_page.dart';
 import 'package:mobile_qiita_app/views/not_login_view.dart';
 
-class BottomNavigation extends StatelessWidget {
-  const BottomNavigation({Key? key}) : super(key: key);
+class BottomNavigationView extends StatelessWidget {
+  const BottomNavigationView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

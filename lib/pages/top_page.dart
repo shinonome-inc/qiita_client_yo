@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/components/rounded_text_button.dart';
-import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
+import 'package:mobile_qiita_app/views/bottom_navigation_view.dart';
 
 class TopPage extends StatefulWidget {
   const TopPage({this.redirectUrl, Key? key}) : super(key: key);
@@ -25,7 +25,7 @@ class _TopPageState extends State<TopPage> {
     _isLoading = false;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
-        builder: (context) => BottomNavigation(),
+        builder: (context) => BottomNavigationView(),
       ),
       (_) => false,
     );
@@ -102,7 +102,7 @@ class _TopPageState extends State<TopPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => BottomNavigation(),
+                                  builder: (context) => BottomNavigationView(),
                                 ),
                               );
                             },

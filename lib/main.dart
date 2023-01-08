@@ -3,9 +3,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile_qiita_app/common/keys.dart';
 import 'package:mobile_qiita_app/common/variables.dart';
 import 'package:mobile_qiita_app/models/user.dart';
-import 'package:mobile_qiita_app/pages/bottom_navigation.dart';
 import 'package:mobile_qiita_app/pages/top_page.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
+import 'package:mobile_qiita_app/views/bottom_navigation_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
     await _checkUserInfoFromStorage();
     if (Variables.isAuthenticated) {
       setState(() {
-        _initialPage = BottomNavigation();
+        _initialPage = BottomNavigationView();
       });
     } else {
       setState(() {
