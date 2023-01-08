@@ -2,6 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/app_border_radius.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 
+void showScrollableModalBottomSheet({
+  required BuildContext context,
+  required String headerText,
+  required Widget child,
+}) {
+  showModalBottomSheet(
+    context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: AppBorderRadius.modalHeaderBorderRadius,
+    ),
+    builder: (context) {
+      return ScrollableModalBottomSheet(
+        headerText: headerText,
+        child: child,
+      );
+    },
+  );
+}
+
 class ScrollableModalBottomSheet extends StatelessWidget {
   /// Creates a widget that can be scrollable modal bottom sheet.
   const ScrollableModalBottomSheet({

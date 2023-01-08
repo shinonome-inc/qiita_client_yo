@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/components/cached_network_image_icon.dart';
+import 'package:mobile_qiita_app/components/scrollable_modal_bottom_sheet.dart';
 import 'package:mobile_qiita_app/components/web_view_component.dart';
 import 'package:mobile_qiita_app/models/article.dart';
 
@@ -50,10 +50,10 @@ class ArticleComponent extends StatelessWidget {
     return isUserPage
         ? ListTile(
             onTap: () {
-              Methods.showScrollableModalBottomSheet(
-                context,
-                _headerTitle,
-                WebViewComponent(initialUrl: article.url),
+              showScrollableModalBottomSheet(
+                context: context,
+                headerText: _headerTitle,
+                child: WebViewComponent(initialUrl: article.url),
               );
             },
             title: _articleTitle(),
@@ -61,10 +61,10 @@ class ArticleComponent extends StatelessWidget {
           )
         : ListTile(
             onTap: () {
-              Methods.showScrollableModalBottomSheet(
-                context,
-                _headerTitle,
-                WebViewComponent(initialUrl: article.url),
+              showScrollableModalBottomSheet(
+                context: context,
+                headerText: _headerTitle,
+                child: WebViewComponent(initialUrl: article.url),
               );
             },
             leading: CachedNetworkImageIcon(imageUrl: article.user.iconUrl),
