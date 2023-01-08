@@ -21,25 +21,8 @@ class ScrollableModalBottomSheet extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              padding: const EdgeInsets.only(top: 26.0),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(24.0),
-                ),
-                color: Color(0xF0F9F9F9),
-              ),
-              height: 59.0,
-              child: Text(
-                headerTitle,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xFF000000),
-                  fontSize: 17.0,
-                  fontFamily: Constants.pacifico,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            ScrollableModalBottomSheetHeader(
+              title: Text(headerTitle),
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -49,6 +32,35 @@ class ScrollableModalBottomSheet extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class ScrollableModalBottomSheetHeader extends StatelessWidget {
+  const ScrollableModalBottomSheetHeader({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
+
+  final Widget? title;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: title,
+      titleTextStyle: const TextStyle(
+        fontSize: 17.0,
+        color: Color(0xFF000000),
+        fontFamily: Constants.pacifico,
+        fontWeight: FontWeight.bold,
+      ),
+      backgroundColor: const Color(0xF0F9F9F9),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10.0),
+        ),
+      ),
+      automaticallyImplyLeading: false,
     );
   }
 }
