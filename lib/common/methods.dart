@@ -10,7 +10,6 @@ class Methods {
     String headerTitle,
     Widget child,
   ) {
-    final double statusBarHeight = MediaQuery.of(context).padding.top;
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
@@ -21,7 +20,6 @@ class Methods {
       builder: (context) {
         return ScrollableModalBottomSheet(
           headerTitle: headerTitle,
-          statusBarHeight: statusBarHeight,
           child: child,
         );
       },
