@@ -18,40 +18,35 @@ class ScrollableModalBottomSheet extends StatelessWidget {
       expand: false,
       initialChildSize: 0.96,
       builder: (context, scrollController) {
-        return Container(
-          color: Colors.transparent,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(24.0),
-                  ),
-                  color: const Color(0xF0F9F9F9),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.only(top: 26.0),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(24.0),
                 ),
-                height: 59.0,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 26.0),
-                  child: Text(
-                    headerTitle,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: const Color(0xFF000000),
-                      fontSize: 17.0,
-                      fontFamily: Constants.pacifico,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                color: Color(0xF0F9F9F9),
+              ),
+              height: 59.0,
+              child: Text(
+                headerTitle,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Color(0xFF000000),
+                  fontSize: 17.0,
+                  fontFamily: Constants.pacifico,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: child,
-                ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: child,
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
