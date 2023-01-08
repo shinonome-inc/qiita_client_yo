@@ -17,6 +17,7 @@ class BottomNavigationView extends StatelessWidget {
       tabBar: CupertinoTabBar(
         activeColor: Constants.lightSecondaryColor,
         inactiveColor: Constants.lightSecondaryGrey,
+        iconSize: 24.0,
         border: Border(
           top: BorderSide(
             color: const Color(0xFFC6C6C6),
