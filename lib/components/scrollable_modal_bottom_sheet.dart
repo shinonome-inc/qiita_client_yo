@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/common/app_border_radius.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 
 class ScrollableModalBottomSheet extends StatelessWidget {
   /// Creates a widget that can be scrollable modal bottom sheet.
   const ScrollableModalBottomSheet({
     Key? key,
-    required this.headerTitle,
+    required this.headerText,
     required this.child,
   }) : super(key: key);
 
-  final String headerTitle;
+  final String headerText;
   final Widget child;
 
   @override
@@ -22,7 +23,7 @@ class ScrollableModalBottomSheet extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             ScrollableModalBottomSheetHeader(
-              title: Text(headerTitle),
+              headerText: headerText,
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -39,28 +40,30 @@ class ScrollableModalBottomSheet extends StatelessWidget {
 class ScrollableModalBottomSheetHeader extends StatelessWidget {
   const ScrollableModalBottomSheetHeader({
     Key? key,
-    required this.title,
+    required this.headerText,
   }) : super(key: key);
 
-  final Widget? title;
+  final String headerText;
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: title,
-      titleTextStyle: const TextStyle(
-        fontSize: 17.0,
-        color: Color(0xFF000000),
-        fontFamily: Constants.pacifico,
-        fontWeight: FontWeight.bold,
+    return Container(
+      padding: const EdgeInsets.only(bottom: 11.0),
+      alignment: Alignment.bottomCenter,
+      height: 59.0,
+      decoration: const BoxDecoration(
+        color: Color(0xF0F9F9F9),
+        borderRadius: AppBorderRadius.modalHeaderBorderRadius,
       ),
-      backgroundColor: const Color(0xF0F9F9F9),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(10.0),
+      child: Text(
+        headerText,
+        style: const TextStyle(
+          fontSize: 17.0,
+          color: Color(0xFF000000),
+          fontFamily: Constants.pacifico,
+          fontWeight: FontWeight.bold,
         ),
       ),
-      automaticallyImplyLeading: false,
     );
   }
 }

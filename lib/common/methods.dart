@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_qiita_app/common/app_shape.dart';
 import 'package:mobile_qiita_app/components/scrollable_modal_bottom_sheet.dart';
 import 'package:mobile_qiita_app/components/web_view_component.dart';
 import 'package:mobile_qiita_app/qiita_auth_key.dart';
@@ -7,19 +8,17 @@ import 'package:mobile_qiita_app/qiita_auth_key.dart';
 class Methods {
   static void showScrollableModalBottomSheet(
     BuildContext context,
-    String headerTitle,
+    String headerText,
     Widget child,
   ) {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
-      ),
+      shape: AppShape.modalHeaderShape,
       builder: (context) {
         return ScrollableModalBottomSheet(
-          headerTitle: headerTitle,
+          headerText: headerText,
           child: child,
         );
       },
