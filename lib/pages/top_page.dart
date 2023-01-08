@@ -3,8 +3,10 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
-import 'package:mobile_qiita_app/common/methods.dart';
 import 'package:mobile_qiita_app/components/rounded_text_button.dart';
+import 'package:mobile_qiita_app/components/scrollable_modal_bottom_sheet.dart';
+import 'package:mobile_qiita_app/components/web_view_component.dart';
+import 'package:mobile_qiita_app/qiita_auth_key.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/bottom_navigation_view.dart';
 
@@ -91,7 +93,13 @@ class _TopPageState extends State<TopPage> {
                         children: <Widget>[
                           RoundedTextButton(
                             onPressed: () {
-                              Methods.transitionToLoginScreen(context);
+                              String loginUrl =
+                                  'https://qiita.com/api/v2/oauth/authorize?client_id=${QiitaAuthKey.clientId}&scope=read_qiita';
+                              showScrollableModalBottomSheet(
+                                context: context,
+                                headerText: 'Qiita Auth',
+                                child: WebViewComponent(initialUrl: loginUrl),
+                              );
                             },
                             buttonText: 'ログイン',
                             backgroundColor: Constants.lightPrimaryColor,
