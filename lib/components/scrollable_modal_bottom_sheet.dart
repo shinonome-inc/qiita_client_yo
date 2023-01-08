@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/app_border_radius.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 
+/// Shows a scrollable modal Cupertino Design bottom sheet.
 void showScrollableModalBottomSheet({
   required BuildContext context,
   required String headerText,
@@ -23,8 +24,8 @@ void showScrollableModalBottomSheet({
   );
 }
 
+/// Creates a widget that can be scrollable modal bottom sheet.
 class ScrollableModalBottomSheet extends StatelessWidget {
-  /// Creates a widget that can be scrollable modal bottom sheet.
   const ScrollableModalBottomSheet({
     Key? key,
     required this.headerText,
@@ -58,6 +59,7 @@ class ScrollableModalBottomSheet extends StatelessWidget {
   }
 }
 
+/// Creates a header for the scrollable modal bottom sheet.
 class ScrollableModalBottomSheetHeader extends StatelessWidget {
   const ScrollableModalBottomSheetHeader({
     Key? key,
