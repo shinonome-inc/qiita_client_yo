@@ -8,25 +8,27 @@ import 'package:mobile_qiita_app/pages/tag_page.dart';
 import 'package:mobile_qiita_app/pages/user_page.dart';
 import 'package:mobile_qiita_app/views/not_login_view.dart';
 
-class BottomNavigation extends StatefulWidget {
-  const BottomNavigation({Key? key}) : super(key: key);
+class BottomNavigationView extends StatelessWidget {
+  const BottomNavigationView({Key? key}) : super(key: key);
 
-  @override
-  _BottomNavigationState createState() => _BottomNavigationState();
-}
-
-class _BottomNavigationState extends State<BottomNavigation> {
-  Widget _myPage = NotLoginView();
-
-  @override
-  void initState() {
-    super.initState();
-    if (Variables.isAuthenticated) {
-      _myPage = UserPage(
-        user: Variables.authenticatedUser,
-        appBarTitle: 'MyPage',
-        useBackButton: false,
-      );
+  Widget _selectDisplayPage(int selectedIndex) {
+    switch (selectedIndex) {
+      case 0:
+        return FeedPage();
+      case 1:
+        return TagPage();
+      case 2:
+        return Variables.isAuthenticated
+            ? UserPage(
+                user: Variables.authenticatedUser,
+                appBarTitle: 'MyPage',
+                useBackButton: false,
+              )
+            : NotLoginView();
+      case 3:
+        return SettingPage();
+      default:
+        return SizedBox.shrink();
     }
   }
 
@@ -36,6 +38,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       tabBar: CupertinoTabBar(
         activeColor: Constants.lightSecondaryColor,
         inactiveColor: Constants.lightSecondaryGrey,
+        iconSize: 24.0,
         border: Border(
           top: BorderSide(
             color: const Color(0xFFC6C6C6),
@@ -61,28 +64,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
           ),
         ],
       ),
-      tabBuilder: (BuildContext context, int index) {
-        switch (index) {
-          case 0:
-            return CupertinoTabView(
-              builder: (context) => CupertinoPageScaffold(child: FeedPage()),
-            );
-          case 1:
-            return CupertinoTabView(
-              builder: (context) => CupertinoPageScaffold(child: TagPage()),
-            );
-          case 2:
-            return CupertinoTabView(
-              builder: (context) => CupertinoPageScaffold(child: _myPage),
-            );
-          case 3:
-            return CupertinoTabView(
-              builder: (context) => CupertinoPageScaffold(child: SettingPage()),
-            );
-          default:
-            return Container();
-        }
-      },
+      tabBuilder: (BuildContext context, int index) => CupertinoTabView(
+        builder: (context) => CupertinoPageScaffold(
+          child: _selectDisplayPage(index),
+        ),
+      ),
     );
   }
 }
