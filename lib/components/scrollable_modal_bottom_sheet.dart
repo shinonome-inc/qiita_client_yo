@@ -7,16 +7,24 @@ class ScrollableModalBottomSheet extends StatelessWidget {
     Key? key,
     required this.headerTitle,
     required this.child,
+    required this.statusBarHeight,
   }) : super(key: key);
 
   final String headerTitle;
   final Widget child;
+  final double statusBarHeight;
+
+  double _calculateInitialChildSize(BuildContext context) {
+    final double deviceHeight = MediaQuery.of(context).size.height;
+    final double modalHeight = deviceHeight - statusBarHeight - 11.0;
+    return modalHeight / deviceHeight;
+  }
 
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       expand: false,
-      initialChildSize: 0.96,
+      initialChildSize: _calculateInitialChildSize(context),
       builder: (context, scrollController) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
