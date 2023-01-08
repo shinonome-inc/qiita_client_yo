@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 
-// スクロール可能なModalBottomSheet
-class ModalBottomSheetComponent extends StatelessWidget {
-  const ModalBottomSheetComponent({
+class ScrollableModalBottomSheet extends StatelessWidget {
+  /// Creates a widget that can be scrollable modal bottom sheet.
+  const ScrollableModalBottomSheet({
     Key? key,
     required this.headerTitle,
     required this.child,

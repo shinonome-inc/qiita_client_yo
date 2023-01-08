@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_qiita_app/components/modal_bottom_sheet_component.dart';
+import 'package:mobile_qiita_app/components/scrollable_modal_bottom_sheet.dart';
 import 'package:mobile_qiita_app/components/web_view_component.dart';
 import 'package:mobile_qiita_app/qiita_auth_key.dart';
 
@@ -18,7 +18,7 @@ class Methods {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
       ),
       builder: (context) {
-        return ModalBottomSheetComponent(
+        return ScrollableModalBottomSheet(
           headerTitle: headerTitle,
           child: child,
         );
