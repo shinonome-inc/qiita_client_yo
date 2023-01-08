@@ -6,7 +6,7 @@ import 'package:mobile_qiita_app/common/constants.dart';
 void showScrollableModalBottomSheet({
   required BuildContext context,
   required String headerText,
-  required Widget child,
+  Widget? child,
 }) {
   showModalBottomSheet(
     context: context,
@@ -29,11 +29,11 @@ class ScrollableModalBottomSheet extends StatelessWidget {
   const ScrollableModalBottomSheet({
     Key? key,
     required this.headerText,
-    required this.child,
+    this.child,
   }) : super(key: key);
 
   final String headerText;
-  final Widget child;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
