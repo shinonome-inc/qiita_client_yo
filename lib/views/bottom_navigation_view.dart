@@ -11,6 +11,27 @@ import 'package:mobile_qiita_app/views/not_login_view.dart';
 class BottomNavigationView extends StatelessWidget {
   const BottomNavigationView({Key? key}) : super(key: key);
 
+  Widget _selectDisplayPage(int selectedIndex) {
+    switch (selectedIndex) {
+      case 0:
+        return FeedPage();
+      case 1:
+        return TagPage();
+      case 2:
+        return Variables.isAuthenticated
+            ? UserPage(
+                user: Variables.authenticatedUser,
+                appBarTitle: 'MyPage',
+                useBackButton: false,
+              )
+            : NotLoginView();
+      case 3:
+        return SettingPage();
+      default:
+        return SizedBox.shrink();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
@@ -43,34 +64,11 @@ class BottomNavigationView extends StatelessWidget {
           ),
         ],
       ),
-      tabBuilder: (BuildContext context, int index) {
-        Widget child;
-        switch (index) {
-          case 0:
-            child = FeedPage();
-            break;
-          case 1:
-            child = TagPage();
-            break;
-          case 2:
-            child = Variables.isAuthenticated
-                ? UserPage(
-                    user: Variables.authenticatedUser,
-                    appBarTitle: 'MyPage',
-                    useBackButton: false,
-                  )
-                : NotLoginView();
-            break;
-          case 3:
-            child = SettingPage();
-            break;
-          default:
-            child = SizedBox.shrink();
-        }
-        return CupertinoTabView(
-          builder: (context) => CupertinoPageScaffold(child: child),
-        );
-      },
+      tabBuilder: (BuildContext context, int index) => CupertinoTabView(
+        builder: (context) => CupertinoPageScaffold(
+          child: _selectDisplayPage(index),
+        ),
+      ),
     );
   }
 }
