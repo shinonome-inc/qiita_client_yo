@@ -75,7 +75,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Mobile Qiita App',
+      title: 'Qiita Client Yo',
       debugShowCheckedModeBanner: false,
       home: _initialPage,
     );
