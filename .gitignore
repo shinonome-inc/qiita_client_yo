@@ -45,3 +45,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 lib/qiita_auth_key.dart
+
+# freezed
+*.freezed.dart
