@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mobile_qiita_app/pages/top_page.dart';
-import 'package:mobile_qiita_app/providers/web_view_notifier.dart';
+import 'package:mobile_qiita_app/providers/web_view_height_notifier.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewComponent extends ConsumerStatefulWidget {
@@ -19,7 +19,7 @@ class WebViewState extends ConsumerState<WebViewComponent> {
   late WebViewController _controller;
 
   void onPageFinished(String url, {required WebViewController controller}) {
-    final notifier = ref.read(webViewProvider.notifier);
+    final notifier = ref.read(webViewHeightProvider.notifier);
     notifier.calculateWebViewHeight(controller);
     final bool hasCode =
         url.contains('https://qiita.com/settings/applications?code');
@@ -50,10 +50,10 @@ class WebViewState extends ConsumerState<WebViewComponent> {
 
   @override
   Widget build(BuildContext context) {
-    double deviceKeyBordHeight = MediaQuery.of(context).viewInsets.bottom;
-    final state = ref.watch(webViewProvider);
-    return Container(
-      height: state.viewHeight + deviceKeyBordHeight,
+    final double deviceKeyBordHeight = MediaQuery.of(context).viewInsets.bottom;
+    final double webViewHeight = ref.watch(webViewHeightProvider);
+    return SizedBox(
+      height: webViewHeight + deviceKeyBordHeight,
       child: WebViewWidget(
         controller: _controller,
       ),
