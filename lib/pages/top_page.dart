@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:mobile_qiita_app/common/constants.dart';
 import 'package:mobile_qiita_app/components/rounded_text_button.dart';
 import 'package:mobile_qiita_app/components/scrollable_modal_bottom_sheet.dart';
-import 'package:mobile_qiita_app/components/web_view_component.dart';
 import 'package:mobile_qiita_app/qiita_auth_key.dart';
 import 'package:mobile_qiita_app/services/qiita_client.dart';
 import 'package:mobile_qiita_app/views/bottom_navigation_view.dart';
+import 'package:mobile_qiita_app/views/web_view.dart';
 
 class TopPage extends StatefulWidget {
   const TopPage({this.redirectUrl, Key? key}) : super(key: key);
@@ -98,7 +98,7 @@ class _TopPageState extends State<TopPage> {
                               showScrollableModalBottomSheet(
                                 context: context,
                                 headerText: 'Qiita Auth',
-                                child: WebViewComponent(initialUrl: loginUrl),
+                                child: WebView(url: loginUrl),
                               );
                             },
                             buttonText: 'ログイン',

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_qiita_app/components/cached_network_image_icon.dart';
 import 'package:mobile_qiita_app/components/scrollable_modal_bottom_sheet.dart';
-import 'package:mobile_qiita_app/components/web_view_component.dart';
 import 'package:mobile_qiita_app/models/article.dart';
+import 'package:mobile_qiita_app/views/web_view.dart';
 
 // 取得した記事を基にユーザーアイコン、記事タイトル、ユーザー名、投稿日、LGTM数を表示
 class ArticleComponent extends StatelessWidget {
@@ -53,7 +53,7 @@ class ArticleComponent extends StatelessWidget {
               showScrollableModalBottomSheet(
                 context: context,
                 headerText: _headerTitle,
-                child: WebViewComponent(initialUrl: article.url),
+                child: WebView(url: article.url),
               );
             },
             title: _articleTitle(),
@@ -64,7 +64,7 @@ class ArticleComponent extends StatelessWidget {
               showScrollableModalBottomSheet(
                 context: context,
                 headerText: _headerTitle,
-                child: WebViewComponent(initialUrl: article.url),
+                child: WebView(url: article.url),
               );
             },
             leading: CachedNetworkImageIcon(imageUrl: article.user.iconUrl),
