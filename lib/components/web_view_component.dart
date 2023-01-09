@@ -1,32 +1,22 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mobile_qiita_app/pages/top_page.dart';
+import 'package:mobile_qiita_app/providers/web_view_notifier.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class WebViewComponent extends StatefulWidget {
-  const WebViewComponent({required this.initialUrl, Key? key})
+class WebViewComponent extends ConsumerStatefulWidget {
+  const WebViewComponent({Key? key, required this.initialUrl})
       : super(key: key);
-
   final String initialUrl;
 
   @override
-  _WebViewComponentState createState() => _WebViewComponentState();
+  WebViewState createState() => WebViewState();
 }
 
-class _WebViewComponentState extends State<WebViewComponent> {
+class WebViewState extends ConsumerState<WebViewComponent> {
   late WebViewController _webViewController;
-  double _webViewHeight = 0;
-
-  Future<void> _calculateWebViewHeight() async {
-    double newHeight = double.parse(
-      await _webViewController
-          .evaluateJavascript("document.documentElement.scrollHeight;"),
-    );
-    setState(() {
-      _webViewHeight = newHeight;
-    });
-  }
 
   @override
   void initState() {
@@ -39,13 +29,15 @@ class _WebViewComponentState extends State<WebViewComponent> {
   @override
   Widget build(BuildContext context) {
     double deviceKeyBordHeight = MediaQuery.of(context).viewInsets.bottom;
+    final state = ref.watch(webViewProvider);
+    final notifier = ref.read(webViewProvider.notifier);
     return Container(
-      height: _webViewHeight + deviceKeyBordHeight,
+      height: state.viewHeight + deviceKeyBordHeight,
       child: WebView(
         initialUrl: widget.initialUrl,
         javascriptMode: JavascriptMode.unrestricted,
         onPageFinished: (String url) async {
-          _calculateWebViewHeight();
+          notifier.calculateWebViewHeight(_webViewController);
           bool hasCode =
               url.contains('https://qiita.com/settings/applications?code');
           if (hasCode) {
