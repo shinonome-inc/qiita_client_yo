@@ -4,18 +4,15 @@ import 'package:mobile_qiita_app/pages/top_page.dart';
 import 'package:mobile_qiita_app/providers/web_view_height_notifier.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class WebViewComponent extends ConsumerStatefulWidget {
-  const WebViewComponent({
-    Key? key,
-    required this.url,
-  }) : super(key: key);
+class WebView extends ConsumerStatefulWidget {
+  const WebView({Key? key, required this.url}) : super(key: key);
   final String url;
 
   @override
   WebViewState createState() => WebViewState();
 }
 
-class WebViewState extends ConsumerState<WebViewComponent> {
+class WebViewState extends ConsumerState<WebView> {
   late WebViewController _controller;
 
   void onPageFinished(String url, {required WebViewController controller}) {
