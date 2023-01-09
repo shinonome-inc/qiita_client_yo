@@ -5,16 +5,32 @@ import 'package:mobile_qiita_app/providers/web_view_notifier.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewComponent extends ConsumerStatefulWidget {
-  const WebViewComponent({Key? key, required this.initialUrl})
-      : super(key: key);
-  final String initialUrl;
+  const WebViewComponent({
+    Key? key,
+    required this.url,
+  }) : super(key: key);
+  final String url;
 
   @override
   WebViewState createState() => WebViewState();
 }
 
 class WebViewState extends ConsumerState<WebViewComponent> {
-  late WebViewController _webViewController;
+  late WebViewController _controller;
+
+  void onPageFinished(String url, {required WebViewController controller}) {
+    final notifier = ref.read(webViewProvider.notifier);
+    notifier.calculateWebViewHeight(controller);
+    final bool hasCode =
+        url.contains('https://qiita.com/settings/applications?code');
+    if (hasCode) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => TopPage(redirectUrl: url),
+        ),
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -24,23 +40,12 @@ class WebViewState extends ConsumerState<WebViewComponent> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageFinished: (String url) {
-            final notifier = ref.read(webViewProvider.notifier);
-            notifier.calculateWebViewHeight(controller);
-            bool hasCode =
-                url.contains('https://qiita.com/settings/applications?code');
-            if (hasCode) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => TopPage(redirectUrl: url),
-                ),
-              );
-            }
-          },
+          onPageFinished: (String url) =>
+              onPageFinished(url, controller: controller),
         ),
       )
-      ..loadRequest(Uri.parse(widget.initialUrl));
-    _webViewController = controller;
+      ..loadRequest(Uri.parse(widget.url));
+    _controller = controller;
   }
 
   @override
@@ -50,7 +55,7 @@ class WebViewState extends ConsumerState<WebViewComponent> {
     return Container(
       height: state.viewHeight + deviceKeyBordHeight,
       child: WebViewWidget(
-        controller: _webViewController,
+        controller: _controller,
       ),
     );
   }

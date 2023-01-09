@@ -53,7 +53,7 @@ class ArticleComponent extends StatelessWidget {
               showScrollableModalBottomSheet(
                 context: context,
                 headerText: _headerTitle,
-                child: WebViewComponent(initialUrl: article.url),
+                child: WebViewComponent(url: article.url),
               );
             },
             title: _articleTitle(),
@@ -64,7 +64,7 @@ class ArticleComponent extends StatelessWidget {
               showScrollableModalBottomSheet(
                 context: context,
                 headerText: _headerTitle,
-                child: WebViewComponent(initialUrl: article.url),
+                child: WebViewComponent(url: article.url),
               );
             },
             leading: CachedNetworkImageIcon(imageUrl: article.user.iconUrl),

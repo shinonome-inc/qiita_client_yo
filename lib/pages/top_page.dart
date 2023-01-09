@@ -98,7 +98,7 @@ class _TopPageState extends State<TopPage> {
                               showScrollableModalBottomSheet(
                                 context: context,
                                 headerText: 'Qiita Auth',
-                                child: WebViewComponent(initialUrl: loginUrl),
+                                child: WebViewComponent(url: loginUrl),
                               );
                             },
                             buttonText: 'ログイン',
