@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mobile_qiita_app/pages/top_page.dart';
@@ -21,36 +19,38 @@ class WebViewState extends ConsumerState<WebViewComponent> {
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) {
-      WebView.platform = SurfaceAndroidWebView();
-    }
+    final WebViewController controller = WebViewController();
+    controller
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (String url) {
+            final notifier = ref.read(webViewProvider.notifier);
+            notifier.calculateWebViewHeight(controller);
+            bool hasCode =
+                url.contains('https://qiita.com/settings/applications?code');
+            if (hasCode) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => TopPage(redirectUrl: url),
+                ),
+              );
+            }
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.initialUrl));
+    _webViewController = controller;
   }
 
   @override
   Widget build(BuildContext context) {
     double deviceKeyBordHeight = MediaQuery.of(context).viewInsets.bottom;
     final state = ref.watch(webViewProvider);
-    final notifier = ref.read(webViewProvider.notifier);
     return Container(
       height: state.viewHeight + deviceKeyBordHeight,
-      child: WebView(
-        initialUrl: widget.initialUrl,
-        javascriptMode: JavascriptMode.unrestricted,
-        onPageFinished: (String url) async {
-          notifier.calculateWebViewHeight(_webViewController);
-          bool hasCode =
-              url.contains('https://qiita.com/settings/applications?code');
-          if (hasCode) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => TopPage(redirectUrl: url),
-              ),
-            );
-          }
-        },
-        onWebViewCreated: (controller) async {
-          _webViewController = controller;
-        },
+      child: WebViewWidget(
+        controller: _webViewController,
       ),
     );
   }

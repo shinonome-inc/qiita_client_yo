@@ -11,12 +11,12 @@ class WebViewNotifier extends StateNotifier<WebViewState> {
   WebViewNotifier() : super(const WebViewState(viewHeight: 0));
 
   Future<void> calculateWebViewHeight(WebViewController controller) async {
-    double newHeight = double.parse(
-      await controller
-          .evaluateJavascript("document.documentElement.scrollHeight;"),
-    );
+    controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+    final result = await controller
+        .runJavaScriptReturningResult("document.documentElement.scrollHeight;");
+    final double height = double.parse(result.toString());
     state = state.copyWith(
-      viewHeight: newHeight,
+      viewHeight: height,
     );
   }
 }
